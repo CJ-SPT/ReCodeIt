@@ -7,21 +7,44 @@ namespace AssemblyRemapper.Reflection;
 
 internal static class RenameService
 {
-    public static void RenameAllFields(
-        RemapModel remap,
+    public static void RenameAll(ScoringModel score)
+    {
+        var types = DataProvider.ModuleDefinition.Types;
+
+        // Rename all fields and properties first
+        RenameAllFields(score, types);
+        RenameAllProperties(score, types);
+
+        score.Definition.Name = score.ProposedNewName;
+
+        types.FirstOrDefault(t => t.Name == score.ProposedNewName).Name = score.ProposedNewName;
+    }
+
+    public static void RenameAllDirect(RemapModel remap, TypeDefinition type)
+    {
+        var directRename = new ScoringModel();
+        directRename.Definition = type;
+        directRename.RemapModel = remap;
+
+        RenameAll(directRename);
+    }
+
+    private static void RenameAllFields(
+        ScoringModel score,
         Collection<TypeDefinition> typesToCheck)
     {
         foreach (var type in typesToCheck)
         {
             int fieldCount = 0;
-
             foreach (var field in type.Fields)
             {
-                if (field.FieldType.ToString() == remap.NewTypeName)
+                if (field.FieldType.Name == score.Definition.Name)
                 {
-                    var newFieldName = GetNewFieldName(remap.NewTypeName, field.IsPrivate, fieldCount);
+                    var newFieldName = GetNewFieldName(score.RemapModel.NewTypeName, field.IsPrivate, fieldCount);
 
-                    Logger.Log($"Renaming: `{field.Name}` on Type `{type}` to {remap.NewTypeName}");
+                    if (field.Name == newFieldName) { continue; }
+
+                    Logger.Log($"Renaming field: `{field.Name}` on Type `{type.Name}` to {newFieldName}");
 
                     field.Name = newFieldName;
 
@@ -33,14 +56,14 @@ internal static class RenameService
             {
                 foreach (var _ in type.NestedTypes)
                 {
-                    RenameAllFields(remap, type.NestedTypes);
+                    RenameAllFields(score, type.NestedTypes);
                 }
             }
         }
     }
 
-    public static void RenameAllProperties(
-        RemapModel remap,
+    private static void RenameAllProperties(
+        ScoringModel score,
         Collection<TypeDefinition> typesToCheck)
     {
         foreach (var type in typesToCheck)
@@ -49,10 +72,12 @@ internal static class RenameService
 
             foreach (var property in type.Properties)
             {
-                if (property.PropertyType.ToString() == remap.NewTypeName)
+                if (property.PropertyType.Name == score.Definition.Name)
                 {
-                    Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}`");
-                    property.Name = propertyCount > 0 ? $"{remap.NewTypeName}_{propertyCount}" : remap.NewTypeName;
+                    var newName = propertyCount > 0 ? $"{score.RemapModel.NewTypeName}_{propertyCount}" : score.RemapModel.NewTypeName;
+
+                    Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}` to {newName}");
+                    property.Name = newName;
                 }
             }
 
@@ -60,7 +85,7 @@ internal static class RenameService
             {
                 foreach (var _ in type.NestedTypes)
                 {
-                    RenameAllProperties(remap, type.NestedTypes);
+                    RenameAllProperties(score, type.NestedTypes);
                 }
             }
         }

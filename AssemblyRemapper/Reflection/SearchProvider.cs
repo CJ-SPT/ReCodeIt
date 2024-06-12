@@ -7,8 +7,6 @@ namespace AssemblyRemapper.Reflection;
 
 internal static class SearchProvider
 {
-    public static int MatchCount { get; private set; }
-
     public static EMatchResult MatchIsAbstract(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsAbstract is null)
@@ -17,7 +15,7 @@ internal static class SearchProvider
         }
 
         // Interfaces cannot be abstract, and abstract cannot be static
-        if (type.IsInterface || type.GetStaticConstructor() != null)
+        if (type.IsInterface || type.GetStaticConstructor() is not null)
         {
             return EMatchResult.NoMatch;
         }

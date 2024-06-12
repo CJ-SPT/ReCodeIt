@@ -10,21 +10,7 @@ internal class Remapper
     public void InitializeRemap()
     {
         DisplayBasicModuleInformation();
-        StartRemap();
-    }
 
-    private void DisplayBasicModuleInformation()
-    {
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-        Logger.Log($"Starting remap...", ConsoleColor.Yellow);
-        Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
-        Logger.Log($"Publicize: {DataProvider.AppSettings.Publicize}", ConsoleColor.Yellow);
-        Logger.Log($"Unseal: {DataProvider.AppSettings.Unseal}", ConsoleColor.Yellow);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-    }
-
-    private void StartRemap()
-    {
         foreach (var remap in DataProvider.Remaps)
         {
             Logger.Log($"Trying to remap {remap.NewTypeName}...", ConsoleColor.Gray);
@@ -42,6 +28,16 @@ internal class Remapper
 
         // We are done, write the assembly
         WriteAssembly();
+    }
+
+    private void DisplayBasicModuleInformation()
+    {
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
+        Logger.Log($"Starting remap...", ConsoleColor.Yellow);
+        Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
+        Logger.Log($"Publicize: {DataProvider.AppSettings.Publicize}", ConsoleColor.Yellow);
+        Logger.Log($"Unseal: {DataProvider.AppSettings.Unseal}", ConsoleColor.Yellow);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
     private void HandleMapping(RemapModel mapping)
@@ -122,6 +118,9 @@ internal class Remapper
             RemapModel = remap,
             Definition = type,
         };
+
+        // Set the original type name to be used later
+        score.RemapModel.OriginalTypeName = type.Name;
 
         if (type.MatchIsAbstract(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
@@ -210,10 +209,12 @@ internal class Remapper
         var oldName = type.Name;
         type.Name = remap.NewTypeName;
 
-        RenameService.RenameAllFields(remap, DataProvider.ModuleDefinition.Types);
-        RenameService.RenameAllProperties(remap, DataProvider.ModuleDefinition.Types);
-
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);
+
+        RenameService.RenameAllDirect(remap, type);
+
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
     private void LogDiscard(string action, string type, string search)
@@ -251,9 +252,8 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
 
-        RenameService.RenameAllFields(highestScore.RemapModel, DataProvider.ModuleDefinition.Types);
-        RenameService.RenameAllProperties(highestScore.RemapModel, DataProvider.ModuleDefinition.Types);
-        highestScore.Definition.Name = highestScore.ProposedNewName;
+        // Rename type and all associated type members
+        RenameService.RenameAll(highestScore);
 
         if (DataProvider.AppSettings.ScoringMode)
         {
