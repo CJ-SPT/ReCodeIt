@@ -192,7 +192,7 @@ internal class Remapper
             return EFailureReason.HasNestedTypes;
         }
 
-        ScoringModelExtensions.AddModelToResult(score);
+        score.AddScoreToResult();
 
         return EFailureReason.None;
     }
@@ -222,13 +222,13 @@ internal class Remapper
 
     private void ChooseBestMatch(HashSet<ScoringModel> scores, bool isBest = false)
     {
-        if (DataProvider.ScoringModels.Count == 0)
+        if (scores.Count == 0)
         {
             return;
         }
 
-        var highestScore = scores.OrderByDescending(model => model.Score).FirstOrDefault();
-        var nextHighestScores = scores.OrderByDescending(model => model.Score).Skip(1);
+        var highestScore = scores.OrderByDescending(score => score.Score).FirstOrDefault();
+        var nextHighestScores = scores.OrderByDescending(score => score.Score).Skip(1);
 
         if (highestScore is null) { return; }
 
@@ -243,9 +243,9 @@ internal class Remapper
 
         if (scores.Count > 1)
         {
-            Logger.Log($"Warning! There were {scores.Count} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
+            Logger.Log($"Warning! There were {scores.Count - 1} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
 
-            foreach (var score in scores)
+            foreach (var score in scores.OrderByDescending(score => score.Score).Skip(1))
             {
                 Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
             }

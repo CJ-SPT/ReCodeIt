@@ -20,7 +20,7 @@ internal class ScoringModel
 
 internal static class ScoringModelExtensions
 {
-    public static void AddModelToResult(this ScoringModel model)
+    public static void AddScoreToResult(this ScoringModel model)
     {
         try
         {
@@ -28,7 +28,7 @@ internal static class ScoringModelExtensions
             {
                 foreach (var outVal in modelHashset)
                 {
-                    if (outVal.Definition.FullName == model.Definition.FullName)
+                    if (outVal.Definition.Name == model.Definition.Name)
                     {
                         Logger.Log("Skipping adding duplicate type match to list", ConsoleColor.Yellow);
                         return;
