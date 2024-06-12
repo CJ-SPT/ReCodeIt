@@ -5,11 +5,12 @@ namespace AssemblyRemapper.Models;
 
 internal class ScoringModel
 {
+    public string ProposedNewName { get; set; }
+    public Remap Remap { get; set; }
     public int Score { get; set; } = 0;
 
-    public string ProposedNewName { get; set; }
-
     public TypeDefinition Definition { get; set; }
+    public RemapModel RemapModel { get; internal set; }
 
     public ScoringModel()
     {

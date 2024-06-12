@@ -24,7 +24,7 @@ internal class Remapper
 
     private void StartRemap()
     {
-        foreach (var remap in DataProvider.AppSettings.Remaps)
+        foreach (var remap in DataProvider.Remaps)
         {
             Logger.Log($"Trying to remap {remap.NewTypeName}...", ConsoleColor.Gray);
 
@@ -43,7 +43,7 @@ internal class Remapper
         WriteAssembly();
     }
 
-    private void HandleMapping(Remap mapping)
+    private void HandleMapping(RemapModel mapping)
     {
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
@@ -101,7 +101,7 @@ internal class Remapper
         }
     }
 
-    private void ScoreType(TypeDefinition type, Remap remap, string parentTypeName = "")
+    private void ScoreType(TypeDefinition type, RemapModel remap, string parentTypeName = "")
     {
         // Handle Direct Remaps by strict naming first bypasses everything else
         if (remap.UseForceRename)
@@ -117,8 +117,9 @@ internal class Remapper
 
         var score = new ScoringModel
         {
-            Definition = type,
             ProposedNewName = remap.NewTypeName,
+            RemapModel = remap,
+            Definition = type,
         };
 
         if (type.MatchIsAbstract(remap.SearchParams, score) == EMatchResult.NoMatch)
@@ -126,7 +127,7 @@ internal class Remapper
             LogDiscard("IsAbstract", type.Name, score.ProposedNewName);
             return;
         }
-        /*
+
         if (type.MatchIsEnum(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
             LogDiscard("IsEnum", type.Name, score.ProposedNewName);
@@ -145,7 +146,6 @@ internal class Remapper
             return;
         }
 
-        */
         if (type.MatchIsDerived(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
             LogDiscard("IsDerived", type.Name, score.ProposedNewName);
@@ -202,9 +202,9 @@ internal class Remapper
         ScoringModelExtensions.AddModelToResult(score);
     }
 
-    private void HandleByDirectName(TypeDefinition type, Remap remap)
+    private void HandleByDirectName(TypeDefinition type, RemapModel remap)
     {
-        if (type.Name != remap.OldTypeName) { return; }
+        if (type.Name != remap.OriginalTypeName) { return; }
 
         var oldName = type.Name;
         type.Name = remap.NewTypeName;
@@ -248,12 +248,13 @@ internal class Remapper
             : "Next potential";
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Found {scores.Count} results from search", ConsoleColor.Green);
-        Logger.Log($"{potentialText} match is `{highestScore.Definition.Name}` for `{highestScore.ProposedNewName}`", ConsoleColor.Green);
+        Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
+
+        highestScore.Definition.Name = highestScore.ProposedNewName;
 
         foreach (var score in nextHighestScores)
         {
-            Logger.Log($"Next potential match is `{score.Definition.Name}` for `{highestScore.ProposedNewName}`", ConsoleColor.Yellow);
+            Logger.Log($"Alternative match `{score.Definition.Name}` for `{highestScore.ProposedNewName}`", ConsoleColor.Yellow);
         }
 
         if (DataProvider.AppSettings.ScoringMode)

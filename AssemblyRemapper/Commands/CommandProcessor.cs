@@ -25,7 +25,16 @@ namespace AssemblyRemapper.Commands
             {
                 var remapper = new Remapper();
 
+                DataProvider.LoadMappingFile();
+                DataProvider.LoadAssemblyDefinition();
+
                 remapper.InitializeRemap();
+            }
+
+            if (command == "clear")
+            {
+                Console.Clear();
+                ShowStartText();
             }
         }
 
@@ -34,7 +43,7 @@ namespace AssemblyRemapper.Commands
             Logger.Log($"-----------------------------------------------------------------", ConsoleColor.Green);
             Logger.Log($"Cj's Assembly Tool", ConsoleColor.Green);
             Logger.Log($"Version 0.1.0", ConsoleColor.Green);
-            Logger.Log($"Available Commands: `remap` `help`", ConsoleColor.Green);
+            Logger.Log($"Available Commands: `remap` `clear`", ConsoleColor.Green);
             Logger.Log($"-----------------------------------------------------------------", ConsoleColor.Green);
         }
     }

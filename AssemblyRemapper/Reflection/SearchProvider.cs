@@ -8,7 +8,7 @@ internal static class SearchProvider
 {
     public static int MatchCount { get; private set; }
 
-    public static EMatchResult MatchIsAbstract(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsAbstract(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsAbstract is null)
         {
@@ -30,7 +30,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsEnum(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsEnum(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsEnum is null)
         {
@@ -46,7 +46,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsNested(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsNested(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsNested is null)
         {
@@ -62,7 +62,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsSealed(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsSealed(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsSealed is null)
         {
@@ -78,7 +78,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsDerived(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsDerived(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsDerived is null)
         {
@@ -94,7 +94,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsInterface(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsInterface(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsInterface is null)
         {
@@ -110,7 +110,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsGeneric(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsGeneric(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.HasGenericParameters is null)
         {
@@ -126,7 +126,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsPublic(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchIsPublic(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsPublic is null)
         {
@@ -144,7 +144,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchHasAttribute(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchHasAttribute(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.HasAttribute is null)
         {
@@ -160,7 +160,7 @@ internal static class SearchProvider
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchMethods(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchMethods(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.MethodNamesToMatch.Count == 0) { return EMatchResult.Disabled; }
 
@@ -197,7 +197,7 @@ internal static class SearchProvider
         return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchFields(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchFields(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.FieldNamesToMatch.Count == 0) { return EMatchResult.Disabled; }
 
@@ -230,7 +230,7 @@ internal static class SearchProvider
         return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchProperties(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchProperties(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.PropertyNamesToMatch.Count == 0) { return EMatchResult.Disabled; }
 
@@ -263,7 +263,7 @@ internal static class SearchProvider
         return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchNestedTypes(this TypeDefinition type, RemapSearchParams parms, ScoringModel score)
+    public static EMatchResult MatchNestedTypes(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.NestedTypesToMatch.Count == 0) { return EMatchResult.Disabled; }
 

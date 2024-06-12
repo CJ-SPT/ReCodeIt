@@ -9,8 +9,9 @@ internal static class DataProvider
     static DataProvider()
     {
         LoadAppSettings();
-        LoadAssemblyDefinition();
     }
+
+    public static HashSet<RemapModel> Remaps { get; private set; } = [];
 
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
@@ -39,7 +40,22 @@ internal static class DataProvider
         AppSettings = JsonConvert.DeserializeObject<AppSettings>(jsonText, settings);
     }
 
-    private static void LoadAssemblyDefinition()
+    public static void LoadMappingFile()
+    {
+        if (!File.Exists(AppSettings.MappingPath))
+        {
+            throw new InvalidOperationException($"path `{AppSettings.MappingPath}` does not exist...");
+        }
+
+        var jsonText = File.ReadAllText(AppSettings.MappingPath);
+
+        Remaps = [];
+        ScoringModels = [];
+
+        Remaps = JsonConvert.DeserializeObject<HashSet<RemapModel>>(jsonText);
+    }
+
+    public static void LoadAssemblyDefinition()
     {
         DefaultAssemblyResolver resolver = new();
         resolver.AddSearchDirectory(Path.GetDirectoryName(AppSettings.AssemblyPath)); // Replace with the correct path

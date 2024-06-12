@@ -8,7 +8,7 @@ namespace AssemblyRemapper.Reflection;
 internal static class RenameService
 {
     public static void RenameAllFields(
-        Remap remap,
+        RemapModel remap,
         Collection<TypeDefinition> typesToCheck)
     {
         foreach (var type in typesToCheck)
@@ -36,7 +36,7 @@ internal static class RenameService
     }
 
     public static void RenameAllProperties(
-        Remap remap,
+        RemapModel remap,
         Collection<TypeDefinition> typesToCheck)
     {
         foreach (var type in typesToCheck)
