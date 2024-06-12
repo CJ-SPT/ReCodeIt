@@ -44,3 +44,7 @@ internal class SearchParams
     {
     }
 }
+
+internal class AdvancedSearchParams
+{
+}

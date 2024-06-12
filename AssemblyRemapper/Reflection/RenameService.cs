@@ -16,8 +16,6 @@ internal static class RenameService
         RenameAllProperties(score, types);
 
         score.Definition.Name = score.ProposedNewName;
-
-        types.FirstOrDefault(t => t.Name == score.ProposedNewName).Name = score.ProposedNewName;
     }
 
     public static void RenameAllDirect(RemapModel remap, TypeDefinition type)
@@ -44,7 +42,7 @@ internal static class RenameService
 
                     if (field.Name == newFieldName) { continue; }
 
-                    Logger.Log($"Renaming field: `{field.Name}` on Type `{type.Name}` to {newFieldName}");
+                    Logger.Log($"Renaming field: `{field.Name}` on Type `{type.Name}` to {newFieldName}", ConsoleColor.Green);
 
                     field.Name = newFieldName;
 
@@ -76,7 +74,7 @@ internal static class RenameService
                 {
                     var newName = propertyCount > 0 ? $"{score.RemapModel.NewTypeName}_{propertyCount}" : score.RemapModel.NewTypeName;
 
-                    Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}` to {newName}");
+                    Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}` to {newName}", ConsoleColor.Green);
                     property.Name = newName;
                 }
             }

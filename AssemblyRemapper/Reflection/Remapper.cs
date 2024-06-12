@@ -251,6 +251,18 @@ internal class Remapper
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
+        Logger.Log($"Max possible score: {highestScore.CalculateMaxScore()}", ConsoleColor.Green);
+        Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
+
+        if (scores.Count > 1)
+        {
+            Logger.Log($"Warning! There were {scores.Count} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
+
+            foreach (var score in scores)
+            {
+                Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
+            }
+        }
 
         // Rename type and all associated type members
         RenameService.RenameAll(highestScore);

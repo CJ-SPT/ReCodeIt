@@ -48,4 +48,32 @@ internal static class ScoringModelExtensions
             Console.WriteLine(e.ToString());
         }
     }
+
+    public static int CalculateMaxScore(this ScoringModel score)
+    {
+        // Score should never be null here, but if it is we're fucked so just return 0.
+        if (score == null) { return 0; }
+
+        var propInfos = typeof(SearchParams).GetProperties();
+
+        int maxScore = 0;
+
+        foreach (var propInfo in propInfos)
+        {
+            object value = propInfo.GetValue(score.RemapModel.SearchParams);
+
+            if (value == null) continue;
+
+            if (value is HashSet<string> hashset)
+            {
+                maxScore += hashset.Count * 2;
+            }
+            else
+            {
+                maxScore++;
+            }
+        }
+
+        return maxScore;
+    }
 }
