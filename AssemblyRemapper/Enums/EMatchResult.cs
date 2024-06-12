@@ -1,4 +1,4 @@
-﻿namespace AssemblyRemapper.Models;
+﻿namespace AssemblyRemapper.Enums;
 
 internal enum EMatchResult
 {

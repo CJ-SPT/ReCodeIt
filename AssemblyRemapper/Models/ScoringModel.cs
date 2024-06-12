@@ -6,7 +6,7 @@ namespace AssemblyRemapper.Models;
 internal class ScoringModel
 {
     public string ProposedNewName { get; set; }
-    public Remap Remap { get; set; }
+    public RemapModel Remap { get; set; }
     public int Score { get; set; } = 0;
 
     public TypeDefinition Definition { get; set; }

@@ -1,4 +1,5 @@
-﻿using AssemblyRemapper.Models;
+﻿using AssemblyRemapper.Enums;
+using AssemblyRemapper.Models;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
