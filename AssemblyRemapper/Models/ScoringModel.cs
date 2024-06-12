@@ -1,4 +1,5 @@
-﻿using AssemblyRemapper.Utils;
+﻿using AssemblyRemapper.Enums;
+using AssemblyRemapper.Utils;
 using Mono.Cecil;
 
 namespace AssemblyRemapper.Models;
@@ -9,6 +10,8 @@ internal class ScoringModel
     public int Score { get; set; } = 0;
     public TypeDefinition Definition { get; set; }
     public RemapModel RemapModel { get; internal set; }
+
+    public EFailureReason FailureReason { get; set; } = EFailureReason.None;
 
     public ScoringModel()
     {
@@ -64,9 +67,9 @@ internal static class ScoringModelExtensions
 
             if (value == null) continue;
 
-            if (value is HashSet<string> hashset)
+            if (value is List<string> list)
             {
-                maxScore += hashset.Count * 2;
+                maxScore += list.Count;
             }
             else
             {

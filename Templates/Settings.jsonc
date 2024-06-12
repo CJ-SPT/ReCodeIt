@@ -1,5 +1,5 @@
 {
-    "Debug": false,                                       // Enables extra debug logging, slows down the program by alot
+    "Debug": true,                                       // Enables extra debug logging, slows down the program by alot
     "SilentMode": true,                                   // The tool will stop and prompt you to continue on every remapping if disabled
     "Publicize": true,                                    // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
     "Unseal": true,                                       // Unseal all types : NOTE: Not run until after the remap has completed

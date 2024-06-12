@@ -13,7 +13,7 @@ internal class Remapper
 
         foreach (var remap in DataProvider.Remaps)
         {
-            Logger.Log($"Trying to remap {remap.NewTypeName}...", ConsoleColor.Gray);
+            Logger.Log($"Finding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
 
             HandleMapping(remap);
         }
@@ -44,7 +44,12 @@ internal class Remapper
     {
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
-            ScoreType(type, mapping);
+            var result = ScoreType(type, mapping);
+
+            if (result is not EFailureReason.None)
+            {
+                //Logger.LogDebug($"Remap [{type.Name} : {mapping.NewTypeName}] failed with reason {result}", silent: true);
+            }
         }
     }
 
@@ -98,13 +103,13 @@ internal class Remapper
         }
     }
 
-    private void ScoreType(TypeDefinition type, RemapModel remap, string parentTypeName = "")
+    private EFailureReason ScoreType(TypeDefinition type, RemapModel remap, string parentTypeName = "")
     {
         // Handle Direct Remaps by strict naming first bypasses everything else
         if (remap.UseForceRename)
         {
             HandleByDirectName(type, remap);
-            return;
+            return EFailureReason.None;
         }
 
         foreach (var nestedType in type.NestedTypes)
@@ -124,82 +129,72 @@ internal class Remapper
 
         if (type.MatchIsAbstract(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsAbstract", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsAbstract;
         }
 
         if (type.MatchIsEnum(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsEnum", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsEnum;
         }
 
         if (type.MatchIsNested(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsNested", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsNested;
         }
 
         if (type.MatchIsSealed(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsSealed", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsSealed;
         }
 
         if (type.MatchIsDerived(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsDerived", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsDerived;
         }
 
         if (type.MatchIsInterface(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsInterface", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsInterface;
         }
 
-        if (type.MatchIsGeneric(remap.SearchParams, score) == EMatchResult.NoMatch)
+        if (type.MatchHasGenericParameters(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            return;
+            return EFailureReason.HasGenericParameters;
         }
 
         if (type.MatchIsPublic(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("IsPublic", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.IsPublic;
         }
 
         if (type.MatchHasAttribute(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("HasAttribute", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.HasAttribute;
         }
 
         if (type.MatchMethods(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("Methods", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.HasMethods;
         }
 
         if (type.MatchFields(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("Fields", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.HasFields;
         }
 
         if (type.MatchProperties(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("Properties", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.HasProperties;
         }
 
         if (type.MatchNestedTypes(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
-            LogDiscard("NestedTypes", type.Name, score.ProposedNewName);
-            return;
+            return EFailureReason.HasNestedTypes;
         }
 
         ScoringModelExtensions.AddModelToResult(score);
+
+        return EFailureReason.None;
     }
 
     private void HandleByDirectName(TypeDefinition type, RemapModel remap)
@@ -215,14 +210,6 @@ internal class Remapper
         RenameService.RenameAllDirect(remap, type);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-    }
-
-    private void LogDiscard(string action, string type, string search)
-    {
-        if (DataProvider.AppSettings.Debug)
-        {
-            Logger.Log($"[{action}] Discarding type [{type}] for search [{search}]", ConsoleColor.Red);
-        }
     }
 
     private void ChooseBestMatches()

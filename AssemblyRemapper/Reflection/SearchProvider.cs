@@ -22,10 +22,11 @@ internal static class SearchProvider
 
         if (type.IsAbstract == parms.IsAbstract)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsAbstract;
         return EMatchResult.NoMatch;
     }
 
@@ -38,10 +39,11 @@ internal static class SearchProvider
 
         if (type.IsEnum == parms.IsEnum)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsEnum;
         return EMatchResult.NoMatch;
     }
 
@@ -54,10 +56,11 @@ internal static class SearchProvider
 
         if (type.IsNested == parms.IsNested)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsNested;
         return EMatchResult.NoMatch;
     }
 
@@ -70,10 +73,11 @@ internal static class SearchProvider
 
         if (type.IsSealed == parms.IsSealed)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsSealed;
         return EMatchResult.NoMatch;
     }
 
@@ -86,10 +90,11 @@ internal static class SearchProvider
 
         if (type.BaseType != null && (bool)parms.IsDerived)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsDerived;
         return EMatchResult.NoMatch;
     }
 
@@ -102,14 +107,15 @@ internal static class SearchProvider
 
         if (type.IsInterface == parms.IsInterface)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsInterface;
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsGeneric(this TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult MatchHasGenericParameters(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.HasGenericParameters is null)
         {
@@ -118,10 +124,11 @@ internal static class SearchProvider
 
         if (type.HasGenericParameters == parms.HasGenericParameters)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.HasGenericParameters;
         return EMatchResult.NoMatch;
     }
 
@@ -136,10 +143,11 @@ internal static class SearchProvider
 
         if (boolToCheck == !parms.IsPublic)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.IsPublic;
         return EMatchResult.NoMatch;
     }
 
@@ -152,43 +160,62 @@ internal static class SearchProvider
 
         if (type.HasCustomAttributes == parms.HasAttribute)
         {
-            score.Score += 1;
+            score.Score++;
             return EMatchResult.Match;
         }
 
+        score.FailureReason = EFailureReason.HasAttribute;
         return EMatchResult.NoMatch;
     }
 
     public static EMatchResult MatchMethods(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MethodNamesToMatch.Count == 0) { return EMatchResult.Disabled; }
-
-        if (type.HasMethods)
+        // We're not searching for methods and this type contains methods
+        if (parms.MethodNamesToMatch.Count == 0 && parms.MethodNamesToIgnore.Count == 0)
         {
-            // `*` is the wildcard to ignore all methods that exist on types
-            if (parms.MethodNamesToIgnore.Contains("*"))
+            return type.HasMethods
+                ? EMatchResult.NoMatch
+                : EMatchResult.Match;
+        }
+
+        var skippAll = parms.MethodNamesToIgnore.Contains("*");
+
+        // The type has methods and we dont want any
+        if (type.HasMethods is true && skippAll is true)
+        {
+            foreach (var method in type.Methods)
             {
+                if (method.Name == ".ctor")
+                {
+                    continue;
+                }
+
+                score.Score--;
                 return EMatchResult.NoMatch;
             }
+
+            score.Score++;
+            return EMatchResult.Match;
         }
 
         var matchCount = 0;
 
         foreach (var method in type.Methods)
         {
+            // Type contains a method we dont want
             if (parms.MethodNamesToIgnore.Contains(method.Name))
             {
-                // Type contains blacklisted method
+                score.FailureReason = EFailureReason.HasMethods;
                 return EMatchResult.NoMatch;
             }
 
             foreach (var name in parms.MethodNamesToMatch)
             {
+                // Method name match
                 if (method.Name == name)
                 {
                     matchCount += 1;
-                    score.Score += 2;
-                    continue;
+                    score.Score++;
                 }
             }
         }
@@ -198,15 +225,15 @@ internal static class SearchProvider
 
     public static EMatchResult MatchFields(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.FieldNamesToMatch.Count == 0) { return EMatchResult.Disabled; }
-
-        if (type.HasFields)
+        if (parms.FieldNamesToMatch.Count == 0 && parms.FieldNamesToIgnore.Count == 0)
         {
-            // `*` is the wildcard to ignore all fields that exist on types
-            if (parms.FieldNamesToIgnore.Contains("*"))
-            {
-                return EMatchResult.NoMatch;
-            }
+            return EMatchResult.Disabled;
+        }
+
+        // `*` is the wildcard to ignore all fields that exist on types
+        if (!type.HasFields && parms.FieldNamesToIgnore.Contains("*"))
+        {
+            return EMatchResult.Match;
         }
 
         int matchCount = 0;
@@ -216,13 +243,14 @@ internal static class SearchProvider
             if (parms.FieldNamesToIgnore.Contains(field.Name))
             {
                 // Type contains blacklisted field
+                score.FailureReason = EFailureReason.HasFields;
                 return EMatchResult.NoMatch;
             }
 
             if (parms.FieldNamesToMatch.Contains(field.Name))
             {
                 matchCount++;
-                score.Score += 2;
+                score.Score++;
             }
         }
 
@@ -231,15 +259,16 @@ internal static class SearchProvider
 
     public static EMatchResult MatchProperties(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.PropertyNamesToMatch.Count == 0) { return EMatchResult.Disabled; }
-
-        if (type.HasProperties)
+        if (parms.PropertyNamesToMatch.Count == 0 && parms.PropertyNamesToIgnore.Count == 0)
         {
-            // `*` is the wildcard to ignore all fields that exist on types
-            if (parms.PropertyNamesToIgnore.Contains("*"))
-            {
-                return EMatchResult.NoMatch;
-            }
+            return EMatchResult.Disabled;
+        }
+
+        // `*` is the wildcard to ignore all fields that exist on types
+        if (!type.HasProperties && parms.PropertyNamesToIgnore.Contains("*"))
+        {
+            score.Score++;
+            return EMatchResult.Match;
         }
 
         int matchCount = 0;
@@ -249,13 +278,14 @@ internal static class SearchProvider
             if (parms.PropertyNamesToIgnore.Contains(property.Name))
             {
                 // Type contains blacklisted property
+                score.FailureReason = EFailureReason.HasProperties;
                 return EMatchResult.NoMatch;
             }
 
             if (parms.PropertyNamesToMatch.Contains(property.Name))
             {
                 matchCount++;
-                score.Score += 2;
+                score.Score++;
             }
         }
 
@@ -264,15 +294,16 @@ internal static class SearchProvider
 
     public static EMatchResult MatchNestedTypes(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.NestedTypesToMatch.Count == 0) { return EMatchResult.Disabled; }
-
-        if (type.HasNestedTypes)
+        if (parms.NestedTypesToMatch.Count == 0 && parms.NestedTypesToIgnore.Count == 0)
         {
-            // `*` is the wildcard to ignore all fields that exist on types
-            if (parms.NestedTypesToIgnore.Contains("*"))
-            {
-                return EMatchResult.NoMatch;
-            }
+            return EMatchResult.Disabled;
+        }
+
+        // `*` is the wildcard to ignore all fields that exist on types
+        if (type.HasNestedTypes && parms.NestedTypesToIgnore.Contains("*"))
+        {
+            score.FailureReason = EFailureReason.HasNestedTypes;
+            return EMatchResult.NoMatch;
         }
 
         int matchCount = 0;
@@ -282,13 +313,14 @@ internal static class SearchProvider
             if (parms.NestedTypesToIgnore.Contains(nestedType.Name))
             {
                 // Type contains blacklisted nested type
+                score.FailureReason = EFailureReason.HasNestedTypes;
                 return EMatchResult.NoMatch;
             }
 
             if (parms.NestedTypesToMatch.Contains(nestedType.Name))
             {
                 matchCount++;
-                score.Score += 2;
+                score.Score++;
             }
         }
 

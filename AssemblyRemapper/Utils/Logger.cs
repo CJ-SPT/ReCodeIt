@@ -13,12 +13,39 @@ internal static class Logger
 
     private static string _logPath = Path.Combine(AppContext.BaseDirectory, "Data", "Log.log");
 
-    public static void Log(string message, ConsoleColor color = ConsoleColor.Gray)
+    public static void Log(string message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
     {
+        if (silent)
+        {
+            WriteToDisk(message);
+            return;
+        }
+
         Console.ForegroundColor = color;
         Console.WriteLine(message);
         Console.ResetColor();
+        WriteToDisk(message);
+    }
 
+    public static void LogDebug(string message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
+    {
+        if (silent)
+        {
+            WriteToDisk(message);
+            return;
+        }
+
+        if (DataProvider.AppSettings.Debug)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
+            Console.ResetColor();
+            WriteToDisk(message);
+        }
+    }
+
+    private static void WriteToDisk(string message)
+    {
         try
         {
             using (StreamWriter sw = File.AppendText(_logPath))
