@@ -255,19 +255,7 @@ internal class Remapper
         // Rename type and all associated type members
         RenameService.RenameAll(highestScore);
 
-        if (DataProvider.AppSettings.ScoringMode)
-        {
-            scores.Remove(highestScore);
-            ChooseBestMatch(scores);
-
-            Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-            return;
-        }
-
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-
-        scores.Remove(highestScore);
-        ChooseBestMatch(scores);
     }
 
     private void WriteAssembly()
