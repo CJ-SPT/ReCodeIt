@@ -1,4 +1,4 @@
-﻿using AssemblyRemapper.Reflection;
+﻿using AssemblyRemapper.Utils;
 using Mono.Cecil;
 
 namespace AssemblyRemapper.Models;
@@ -22,8 +22,17 @@ internal static class ScoringModelExtensions
     {
         try
         {
-            if (Remapper.ScoringModels.TryGetValue(model.ProposedNewName, out HashSet<ScoringModel> modelHashset))
+            if (DataProvider.ScoringModels.TryGetValue(model.ProposedNewName, out HashSet<ScoringModel> modelHashset))
             {
+                foreach (var outVal in modelHashset)
+                {
+                    if (outVal.Definition.FullName == model.Definition.FullName)
+                    {
+                        Logger.Log("Skipping adding duplicate type match to list", ConsoleColor.Yellow);
+                        return;
+                    }
+                }
+
                 modelHashset.Add(model);
                 return;
             }
@@ -33,7 +42,7 @@ internal static class ScoringModelExtensions
                 model
             };
 
-            Remapper.ScoringModels.Add(model.ProposedNewName, newHash);
+            DataProvider.ScoringModels.Add(model.ProposedNewName, newHash);
         }
         catch (Exception e)
         {

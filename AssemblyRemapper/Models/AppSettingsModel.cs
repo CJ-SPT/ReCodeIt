@@ -27,7 +27,7 @@ internal class Remap
 
     public string OldTypeName { get; set; } = string.Empty;
 
-    public bool UseDirectRename { get; set; }
+    public bool UseForceRename { get; set; }
 
     public RemapSearchParams SearchParams { get; set; } = new();
 }
@@ -46,8 +46,7 @@ internal class RemapSearchParams
     public bool? IsSealed { get; set; } = null;
     public bool? HasAttribute { get; set; } = null;
     public bool? IsDerived { get; set; } = null;
-    public string? BaseClassName { get; set; } = null;
-    public bool? IsGeneric { get; set; } = null;
+    public bool? HasGenericParameters { get; set; } = null;
     public HashSet<string> MethodNamesToMatch { get; set; } = [];
     public HashSet<string> MethodNamesToIgnore { get; set; } = [];
 

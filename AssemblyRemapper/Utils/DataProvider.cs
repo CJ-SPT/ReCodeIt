@@ -12,6 +12,8 @@ internal static class DataProvider
         LoadAssemblyDefinition();
     }
 
+    public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
+
     public static AppSettings AppSettings { get; private set; }
 
     public static AssemblyDefinition AssemblyDefinition { get; private set; }
@@ -57,6 +59,7 @@ internal static class DataProvider
             if (module.Name == fileName)
             {
                 ModuleDefinition = module;
+                return;
             }
         }
 

@@ -6,31 +6,27 @@ namespace AssemblyRemapper.Reflection;
 
 internal class Remapper
 {
-    public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
-
     public void InitializeRemap()
     {
-        // Make sure any previous results are cleared just incase
-        ScoringModels.Clear();
-
         DisplayBasicModuleInformation();
         StartRemap();
     }
 
     private void DisplayBasicModuleInformation()
     {
-        Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types");
-        Logger.Log($"Starting remap...");
-        Logger.Log($"Publicize: {DataProvider.AppSettings.Publicize}");
-        Logger.Log($"Unseal: {DataProvider.AppSettings.Unseal}");
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
+        Logger.Log($"Starting remap...", ConsoleColor.Yellow);
+        Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
+        Logger.Log($"Publicize: {DataProvider.AppSettings.Publicize}", ConsoleColor.Yellow);
+        Logger.Log($"Unseal: {DataProvider.AppSettings.Unseal}", ConsoleColor.Yellow);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
     private void StartRemap()
     {
         foreach (var remap in DataProvider.AppSettings.Remaps)
         {
-            Logger.Log("-----------------------------------------------");
-            Logger.Log($"Trying to remap {remap.NewTypeName}...");
+            Logger.Log($"Trying to remap {remap.NewTypeName}...", ConsoleColor.Gray);
 
             HandleMapping(remap);
         }
@@ -49,20 +45,8 @@ internal class Remapper
 
     private void HandleMapping(Remap mapping)
     {
-        string newName = mapping.NewTypeName;
-        string oldName = mapping?.OldTypeName ?? string.Empty;
-
-        bool useDirectRename = mapping.UseDirectRename;
-
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
-            // Handle Direct Remaps by strict naming first bypasses everything else
-            if (useDirectRename)
-            {
-                HandleByDirectName(oldName, newName, type);
-                continue;
-            }
-
             ScoreType(type, mapping);
         }
     }
@@ -71,7 +55,7 @@ internal class Remapper
     {
         if (!DataProvider.AppSettings.Publicize) { return; }
 
-        Logger.Log("Starting publicization...");
+        Logger.Log("Starting publicization...", ConsoleColor.Green);
 
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
@@ -109,7 +93,7 @@ internal class Remapper
     {
         if (!DataProvider.AppSettings.Unseal) { return; }
 
-        Logger.Log("Starting unseal...");
+        Logger.Log("Starting unseal...", ConsoleColor.Green);
 
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
@@ -117,23 +101,15 @@ internal class Remapper
         }
     }
 
-    private void HandleByDirectName(string oldName, string newName, TypeDefinition type)
-    {
-        if (type.Name != oldName) { return; }
-
-        Logger.Log($"Renaming directly...");
-
-        type.Name = newName;
-
-        RenameService.RenameAllFields(oldName, newName, DataProvider.ModuleDefinition.Types);
-        RenameService.RenameAllProperties(oldName, newName, DataProvider.ModuleDefinition.Types);
-
-        Logger.Log($"Renamed {oldName} to {newName}");
-        Logger.Log("-----------------------------------------------");
-    }
-
     private void ScoreType(TypeDefinition type, Remap remap, string parentTypeName = "")
     {
+        // Handle Direct Remaps by strict naming first bypasses everything else
+        if (remap.UseForceRename)
+        {
+            HandleByDirectName(type, remap);
+            return;
+        }
+
         foreach (var nestedType in type.NestedTypes)
         {
             ScoreType(nestedType, remap, type.Name);
@@ -147,33 +123,38 @@ internal class Remapper
 
         if (type.MatchIsAbstract(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsAbstract", type.Name, score.ProposedNewName);
             return;
         }
         /*
         if (type.MatchIsEnum(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsEnum", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchIsNested(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsNested", type.Name, score.ProposedNewName);
             return;
         }
-
-        type.MatchIsSealed(remap.SearchParams, score);
 
         if (type.MatchIsSealed(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsSealed", type.Name, score.ProposedNewName);
             return;
         }
 
+        */
         if (type.MatchIsDerived(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsDerived", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchIsInterface(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsInterface", type.Name, score.ProposedNewName);
             return;
         }
 
@@ -184,105 +165,107 @@ internal class Remapper
 
         if (type.MatchIsPublic(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("IsPublic", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchHasAttribute(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("HasAttribute", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchMethods(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("Methods", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchFields(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("Fields", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchProperties(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("Properties", type.Name, score.ProposedNewName);
             return;
         }
 
         if (type.MatchNestedTypes(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            LogDiscard("NestedTypes", type.Name, score.ProposedNewName);
             return;
         }
-        */
+
         ScoringModelExtensions.AddModelToResult(score);
+    }
+
+    private void HandleByDirectName(TypeDefinition type, Remap remap)
+    {
+        if (type.Name != remap.OldTypeName) { return; }
+
+        var oldName = type.Name;
+        type.Name = remap.NewTypeName;
+
+        RenameService.RenameAllFields(remap, DataProvider.ModuleDefinition.Types);
+        RenameService.RenameAllProperties(remap, DataProvider.ModuleDefinition.Types);
+
+        Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);
+    }
+
+    private void LogDiscard(string action, string type, string search)
+    {
+        if (DataProvider.AppSettings.Debug)
+        {
+            Logger.Log($"[{action}] Discarding type [{type}] for search [{search}]", ConsoleColor.Red);
+        }
     }
 
     private void ChooseBestMatches()
     {
-        foreach (var remap in ScoringModels)
+        foreach (var score in DataProvider.ScoringModels)
         {
-            ChooseBestMatch(remap.Value, true);
+            ChooseBestMatch(score.Value, true);
         }
     }
 
     private void ChooseBestMatch(HashSet<ScoringModel> scores, bool isBest = false)
     {
-        if (ScoringModels.Count == 0)
+        if (DataProvider.ScoringModels.Count == 0)
         {
             return;
         }
 
         var highestScore = scores.OrderByDescending(model => model.Score).FirstOrDefault();
-        var secondScore = scores.OrderByDescending(model => model.Score).Skip(1).FirstOrDefault();
+        var nextHighestScores = scores.OrderByDescending(model => model.Score).Skip(1);
 
-        if (highestScore is null || secondScore is null) { return; }
+        if (highestScore is null) { return; }
 
         var potentialText = isBest
             ? "Best potential"
             : "Next potential";
 
-        if (highestScore.Score <= 0) { return; }
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log($"Found {scores.Count} results from search", ConsoleColor.Green);
+        Logger.Log($"{potentialText} match is `{highestScore.Definition.Name}` for `{highestScore.ProposedNewName}`", ConsoleColor.Green);
 
-        Logger.Log("-----------------------------------------------");
-        Logger.Log($"Found {scores.Count} possible matches");
-        Logger.Log($"Scored: {highestScore.Score} points");
-        Logger.Log($"Next Best: {secondScore.Score} points");
-        Logger.Log($"{potentialText} match is `{highestScore.Definition.Name}` for `{highestScore.ProposedNewName}`");
+        foreach (var score in nextHighestScores)
+        {
+            Logger.Log($"Next potential match is `{score.Definition.Name}` for `{highestScore.ProposedNewName}`", ConsoleColor.Yellow);
+        }
 
         if (DataProvider.AppSettings.ScoringMode)
         {
-            Logger.Log("Show next result? (y/n)");
-            var answer = Console.ReadLine();
+            scores.Remove(highestScore);
+            ChooseBestMatch(scores);
 
-            if (answer == "yes" || answer == "y")
-            {
-                scores.Remove(highestScore);
-                ChooseBestMatch(scores);
-            }
-
-            Logger.Log("-----------------------------------------------");
+            Logger.Log("-----------------------------------------------", ConsoleColor.Green);
             return;
         }
 
-        var anwser = "";
-
-        if (!DataProvider.AppSettings.SilentMode)
-        {
-            Logger.Log($"Should we continue? (y/n)");
-            anwser = Console.ReadLine();
-        }
-
-        if (anwser == "yes" || anwser == "y" || DataProvider.AppSettings.SilentMode)
-        {
-            var oldName = highestScore.Definition.Name;
-
-            highestScore.Definition.Name = highestScore.ProposedNewName;
-
-            RenameService.RenameAllFields(oldName, highestScore.Definition.Name, DataProvider.ModuleDefinition.Types);
-            RenameService.RenameAllProperties(oldName, highestScore.Definition.Name, DataProvider.ModuleDefinition.Types);
-
-            Logger.Log($"Remapped {oldName} to `{highestScore.Definition.Name}`");
-            Logger.Log("-----------------------------------------------");
-            return;
-        }
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
 
         scores.Remove(highestScore);
         ChooseBestMatch(scores);
@@ -299,8 +282,8 @@ internal class Remapper
 
         DataProvider.AssemblyDefinition.Write(remappedPath);
 
-        Logger.Log("-----------------------------------------------");
-        Logger.Log($"Complete: Assembly written to `{remappedPath}`");
-        Logger.Log("-----------------------------------------------");
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log($"Complete: Assembly written to `{remappedPath}`", ConsoleColor.Green);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 }

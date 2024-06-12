@@ -1,4 +1,6 @@
-﻿using AssemblyRemapper.Utils;
+﻿using AssemblyRemapper.Models;
+using AssemblyRemapper.Utils;
+using Mono.Cecil;
 using Mono.Collections.Generic;
 
 namespace AssemblyRemapper.Reflection;
@@ -6,20 +8,19 @@ namespace AssemblyRemapper.Reflection;
 internal static class RenameService
 {
     public static void RenameAllFields(
-        string oldName,
-        string newName,
-        Collection<Mono.Cecil.TypeDefinition> types)
+        Remap remap,
+        Collection<TypeDefinition> typesToCheck)
     {
-        foreach (var type in types)
+        foreach (var type in typesToCheck)
         {
             int fieldCount = 0;
 
             foreach (var field in type.Fields)
             {
-                if (field.FieldType.ToString() == newName)
+                if (field.FieldType.ToString() == remap.NewTypeName)
                 {
                     Logger.Log($"Renaming Field: `{field.Name}` on Type `{type}`");
-                    field.Name = GetNewFieldName(newName, field.IsPrivate, fieldCount);
+                    field.Name = GetNewFieldName(remap.NewTypeName, field.IsPrivate, fieldCount);
                     fieldCount++;
                 }
             }
@@ -28,27 +29,26 @@ internal static class RenameService
             {
                 foreach (var _ in type.NestedTypes)
                 {
-                    RenameAllFields(oldName, newName, type.NestedTypes);
+                    RenameAllFields(remap, type.NestedTypes);
                 }
             }
         }
     }
 
     public static void RenameAllProperties(
-        string oldName,
-        string newName,
-        Collection<Mono.Cecil.TypeDefinition> types)
+        Remap remap,
+        Collection<TypeDefinition> typesToCheck)
     {
-        foreach (var type in types)
+        foreach (var type in typesToCheck)
         {
             int propertyCount = 0;
 
             foreach (var property in type.Properties)
             {
-                if (property.PropertyType.ToString() == newName)
+                if (property.PropertyType.ToString() == remap.NewTypeName)
                 {
                     Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}`");
-                    property.Name = propertyCount > 0 ? $"{newName}_{propertyCount}" : newName;
+                    property.Name = propertyCount > 0 ? $"{remap.NewTypeName}_{propertyCount}" : remap.NewTypeName;
                 }
             }
 
@@ -56,7 +56,7 @@ internal static class RenameService
             {
                 foreach (var _ in type.NestedTypes)
                 {
-                    RenameAllProperties(oldName, newName, type.NestedTypes);
+                    RenameAllProperties(remap, type.NestedTypes);
                 }
             }
         }
