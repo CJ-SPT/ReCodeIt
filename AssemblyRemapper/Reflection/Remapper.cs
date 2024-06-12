@@ -251,12 +251,9 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
 
+        RenameService.RenameAllFields(highestScore.RemapModel, DataProvider.ModuleDefinition.Types);
+        RenameService.RenameAllProperties(highestScore.RemapModel, DataProvider.ModuleDefinition.Types);
         highestScore.Definition.Name = highestScore.ProposedNewName;
-
-        foreach (var score in nextHighestScores)
-        {
-            Logger.Log($"Alternative match `{score.Definition.Name}` for `{highestScore.ProposedNewName}`", ConsoleColor.Yellow);
-        }
 
         if (DataProvider.AppSettings.ScoringMode)
         {

@@ -19,8 +19,12 @@ internal static class RenameService
             {
                 if (field.FieldType.ToString() == remap.NewTypeName)
                 {
-                    Logger.Log($"Renaming Field: `{field.Name}` on Type `{type}`");
-                    field.Name = GetNewFieldName(remap.NewTypeName, field.IsPrivate, fieldCount);
+                    var newFieldName = GetNewFieldName(remap.NewTypeName, field.IsPrivate, fieldCount);
+
+                    Logger.Log($"Renaming: `{field.Name}` on Type `{type}` to {remap.NewTypeName}");
+
+                    field.Name = newFieldName;
+
                     fieldCount++;
                 }
             }

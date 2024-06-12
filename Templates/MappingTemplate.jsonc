@@ -1,0 +1,46 @@
+[
+    // TEMPLATE
+    //    NOTE: You only need to add the properties you need inside of `SearchParams`
+    {
+        "NewTypeName": "TEMPLATE",          // This is the name we want to change it to
+        "OriginalTypeName": "",             // This is the name of the object in the assembly, Can be used to store what type you're changing as its not read unless "UseDirectRename" is true, it is also written to after remapping
+        "UseForceRename": false,            // If this is true, directly remap using the name in the assembly from the above property
+        "SearchParams": {
+            "IsPublic": true,               // Is the Type public?
+            "IsAbstract": false,            // Is the Type Abstract?
+            "IsInterface": false,           // Is the Type an Interface?
+            "IsEnum": false,                // Is the Type an Enum?
+            "IsNested": false,              // Is the Type Nested?
+            "ParentName": "",               // The Name of the parent type if it is nested, can be left empty
+            "IsSealed": false,              // Is the Type Sealed?
+            "HasAttribute": false,          // Does the Type have an attribute?
+            "IsDerived": true,              // Does the Type inherit from another Type?
+            "HasGenericParameters": false,  // Does the type have generic parameters?
+            "MethodNamesToMatch": [         // This is a list of methods we want to match
+                "Foo"
+            ],
+            "MethodNamesToIgnore": [        // This is a list of methods we want to ignore
+                "Foo",
+                "*"                         // Ignore all Types that have methods, this wildcard can be used on any ignore list
+            ],
+            "FieldNamesToMatch": [          // This is a list of fields we want to match
+                "_fooBar"
+            ],
+            "FieldNamesToIgnore": [         // This is a list of fields we want to ignore
+                "Foo"
+            ],
+            "PropertyNamesToMatch": [       // This is a list of properties we want to match
+                "FooBar"
+            ],
+            "PropertyNamesToIgnore": [      // This is a list of properties we want to ignore
+                "Foo"
+            ],
+            "NestedTypesToMatch": [         // This is a list of nested types we want to match 
+                "FooBarFoo"
+            ],
+            "NestedTypesToIgnore": [        // This is a list of nested types we want to match ignore
+                "FooBarFoo"
+            ]    
+        }
+    }
+]
