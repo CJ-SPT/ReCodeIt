@@ -160,7 +160,7 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);
 
-        RenameService.RenameAllDirect(remap, type);
+        Renamer.RenameAllDirect(remap, type);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
@@ -205,7 +205,7 @@ internal class Remapper
         }
 
         // Rename type and all associated type members
-        RenameService.RenameAll(highestScore);
+        Renamer.RenameAll(highestScore);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
