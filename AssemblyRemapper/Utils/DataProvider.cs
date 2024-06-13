@@ -15,7 +15,7 @@ internal static class DataProvider
 
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
-    public static AppSettings AppSettings { get; private set; }
+    public static Settings Settings { get; private set; }
 
     public static AssemblyDefinition AssemblyDefinition { get; private set; }
 
@@ -37,17 +37,17 @@ internal static class DataProvider
             NullValueHandling = NullValueHandling.Ignore
         };
 
-        AppSettings = JsonConvert.DeserializeObject<AppSettings>(jsonText, settings);
+        Settings = JsonConvert.DeserializeObject<Settings>(jsonText, settings);
     }
 
     public static void LoadMappingFile()
     {
-        if (!File.Exists(AppSettings.MappingPath))
+        if (!File.Exists(Settings.RemapperSettings.MappingPath))
         {
-            throw new InvalidOperationException($"path `{AppSettings.MappingPath}` does not exist...");
+            throw new InvalidOperationException($"path `{Settings.RemapperSettings.MappingPath}` does not exist...");
         }
 
-        var jsonText = File.ReadAllText(AppSettings.MappingPath);
+        var jsonText = File.ReadAllText(Settings.RemapperSettings.MappingPath);
 
         Remaps = [];
         ScoringModels = [];
@@ -70,9 +70,9 @@ internal static class DataProvider
 
     public static void UpdateMapping()
     {
-        if (!File.Exists(AppSettings.MappingPath))
+        if (!File.Exists(Settings.RemapperSettings.MappingPath))
         {
-            throw new InvalidOperationException($"path `{AppSettings.MappingPath}` does not exist...");
+            throw new InvalidOperationException($"path `{Settings.RemapperSettings.MappingPath}` does not exist...");
         }
 
         JsonSerializerSettings settings = new JsonSerializerSettings
@@ -100,23 +100,23 @@ internal static class DataProvider
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
-        File.WriteAllText(AppSettings.MappingPath, jsonText);
+        File.WriteAllText(Settings.RemapperSettings.MappingPath, jsonText);
     }
 
     public static void LoadAssemblyDefinition()
     {
         DefaultAssemblyResolver resolver = new();
-        resolver.AddSearchDirectory(Path.GetDirectoryName(AppSettings.AssemblyPath)); // Replace with the correct path
+        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.RemapperSettings.AssemblyPath)); // Replace with the correct path
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
 
-        AssemblyDefinition = AssemblyDefinition.ReadAssembly(AppSettings.AssemblyPath, parameters);
+        AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.RemapperSettings.AssemblyPath, parameters);
 
         if (AssemblyDefinition is null)
         {
             throw new InvalidOperationException("AssemblyDefinition was null...");
         }
 
-        var fileName = Path.GetFileName(AppSettings.AssemblyPath);
+        var fileName = Path.GetFileName(Settings.RemapperSettings.AssemblyPath);
 
         foreach (var module in AssemblyDefinition.Modules.ToArray())
         {

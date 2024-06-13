@@ -6,8 +6,6 @@ internal static class Publicizer
 {
     public static void Publicize()
     {
-        if (!DataProvider.AppSettings.Publicize) { return; }
-
         Logger.Log("Starting publicization...", ConsoleColor.Green);
 
         foreach (var type in DataProvider.ModuleDefinition.Types)
@@ -44,8 +42,6 @@ internal static class Publicizer
 
     public static void Unseal()
     {
-        if (!DataProvider.AppSettings.Unseal) { return; }
-
         Logger.Log("Starting unseal...", ConsoleColor.Green);
 
         foreach (var type in DataProvider.ModuleDefinition.Types)

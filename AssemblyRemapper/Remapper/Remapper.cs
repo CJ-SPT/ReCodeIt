@@ -29,11 +29,18 @@ internal class Remapper
 
         ChooseBestMatches();
 
-        if (DataProvider.AppSettings.ScoringMode) { return; }
+        if (DataProvider.Settings.AppSettings.MatchMode) { return; }
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
-        Publicizer.Publicize();
-        Publicizer.Unseal();
+        if (!DataProvider.Settings.RemapperSettings.Publicize)
+        {
+            Publicizer.Publicize();
+        }
+
+        if (!DataProvider.Settings.RemapperSettings.Unseal)
+        {
+            Publicizer.Unseal();
+        }
 
         // We are done, write the assembly
         WriteAssembly();
@@ -47,8 +54,8 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
         Logger.Log($"Starting remap...", ConsoleColor.Yellow);
         Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
-        Logger.Log($"Publicize: {DataProvider.AppSettings.Publicize}", ConsoleColor.Yellow);
-        Logger.Log($"Unseal: {DataProvider.AppSettings.Unseal}", ConsoleColor.Yellow);
+        Logger.Log($"Publicize: {DataProvider.Settings.RemapperSettings.Publicize}", ConsoleColor.Yellow);
+        Logger.Log($"Unseal: {DataProvider.Settings.RemapperSettings.Unseal}", ConsoleColor.Yellow);
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
@@ -192,7 +199,7 @@ internal class Remapper
 
         var filteredScores = scores
             .OrderByDescending(score => score.Score)
-            .Take(DataProvider.AppSettings.MaxMatchCount);
+            .Take(DataProvider.Settings.RemapperSettings.MaxMatchCount);
 
         var highestScore = filteredScores.FirstOrDefault();
 
@@ -213,6 +220,8 @@ internal class Remapper
             }
         }
 
+        if (DataProvider.Settings.AppSettings.MatchMode) { return; }
+
         highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
 
         // Rename type and all associated type members
@@ -226,7 +235,7 @@ internal class Remapper
     /// </summary>
     private void WriteAssembly()
     {
-        var filename = Path.GetFileNameWithoutExtension(DataProvider.AppSettings.AssemblyPath);
+        var filename = Path.GetFileNameWithoutExtension(DataProvider.Settings.RemapperSettings.AssemblyPath);
         var strippedPath = Path.GetDirectoryName(filename);
 
         filename = $"{filename}-Remapped.dll";

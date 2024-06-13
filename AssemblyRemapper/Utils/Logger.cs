@@ -44,7 +44,7 @@ internal static class Logger
             return;
         }
 
-        if (DataProvider.AppSettings.Debug)
+        if (DataProvider.Settings.AppSettings.Debug)
         {
             Console.ForegroundColor = color;
             Console.WriteLine(message);

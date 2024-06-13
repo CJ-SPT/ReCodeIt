@@ -3,16 +3,35 @@
 /// <summary>
 /// Remap config
 /// </summary>
+internal class Settings
+{
+    public AppSettings AppSettings { get; set; }
+    public RemapperSettings RemapperSettings { get; set; }
+
+    public AutoMapperSettings AutoMapperSettings { get; set; }
+}
+
 internal class AppSettings
 {
-    public bool Debug { get; set; }
-    public bool SilentMode { get; set; }
-    public int MaxMatchCount { get; set; }
-    public bool ScoringMode { get; set; }
-    public bool Publicize { get; set; }
-    public bool Unseal { get; set; }
+    public bool Debug { get; set; } = false;
+    public bool SilentMode { get; set; } = true;
+    public bool MatchMode { get; set; } = false;
+}
 
-    public string AssemblyPath { get; set; }
-    public string OutputPath { get; set; }
-    public string MappingPath { get; set; }
+internal class RemapperSettings
+{
+    public int MaxMatchCount { get; set; } = 5;
+
+    public bool Publicize { get; set; } = false;
+    public bool Unseal { get; set; } = false;
+
+    public string AssemblyPath { get; set; } = string.Empty;
+    public string OutputPath { get; set; } = string.Empty;
+    public string MappingPath { get; set; } = string.Empty;
+}
+
+internal class AutoMapperSettings
+{
+    public bool Publicize { get; set; } = false;
+    public bool Unseal { get; set; } = false;
 }
