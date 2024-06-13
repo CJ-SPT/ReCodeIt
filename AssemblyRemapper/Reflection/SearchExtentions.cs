@@ -5,7 +5,7 @@ using Mono.Cecil.Rocks;
 
 namespace AssemblyRemapper.Reflection;
 
-internal static class SearchProvider
+internal static class SearchExtentions
 {
     public static EMatchResult MatchIsAbstract(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
