@@ -226,7 +226,6 @@ internal class Remapper
                 Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.FailureReason}", ConsoleColor.Red);
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
                 failures++;
-                return;
             }
 
             changes++;

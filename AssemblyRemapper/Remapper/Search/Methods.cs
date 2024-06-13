@@ -1,7 +1,7 @@
 ﻿using AssemblyRemapper.Enums;
 using AssemblyRemapper.Models;
 using Mono.Cecil;
-using MoreLinq;
+using Mono.Cecil.Rocks;
 
 namespace AssemblyRemapper.Remapper.Search;
 
@@ -16,10 +16,10 @@ internal static class Methods
     /// <returns>Match if type contains any supplied methods</returns>
     public static EMatchResult IncludeMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MatchMethods is null || parms.MatchMethods.Count == 0) return EMatchResult.Disabled;
+        if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Methods
-            .Where(method => parms.MatchMethods.Contains(method.Name))
+            .Where(method => parms.IncludeMethods.Contains(method.Name))
             .Count();
 
         score.Score += matches;
@@ -38,10 +38,10 @@ internal static class Methods
     /// <returns>Match if type has no methods</returns>
     public static EMatchResult ExcludeMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.IgnoreMethods is null || parms.IgnoreMethods.Count == 0) return EMatchResult.Disabled;
+        if (parms.ExcludeMethods is null || parms.ExcludeMethods.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Methods
-            .Where(method => parms.IgnoreMethods.Contains(method.Name))
+            .Where(method => parms.ExcludeMethods.Contains(method.Name))
             .Count();
 
         score.Score += matches;
@@ -51,11 +51,19 @@ internal static class Methods
             : EMatchResult.Match;
     }
 
+    /// <summary>
+    /// Returns a match if the type has the provided number of methods
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="parms"></param>
+    /// <param name="score"></param>
+    /// <returns></returns>
     public static EMatchResult MatchMethodCount(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.MethodCount is null) return EMatchResult.Disabled;
 
-        var match = type.Methods.Exactly((int)parms.MethodCount);
+        var numMethods = type.Methods.Count - type.GetConstructors().Count();
+        bool match = numMethods == parms.MethodCount;
 
         if (match) { score.Score++; }
 

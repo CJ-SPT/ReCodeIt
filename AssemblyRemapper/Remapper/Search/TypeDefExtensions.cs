@@ -145,17 +145,18 @@ internal static class TypeDefExtensions
 
     public static EMatchResult MatchIsPublic(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.IsPublic is null)
+        if (parms.IsPublic == null)
         {
             return EMatchResult.Disabled;
         }
 
-        if (parms.IsPublic is false && type.IsNotPublic is true)
+        if (parms.IsPublic == false && type.IsNotPublic)
         {
             score.Score++;
+
             return EMatchResult.Match;
         }
-        else if (parms.IsPublic is true && type.IsPublic is true)
+        else if ((bool)parms.IsPublic && type.IsPublic)
         {
             score.Score++;
             return EMatchResult.Match;
@@ -239,41 +240,14 @@ internal static class TypeDefExtensions
 
     public static EMatchResult MatchNestedTypes(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MatchNestedTypes.Count is 0 && parms.IgnoreNestedTypes.Count is 0)
+        var matches = new List<EMatchResult>
         {
-            return EMatchResult.Disabled;
-        }
+            NestedTypes.IncludeNestedTypes(type, parms, score),
+            NestedTypes.ExcludeNestedTypes(type, parms, score),
+            NestedTypes.MatchNestedTypeCount(type, parms, score)
+        };
 
-        var skippAll = parms.IgnorePropterties.Contains("*");
-
-        // `*` is the wildcard to ignore all fields that exist on types
-        if (type.HasNestedTypes is false && skippAll is true)
-        {
-            score.FailureReason = EFailureReason.HasNestedTypes;
-            return EMatchResult.Match;
-        }
-
-        foreach (var nestedType in type.NestedTypes)
-        {
-            if (parms.IgnoreNestedTypes.Contains(nestedType.Name))
-            {
-                // Type contains blacklisted nested type
-                score.FailureReason = EFailureReason.HasNestedTypes;
-                return EMatchResult.NoMatch;
-            }
-        }
-
-        int matchCount = 0;
-
-        foreach (var nestedType in type.NestedTypes)
-        {
-            if (parms.MatchNestedTypes.Contains(nestedType.Name))
-            {
-                matchCount++;
-                score.Score++;
-            }
-        }
-
-        return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
+        // return match if any condition matched
+        return matches.GetMatch();
     }
 }

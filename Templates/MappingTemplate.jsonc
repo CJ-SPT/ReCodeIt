@@ -30,28 +30,28 @@
 
             // Integer parameters
             
-            "ConstructorParameterCount": 0, // Match types that have a constructor parameter of this length
-            "MethodCount": 0,               // Match types that have a method count this length
-            "FieldCount": 0,                // Match types that have a method count this length
-            "PropertyCount": 0,             // Match types that have a method count this length
-
+            "ConstructorParameterCount": 0, // Match types that have a constructor parameter count of this length
+            "MethodCount": 0,               // Match types that have this many methods
+            "FieldCount": 0,                // Match types that have this many fields
+            "PropertyCount": 0,             // Match types that have this many properties
+            "NestedTypeCount": 0,           // Match types that have this many nested types
             // List parameters
 
-            "MatchMethods": [               // This is a list of methods we want to match 
+            "IncludeMethods": [             // This is a list of methods we want to match 
             ],
-            "IgnoreMethods": [              // This is a list of methods we want to ignore                                           
+            "ExcludeMethods": [             // This is a list of methods we want to ignore                                           
             ],
-            "MatchFields": [                // This is a list of fields we want to match
+            "IncludeFields": [              // This is a list of fields we want to match
             ],
-            "IgnoreFields": [               // This is a list of fields we want to ignore
+            "ExcludeFields": [              // This is a list of fields we want to ignore
             ],
-            "MatchProperties": [            // This is a list of properties we want to match
+            "IncludeProperties": [          // This is a list of properties we want to match
             ],
-            "IgnorePropterties": [          // This is a list of properties we want to ignore
+            "ExcludeProperties": [          // This is a list of properties we want to ignore
             ],
-            "MatchNestedTypes": [           // This is a list of nested types we want to match 
+            "IncludeNestedTypes": [         // This is a list of nested types we want to match 
             ],
-            "IgnoreNestedTypes": [          // This is a list of nested types we want to match ignore
+            "ExcludeNestedTypes": [         // This is a list of nested types we want to match ignore
             ]    
         }
     }

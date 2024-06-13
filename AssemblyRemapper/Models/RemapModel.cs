@@ -56,19 +56,20 @@ internal class SearchParams
     public int? MethodCount { get; set; } = null;
     public int? FieldCount { get; set; } = null;
     public int? PropertyCount { get; set; } = null;
+    public int? NestedTypeCount { get; set; } = null;
 
     #endregion INT_PARAMS
 
     #region LISTS
 
-    public List<string> MatchMethods { get; set; }
-    public List<string> IgnoreMethods { get; set; }
-    public List<string> MatchFields { get; set; }
-    public List<string> IgnoreFields { get; set; }
-    public List<string> MatchProperties { get; set; }
-    public List<string> IgnorePropterties { get; set; }
-    public List<string> MatchNestedTypes { get; set; }
-    public List<string> IgnoreNestedTypes { get; set; }
+    public List<string> IncludeMethods { get; set; }
+    public List<string> ExcludeMethods { get; set; }
+    public List<string> IncludeFields { get; set; }
+    public List<string> ExcludeFields { get; set; }
+    public List<string> IncludeProperties { get; set; }
+    public List<string> ExcludeProperties { get; set; }
+    public List<string> IncludeNestedTypes { get; set; }
+    public List<string> ExcludeNestedTypes { get; set; }
 
     #endregion LISTS
 

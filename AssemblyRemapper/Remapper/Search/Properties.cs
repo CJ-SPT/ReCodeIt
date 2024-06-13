@@ -9,10 +9,10 @@ namespace AssemblyRemapper.Remapper.Search
     {
         public static EMatchResult IncludeProperties(TypeDefinition type, SearchParams parms, ScoringModel score)
         {
-            if (parms.MatchProperties is null || parms.MatchProperties.Count == 0) return EMatchResult.Disabled;
+            if (parms.IncludeProperties is null || parms.IncludeProperties.Count == 0) return EMatchResult.Disabled;
 
             var matches = type.Properties
-                .Where(property => parms.MatchProperties.Contains(property.Name))
+                .Where(property => parms.IncludeProperties.Contains(property.Name))
                 .Count();
 
             score.Score += matches;
@@ -24,10 +24,10 @@ namespace AssemblyRemapper.Remapper.Search
 
         public static EMatchResult ExcludeProperties(TypeDefinition type, SearchParams parms, ScoringModel score)
         {
-            if (parms.IgnorePropterties is null || parms.IgnorePropterties.Count == 0) return EMatchResult.Disabled;
+            if (parms.ExcludeProperties is null || parms.ExcludeProperties.Count == 0) return EMatchResult.Disabled;
 
             var matches = type.Properties
-                .Where(property => parms.IgnorePropterties.Contains(property.Name))
+                .Where(property => parms.ExcludeProperties.Contains(property.Name))
                 .Count();
 
             score.Score += matches;

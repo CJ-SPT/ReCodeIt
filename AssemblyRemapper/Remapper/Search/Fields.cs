@@ -16,15 +16,14 @@ internal static class Fields
     /// <returns></returns>
     public static EMatchResult IncludeFields(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MatchFields is null || parms.MatchFields.Count == 0) return EMatchResult.Disabled;
+        if (parms.IncludeFields is null || parms.IncludeFields.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Fields
-            .Where(field => parms.MatchFields.Contains(field.Name))
-            .Count();
+            .Where(field => parms.IncludeFields.Contains(field.Name));
 
-        score.Score += matches;
+        score.Score += matches.Count();
 
-        return matches > 0
+        return matches.Any()
             ? EMatchResult.Match
             : EMatchResult.NoMatch;
     }
@@ -38,10 +37,10 @@ internal static class Fields
     /// <returns></returns>
     public static EMatchResult ExcludeFields(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.IgnoreFields is null || parms.IgnoreFields.Count == 0) return EMatchResult.Disabled;
+        if (parms.ExcludeFields is null || parms.ExcludeFields.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Fields
-            .Where(field => parms.IgnoreFields.Contains(field.Name))
+            .Where(field => parms.ExcludeFields.Contains(field.Name))
             .Count();
 
         score.Score += matches;
