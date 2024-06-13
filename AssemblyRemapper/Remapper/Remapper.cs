@@ -82,7 +82,7 @@ internal class Remapper
 
         foreach (var nestedType in type.NestedTypes)
         {
-            ScoreType(nestedType, remap);
+            FindMatch(nestedType, remap);
         }
 
         var score = new ScoringModel
