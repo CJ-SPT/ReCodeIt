@@ -202,9 +202,9 @@ internal static class TypeDefExtensions
     {
         var matches = new List<EMatchResult>
         {
-            Methods.GetTypeWithMethods(type, parms, score),
-            Methods.GetTypeWithoutMethods(type, parms, score),
-            Methods.GetTypeByNumberOfMethods(type, parms, score)
+            Methods.IncludeMethods(type, parms, score),
+            Methods.ExcludeMethods(type, parms, score),
+            Methods.MatchMethodCount(type, parms, score)
         };
 
         // return match if any condition matched
@@ -215,9 +215,9 @@ internal static class TypeDefExtensions
     {
         var matches = new List<EMatchResult>
         {
-            Fields.GetTypeWithFields(type, parms, score),
-            Fields.GetTypeWithoutFields(type, parms, score),
-            Fields.GetTypeByNumberOfFields(type, parms, score)
+            Fields.IncludeFields(type, parms, score),
+            Fields.ExcludeFields(type, parms, score),
+            Fields.MatchFieldCount(type, parms, score)
         };
 
         // return match if any condition matched
@@ -226,41 +226,15 @@ internal static class TypeDefExtensions
 
     public static EMatchResult MatchProperties(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MatchProperties.Count is 0 && parms.IgnorePropterties.Count is 0)
+        var matches = new List<EMatchResult>
         {
-            return EMatchResult.Disabled;
-        }
+            Properties.IncludeProperties(type, parms, score),
+            Properties.ExcludeProperties(type, parms, score),
+            Properties.MatchPropertyCount(type, parms, score)
+        };
 
-        var skippAll = parms.IgnorePropterties.Contains("*");
-
-        // Type has fields, we dont want any
-        if (type.HasProperties is false && skippAll is true)
-        {
-            return EMatchResult.Match;
-        }
-
-        foreach (var property in type.Properties)
-        {
-            if (parms.IgnorePropterties.Contains(property.Name))
-            {
-                // Type contains blacklisted property
-                score.FailureReason = EFailureReason.HasProperties;
-                return EMatchResult.NoMatch;
-            }
-        }
-
-        int matchCount = 0;
-
-        foreach (var property in type.Properties)
-        {
-            if (parms.MatchProperties.Contains(property.Name))
-            {
-                matchCount++;
-                score.Score++;
-            }
-        }
-
-        return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
+        // return match if any condition matched
+        return matches.GetMatch();
     }
 
     public static EMatchResult MatchNestedTypes(this TypeDefinition type, SearchParams parms, ScoringModel score)

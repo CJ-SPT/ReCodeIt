@@ -15,22 +15,14 @@ internal static class Constructors
     /// <returns>Match if constructor parameters matches</returns>
     public static EMatchResult GetTypeByParameterCount(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.ConstructorParameterCount is null)
-        {
-            return EMatchResult.Disabled;
-        }
+        if (parms.ConstructorParameterCount is null) return EMatchResult.Disabled;
 
-        var constructors = type.GetConstructors();
+        var match = type.GetConstructors()
+            .Where(c => c.Parameters.Count == parms.ConstructorParameterCount)
+            .Any();
 
-        foreach (var constructor in constructors)
-        {
-            if (constructor.Parameters.Count == parms.ConstructorParameterCount)
-            {
-                score.Score++;
-                return EMatchResult.Match;
-            }
-        }
-
-        return EMatchResult.NoMatch;
+        return match
+            ? EMatchResult.Match
+            : EMatchResult.NoMatch;
     }
 }

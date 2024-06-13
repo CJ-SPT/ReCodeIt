@@ -14,7 +14,7 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type contains any supplied methods</returns>
-    public static EMatchResult GetTypeWithMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult IncludeMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.MatchMethods is null || parms.MatchMethods.Count == 0) return EMatchResult.Disabled;
 
@@ -36,7 +36,7 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type has no methods</returns>
-    public static EMatchResult GetTypeWithoutMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult ExcludeMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IgnoreMethods is null || parms.IgnoreMethods.Count == 0) return EMatchResult.Disabled;
 
@@ -47,11 +47,11 @@ internal static class Methods
         score.Score += matches;
 
         return matches > 0
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+            ? EMatchResult.NoMatch
+            : EMatchResult.Match;
     }
 
-    public static EMatchResult GetTypeByNumberOfMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult MatchMethodCount(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.MethodCount is null) return EMatchResult.Disabled;
 

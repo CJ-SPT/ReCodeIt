@@ -14,7 +14,7 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult GetTypeWithFields(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult IncludeFields(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.MatchFields is null || parms.MatchFields.Count == 0) return EMatchResult.Disabled;
 
@@ -36,7 +36,7 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult GetTypeWithoutFields(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult ExcludeFields(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IgnoreFields is null || parms.IgnoreFields.Count == 0) return EMatchResult.Disabled;
 
@@ -47,8 +47,8 @@ internal static class Fields
         score.Score += matches;
 
         return matches > 0
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+            ? EMatchResult.NoMatch
+            : EMatchResult.Match;
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult GetTypeByNumberOfFields(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult MatchFieldCount(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.FieldCount is null) return EMatchResult.Disabled;
 

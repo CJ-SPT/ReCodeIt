@@ -1,6 +1,7 @@
 {
-    "Debug": true,                                       // Enables extra debug logging, slows down the program by alot
+    "Debug": false,                                       // Enables extra debug logging, slows down the program by alot
     "SilentMode": true,                                   // The tool will stop and prompt you to continue on every remapping if disabled
+    "MaxMatchCount": 5,                                   // Default max matches the remapper will return
     "Publicize": true,                                    // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
     "Unseal": true,                                       // Unseal all types : NOTE: Not run until after the remap has completed
     "AssemblyPath": "./Data/Managed/Assembly-CSharp.dll", // Path to the assembly we want to remap

@@ -7,7 +7,7 @@ internal class AppSettings
 {
     public bool Debug { get; set; }
     public bool SilentMode { get; set; }
-
+    public int MaxMatchCount { get; set; }
     public bool ScoringMode { get; set; }
     public bool Publicize { get; set; }
     public bool Unseal { get; set; }

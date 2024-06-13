@@ -245,7 +245,11 @@ internal class Remapper
     {
         if (scores.Count == 0) { return; }
 
-        var highestScore = scores.OrderByDescending(score => score.Score).FirstOrDefault();
+        var filteredScores = scores
+            .OrderByDescending(score => score.Score)
+            .Take(DataProvider.AppSettings.MaxMatchCount);
+
+        var highestScore = filteredScores.FirstOrDefault();
 
         if (highestScore is null) { return; }
 
@@ -256,9 +260,9 @@ internal class Remapper
 
         if (scores.Count > 1)
         {
-            Logger.Log($"Warning! There were {scores.Count - 1} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
+            Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
 
-            foreach (var score in scores.OrderByDescending(score => score.Score).Skip(1))
+            foreach (var score in filteredScores.Skip(1))
             {
                 Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
             }

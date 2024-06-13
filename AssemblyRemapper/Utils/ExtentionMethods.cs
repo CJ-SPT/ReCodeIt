@@ -14,7 +14,6 @@ internal static class ExtentionMethods
                 {
                     if (outVal.Definition.Name == model.Definition.Name)
                     {
-                        Logger.Log("Skipping adding duplicate type match to list", ConsoleColor.Yellow);
                         return;
                     }
                 }
