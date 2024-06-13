@@ -13,7 +13,16 @@ internal static class Logger
 
     private static string _logPath = Path.Combine(AppContext.BaseDirectory, "Data", "Log.log");
 
-    public static void Log(string message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
+    public static void ClearLog()
+    {
+        if (File.Exists(_logPath))
+        {
+            File.Delete(_logPath);
+            File.Create(_logPath).Close();
+        }
+    }
+
+    public static void Log(object message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
     {
         if (silent)
         {
@@ -27,7 +36,7 @@ internal static class Logger
         WriteToDisk(message);
     }
 
-    public static void LogDebug(string message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
+    public static void LogDebug(object message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
     {
         if (silent)
         {
@@ -44,7 +53,7 @@ internal static class Logger
         }
     }
 
-    private static void WriteToDisk(string message)
+    private static void WriteToDisk(object message)
     {
         try
         {

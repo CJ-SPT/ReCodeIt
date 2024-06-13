@@ -1,4 +1,5 @@
 ﻿using AssemblyRemapper.Enums;
+using MoreLinq.Extensions;
 
 namespace AssemblyRemapper.Utils;
 
@@ -11,11 +12,14 @@ internal static class EnumExtensions
     /// <returns>highest EMatchResult</returns>
     public static EMatchResult GetMatch(this List<EMatchResult> matches)
     {
-        if (matches.Contains(EMatchResult.Disabled)) { return EMatchResult.Disabled; }
+        // Prioritize returning matches
+        if (matches.Contains(EMatchResult.Match)) { return EMatchResult.Match; }
 
+        // Then NoMatches
         if (matches.Contains(EMatchResult.NoMatch)) { return EMatchResult.NoMatch; }
 
-        if (matches.Contains(EMatchResult.Match)) { return EMatchResult.Match; }
+        // Then Disabled
+        if (matches.Contains(EMatchResult.Disabled)) { return EMatchResult.Disabled; }
 
         // default to disabled
         return EMatchResult.Disabled;

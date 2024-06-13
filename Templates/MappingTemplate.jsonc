@@ -35,9 +35,7 @@
             "FieldCount": 0,                // Match types that have a method count this length
             "PropertyCount": 0,             // Match types that have a method count this length
 
-            // Note:
-            //      - You can can filter the ignore list with a wild card '*' to match all types that have none of that search parameter
-            //      - These are all lists of strings
+            // List parameters
 
             "MatchMethods": [               // This is a list of methods we want to match 
             ],

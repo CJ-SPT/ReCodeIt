@@ -1,5 +1,4 @@
-﻿using AssemblyRemapper.Remapper;
-using AssemblyRemapper.Utils;
+﻿using AssemblyRemapper.Utils;
 
 namespace AssemblyRemapper.Commands
 {
@@ -24,6 +23,10 @@ namespace AssemblyRemapper.Commands
             if (command == "remap" || command == "Remap")
             {
                 var remapper = new Remapper.Remapper();
+
+                Logger.ClearLog();
+                Console.Clear();
+                ShowStartText();
 
                 DataProvider.LoadMappingFile();
                 DataProvider.LoadAssemblyDefinition();

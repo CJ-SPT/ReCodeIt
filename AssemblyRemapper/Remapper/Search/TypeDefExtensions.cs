@@ -200,35 +200,12 @@ internal static class TypeDefExtensions
     /// <returns>Match if any search criteria met</returns>
     public static EMatchResult MatchMethods(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        var matches = new List<EMatchResult> { };
-
-        if (parms.MatchMethods.Count > 0 && parms.IgnoreMethods.Contains("*") is true)
+        var matches = new List<EMatchResult>
         {
-            Logger.Log($"Cannot both ignore all methods and search for a method on {score.ProposedNewName}.", ConsoleColor.Red);
-            return EMatchResult.NoMatch;
-        }
-        else if (parms.MatchMethods.Count > 0)
-        {
-            matches.Add(Methods.GetTypeWithMethods(type, parms, score));
-        }
-
-        if (parms.IgnoreMethods.Count > 0)
-        {
-            Logger.Log("TypeWithoutMethods");
-            matches.Add(Methods.GetTypeWithoutMethods(type, parms, score));
-        }
-
-        if (parms.IgnoreMethods.Contains("*"))
-        {
-            Logger.Log("TypeWithNoMethods");
-            matches.Add(Methods.GetTypeWithNoMethods(type, parms, score));
-        }
-
-        if (parms.MethodCount > 0)
-        {
-            Logger.Log("TypeByNumberOfMethods");
-            matches.Add(Methods.GetTypeByNumberOfMethods(type, parms, score));
-        }
+            Methods.GetTypeWithMethods(type, parms, score),
+            Methods.GetTypeWithoutMethods(type, parms, score),
+            Methods.GetTypeByNumberOfMethods(type, parms, score)
+        };
 
         // return match if any condition matched
         return matches.GetMatch();
@@ -236,42 +213,15 @@ internal static class TypeDefExtensions
 
     public static EMatchResult MatchFields(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MatchFields.Count is 0 && parms.IgnoreFields.Count is 0)
+        var matches = new List<EMatchResult>
         {
-            return EMatchResult.Disabled;
-        }
+            Fields.GetTypeWithFields(type, parms, score),
+            Fields.GetTypeWithoutFields(type, parms, score),
+            Fields.GetTypeByNumberOfFields(type, parms, score)
+        };
 
-        var skippAll = parms.IgnoreFields.Contains("*");
-
-        // Type has fields, we dont want any
-        if (type.HasFields is false && skippAll is true)
-        {
-            score.Score++;
-            return EMatchResult.Match;
-        }
-
-        int matchCount = 0;
-
-        foreach (var field in type.Fields)
-        {
-            if (parms.IgnoreFields.Contains(field.Name))
-            {
-                // Type contains blacklisted field
-                score.FailureReason = EFailureReason.HasFields;
-                return EMatchResult.NoMatch;
-            }
-        }
-
-        foreach (var field in type.Fields)
-        {
-            if (parms.MatchFields.Contains(field.Name))
-            {
-                matchCount++;
-                score.Score++;
-            }
-        }
-
-        return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
+        // return match if any condition matched
+        return matches.GetMatch();
     }
 
     public static EMatchResult MatchProperties(this TypeDefinition type, SearchParams parms, ScoringModel score)
