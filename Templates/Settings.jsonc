@@ -13,7 +13,12 @@
         "MappingPath": "./Data/Mappings.jsonc"                  // Path to the mapping file
     },
     "AutoMapper": {
-        "Publicize": true,                                      // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
-        "Unseal": true,                                         // Unseal all types : NOTE: Not run until after the remap has completed
+        "RequiredMatches": 5,                                   // Minimum number of times a member must have this name in the assembly before considering it for remapping
+        "MatchMode": true,                                      // Disable making changes, only find matches and log
+        "Publicize": false,                                     // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
+        "Unseal": false,                                        // Unseal all types : NOTE: Not run until after the remap has completed
+        "NamesToIgnore": [                                      // Any member name you want to ignore while iterating through the assembly
+
+        ]
     }
 }

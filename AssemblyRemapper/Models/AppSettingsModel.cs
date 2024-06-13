@@ -32,6 +32,9 @@ internal class RemapperSettings
 
 internal class AutoMapperSettings
 {
+    public int RequiredMatches { get; set; } = 5;
+    public bool MatchMode { get; set; } = true;
     public bool Publicize { get; set; } = false;
     public bool Unseal { get; set; } = false;
+    public List<string> NamesToIgnore { get; set; } = [];
 }
