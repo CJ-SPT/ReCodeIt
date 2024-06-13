@@ -300,7 +300,7 @@ internal static class SearchExtentions
 
     public static EMatchResult MatchNestedTypes(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MatchNestedTypes.Count == 0 && parms.IgnoreNestedTypes.Count == 0)
+        if (parms.MatchNestedTypes.Count is 0 && parms.IgnoreNestedTypes.Count is 0)
         {
             return EMatchResult.Disabled;
         }
