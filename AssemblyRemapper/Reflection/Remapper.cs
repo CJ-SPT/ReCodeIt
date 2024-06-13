@@ -70,79 +70,94 @@ internal class Remapper
         var score = new ScoringModel
         {
             ProposedNewName = remap.NewTypeName,
-            RemapModel = remap,
+            ReMap = remap,
             Definition = type,
         };
 
         // Set the original type name to be used later
-        score.RemapModel.OriginalTypeName = type.Name;
+        score.ReMap.OriginalTypeName = type.Name;
 
         if (type.MatchIsAbstract(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsAbstract;
             return EFailureReason.IsAbstract;
         }
 
         if (type.MatchIsEnum(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsEnum;
             return EFailureReason.IsEnum;
         }
 
         if (type.MatchIsNested(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsNested;
             return EFailureReason.IsNested;
         }
 
         if (type.MatchIsSealed(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsSealed;
             return EFailureReason.IsSealed;
         }
 
         if (type.MatchIsDerived(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsDerived;
             return EFailureReason.IsDerived;
         }
 
         if (type.MatchIsInterface(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsInterface;
             return EFailureReason.IsInterface;
         }
 
         if (type.MatchHasGenericParameters(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.HasGenericParameters;
             return EFailureReason.HasGenericParameters;
         }
 
         if (type.MatchIsPublic(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.IsPublic;
             return EFailureReason.IsPublic;
         }
 
         if (type.MatchHasAttribute(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.HasAttribute;
             return EFailureReason.HasAttribute;
         }
 
         if (type.MatchMethods(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.HasMethods;
             return EFailureReason.HasMethods;
         }
 
         if (type.MatchFields(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.HasFields;
             return EFailureReason.HasFields;
         }
 
         if (type.MatchProperties(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.HasProperties;
             return EFailureReason.HasProperties;
         }
 
         if (type.MatchNestedTypes(remap.SearchParams, score) == EMatchResult.NoMatch)
         {
+            remap.FailureReason = EFailureReason.HasNestedTypes;
             return EFailureReason.HasNestedTypes;
         }
 
         remap.OriginalTypeName = type.Name;
+        remap.Succeeded = true;
+        remap.FailureReason = EFailureReason.None;
         score.AddScoreToResult();
 
         return EFailureReason.None;
@@ -154,6 +169,8 @@ internal class Remapper
 
         var oldName = type.Name;
         remap.OriginalTypeName = type.Name;
+        remap.FailureReason = EFailureReason.None;
+        remap.Succeeded = true;
         type.Name = remap.NewTypeName;
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
@@ -170,17 +187,34 @@ internal class Remapper
         {
             ChooseBestMatch(score.Value, true);
         }
+
+        var failures = 0;
+        var changes = 0;
+
+        foreach (var remap in DataProvider.Remaps)
+        {
+            if (remap.Succeeded is false)
+            {
+                Logger.Log("-----------------------------------------------", ConsoleColor.Red);
+                Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.FailureReason}", ConsoleColor.Red);
+                Logger.Log("-----------------------------------------------", ConsoleColor.Red);
+                failures++;
+                return;
+            }
+
+            changes++;
+        }
+
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
+        Logger.Log($"Result: Remapped {changes} Types. Failed to remap {failures} Types", ConsoleColor.Yellow);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
     private void ChooseBestMatch(HashSet<ScoringModel> scores, bool isBest = false)
     {
-        if (scores.Count == 0)
-        {
-            return;
-        }
+        if (scores.Count == 0) { return; }
 
         var highestScore = scores.OrderByDescending(score => score.Score).FirstOrDefault();
-        var nextHighestScores = scores.OrderByDescending(score => score.Score).Skip(1);
 
         if (highestScore is null) { return; }
 
@@ -190,7 +224,7 @@ internal class Remapper
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
-        Logger.Log($"Max possible score: {highestScore.CalculateMaxScore()}", ConsoleColor.Green);
+        Logger.Log($"Max possible score: {highestScore.ReMap.SearchParams.CalculateMaxScore()}", ConsoleColor.Green);
         Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
 
         if (scores.Count > 1)
@@ -203,7 +237,7 @@ internal class Remapper
             }
         }
 
-        highestScore.RemapModel.OriginalTypeName = highestScore.Definition.Name;
+        highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
 
         // Rename type and all associated type members
         Renamer.RenameAll(highestScore);

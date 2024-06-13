@@ -15,12 +15,13 @@
             "IsSealed": null,               // Is the Type Sealed? (bool)
             "HasAttribute": null,           // Does the Type have an attribute? (bool)
             "IsDerived": null,              // Does the Type inherit from another Type? (bool)
+            "MatchBaseClass": "",           // Base class to match (IsDerived must be enabled)
+            "IgnoreBaseClass": "",          // Base class to ignore (IsDerived must be enabled)
             "HasGenericParameters": null,   // Does the type have generic parameters? (bool)
-            
             // Note:
             //      - You can can filter the ignore list with a wild card '*' to match all types that have none of that search parameter
             //      - These are all lists of strings
-            
+
             "MatchMethods": [               // This is a list of methods we want to match 
             ],
             "IgnoreMethods": [              // This is a list of methods we want to ignore                                           

@@ -22,7 +22,7 @@ internal static class Renamer
     {
         var directRename = new ScoringModel();
         directRename.Definition = type;
-        directRename.RemapModel = remap;
+        directRename.ReMap = remap;
 
         RenameAll(directRename);
     }
@@ -38,7 +38,7 @@ internal static class Renamer
             {
                 if (field.FieldType.Name == score.Definition.Name)
                 {
-                    var newFieldName = GetNewFieldName(score.RemapModel.NewTypeName, field.IsPrivate, fieldCount);
+                    var newFieldName = GetNewFieldName(score.ReMap.NewTypeName, field.IsPrivate, fieldCount);
 
                     if (field.Name == newFieldName) { continue; }
 
@@ -72,7 +72,7 @@ internal static class Renamer
             {
                 if (property.PropertyType.Name == score.Definition.Name)
                 {
-                    var newName = propertyCount > 0 ? $"{score.RemapModel.NewTypeName}_{propertyCount}" : score.RemapModel.NewTypeName;
+                    var newName = propertyCount > 0 ? $"{score.ReMap.NewTypeName}_{propertyCount}" : score.ReMap.NewTypeName;
 
                     Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}` to {newName}", ConsoleColor.Green);
                     property.Name = newName;

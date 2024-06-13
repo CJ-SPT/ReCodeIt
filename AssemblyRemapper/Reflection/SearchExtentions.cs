@@ -88,10 +88,20 @@ internal static class SearchExtentions
             return EMatchResult.Disabled;
         }
 
-        if (type.BaseType != null && (bool)parms.IsDerived)
+        if (type.BaseType is not null && (bool)parms.IsDerived is true)
         {
             score.Score++;
             return EMatchResult.Match;
+        }
+
+        if (type.BaseType?.Name == parms.MatchBaseClass)
+        {
+            return EMatchResult.Match;
+        }
+
+        if (type.BaseType?.Name == parms.IgnoreBaseClass)
+        {
+            return EMatchResult.NoMatch;
         }
 
         score.FailureReason = EFailureReason.IsDerived;
@@ -183,10 +193,9 @@ internal static class SearchExtentions
         var methodCount = type.Methods.Count - type.GetConstructors().Count();
 
         // Subtract method count from constructor count to check for real methods
-        if (methodCount > 0 && skippAll is true)
+        if (methodCount is 0 && skippAll is true)
         {
-            // Type has methods, we dont want any
-            return EMatchResult.NoMatch;
+            return EMatchResult.Match;
         }
 
         // Handle Ignore methods
@@ -230,9 +239,9 @@ internal static class SearchExtentions
         var skippAll = parms.IgnoreFields.Contains("*");
 
         // Type has fields, we dont want any
-        if (type.HasFields is true && skippAll is true)
+        if (type.HasFields is false && skippAll is true)
         {
-            return EMatchResult.NoMatch;
+            return EMatchResult.Match;
         }
 
         int matchCount = 0;
@@ -269,9 +278,9 @@ internal static class SearchExtentions
         var skippAll = parms.IgnorePropterties.Contains("*");
 
         // Type has fields, we dont want any
-        if (type.HasProperties is true && skippAll is true)
+        if (type.HasProperties is false && skippAll is true)
         {
-            return EMatchResult.NoMatch;
+            return EMatchResult.Match;
         }
 
         foreach (var property in type.Properties)
@@ -308,10 +317,10 @@ internal static class SearchExtentions
         var skippAll = parms.IgnorePropterties.Contains("*");
 
         // `*` is the wildcard to ignore all fields that exist on types
-        if (type.HasNestedTypes is true && skippAll is true)
+        if (type.HasNestedTypes is false && skippAll is true)
         {
             score.FailureReason = EFailureReason.HasNestedTypes;
-            return EMatchResult.NoMatch;
+            return EMatchResult.Match;
         }
 
         foreach (var nestedType in type.NestedTypes)
