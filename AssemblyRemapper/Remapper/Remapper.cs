@@ -3,17 +3,22 @@ using AssemblyRemapper.Models;
 using AssemblyRemapper.Remapper.Search;
 using AssemblyRemapper.Utils;
 using Mono.Cecil;
+using System.Diagnostics;
 
 namespace AssemblyRemapper.Remapper;
 
 internal class Remapper
 {
+    private static Stopwatch Stopwatch = new();
+
     /// <summary>
     /// Start the remapping process
     /// </summary>
     public void InitializeRemap()
     {
         DisplayBasicModuleInformation();
+
+        Stopwatch.Start();
 
         foreach (var remap in DataProvider.Remaps)
         {
@@ -57,7 +62,7 @@ internal class Remapper
         {
             var result = ScoreType(type, mapping);
 
-            if (result is not EFailureReason.None)
+            if (result is not EMatchResult.NoMatch)
             {
                 //Logger.LogDebug($"Remap [{type.Name} : {mapping.NewTypeName}] failed with reason {result}", silent: true);
             }
@@ -71,13 +76,13 @@ internal class Remapper
     /// <param name="remap">Remap to check against</param>
     /// <param name="parentTypeName"></param>
     /// <returns>Failure reason or none if matched</returns>
-    private EFailureReason ScoreType(TypeDefinition type, RemapModel remap)
+    private EMatchResult ScoreType(TypeDefinition type, RemapModel remap)
     {
         // Handle Direct Remaps by strict naming first bypasses everything else
         if (remap.UseForceRename)
         {
             HandleByDirectName(type, remap);
-            return EFailureReason.None;
+            return EMatchResult.HandleDirect;
         }
 
         foreach (var nestedType in type.NestedTypes)
@@ -92,99 +97,45 @@ internal class Remapper
             Definition = type,
         };
 
-        // Set the original type name to be used later
-        score.ReMap.OriginalTypeName = type.Name;
-
-        if (type.MatchIsAbstract(remap.SearchParams, score) == EMatchResult.NoMatch)
+        var matches = new HashSet<EMatchResult>
         {
-            remap.FailureReason = EFailureReason.IsAbstract;
-            return EFailureReason.IsAbstract;
+            type.MatchIsAbstract(remap.SearchParams, score),
+            type.MatchIsEnum(remap.SearchParams, score) ,
+            type.MatchIsNested(remap.SearchParams, score),
+            type.MatchIsSealed(remap.SearchParams, score) ,
+            type.MatchIsDerived(remap.SearchParams, score) ,
+            type.MatchIsInterface(remap.SearchParams, score),
+            type.MatchHasGenericParameters(remap.SearchParams, score),
+            type.MatchIsPublic(remap.SearchParams, score) ,
+            type.MatchHasAttribute(remap.SearchParams, score),
+            type.MatchConstructors(remap.SearchParams, score),
+            type.MatchMethods(remap.SearchParams, score),
+            type.MatchFields(remap.SearchParams, score),
+            type.MatchProperties(remap.SearchParams, score),
+            type.MatchNestedTypes(remap.SearchParams, score)
+        };
+
+        var NoMatch = matches.Where(x => x.Equals(EMatchResult.NoMatch)).FirstOrDefault();
+
+        if (NoMatch == EMatchResult.NoMatch)
+        {
+            return NoMatch;
         }
 
-        if (type.MatchIsEnum(remap.SearchParams, score) == EMatchResult.NoMatch)
+        var match = matches.Where(x => x.Equals(EMatchResult.Match)).Any();
+
+        if (match)
         {
-            remap.FailureReason = EFailureReason.IsEnum;
-            return EFailureReason.IsEnum;
+            // Set the original type name to be used later
+            score.ReMap.OriginalTypeName = type.Name;
+            remap.OriginalTypeName = type.Name;
+            remap.Succeeded = true;
+            remap.FailureReason = EFailureReason.None;
+            score.AddScoreToResult();
+            return EMatchResult.Match;
         }
 
-        if (type.MatchIsNested(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.IsNested;
-            return EFailureReason.IsNested;
-        }
-
-        if (type.MatchIsSealed(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.IsSealed;
-            return EFailureReason.IsSealed;
-        }
-
-        if (type.MatchIsDerived(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.IsDerived;
-            return EFailureReason.IsDerived;
-        }
-
-        if (type.MatchIsInterface(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.IsInterface;
-            return EFailureReason.IsInterface;
-        }
-
-        if (type.MatchHasGenericParameters(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.HasGenericParameters;
-            return EFailureReason.HasGenericParameters;
-        }
-
-        if (type.MatchIsPublic(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.IsPublic;
-            return EFailureReason.IsPublic;
-        }
-
-        if (type.MatchHasAttribute(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.HasAttribute;
-            return EFailureReason.HasAttribute;
-        }
-
-        if (type.MatchConstructors(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.Constructor;
-            return EFailureReason.Constructor;
-        }
-
-        if (type.MatchMethods(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.HasMethods;
-            return EFailureReason.HasMethods;
-        }
-
-        if (type.MatchFields(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.HasFields;
-            return EFailureReason.HasFields;
-        }
-
-        if (type.MatchProperties(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.HasProperties;
-            return EFailureReason.HasProperties;
-        }
-
-        if (type.MatchNestedTypes(remap.SearchParams, score) == EMatchResult.NoMatch)
-        {
-            remap.FailureReason = EFailureReason.HasNestedTypes;
-            return EFailureReason.HasNestedTypes;
-        }
-
-        remap.OriginalTypeName = type.Name;
-        remap.Succeeded = true;
-        remap.FailureReason = EFailureReason.None;
-        score.AddScoreToResult();
-
-        return EFailureReason.None;
+        return EMatchResult.Disabled;
     }
 
     private void HandleByDirectName(TypeDefinition type, RemapModel remap)
@@ -293,6 +244,9 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{remappedPath}`", ConsoleColor.Green);
         Logger.Log("Original type names updated on mapping file.", ConsoleColor.Green);
+        Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F0} seconds", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+
+        Stopwatch.Stop();
     }
 }
