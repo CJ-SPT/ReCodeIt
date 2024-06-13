@@ -153,9 +153,8 @@ internal class Remapper
         if (type.Name != remap.OriginalTypeName) { return; }
 
         var oldName = type.Name;
-        type.Name = remap.NewTypeName;
-
         remap.OriginalTypeName = type.Name;
+        type.Name = remap.NewTypeName;
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);

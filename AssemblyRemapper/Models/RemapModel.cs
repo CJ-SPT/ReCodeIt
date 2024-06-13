@@ -31,12 +31,10 @@ internal class SearchParams
     public bool? HasGenericParameters { get; set; } = null;
     public List<string> MatchMethods { get; set; }
     public List<string> IgnoreMethods { get; set; }
-
     public List<string> MatchFields { get; set; }
     public List<string> IgnoreFields { get; set; }
     public List<string> MatchProperties { get; set; }
     public List<string> IgnorePropterties { get; set; }
-
     public List<string> MatchNestedTypes { get; set; }
     public List<string> IgnoreNestedTypes { get; set; }
 

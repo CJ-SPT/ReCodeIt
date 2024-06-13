@@ -53,6 +53,19 @@ internal static class DataProvider
         ScoringModels = [];
 
         Remaps = JsonConvert.DeserializeObject<HashSet<RemapModel>>(jsonText);
+
+        var properties = typeof(SearchParams).GetProperties();
+
+        foreach (var remap in Remaps)
+        {
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(List<string>) && property.GetValue(remap.SearchParams) is null)
+                {
+                    property.SetValue(remap.SearchParams, new List<string>());
+                }
+            }
+        }
     }
 
     public static void UpdateMapping()
@@ -67,6 +80,23 @@ internal static class DataProvider
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented
         };
+
+        var properties = typeof(SearchParams).GetProperties();
+
+        foreach (var remap in Remaps)
+        {
+            foreach (var property in properties)
+            {
+                if (property.PropertyType == typeof(List<string>))
+                {
+                    var val = property.GetValue(remap.SearchParams);
+
+                    if (val is List<string> list && list.Count > 0) { continue; }
+
+                    property.SetValue(remap.SearchParams, null);
+                }
+            }
+        }
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
