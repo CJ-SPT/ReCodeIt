@@ -29,16 +29,16 @@ internal class SearchParams
     public bool? HasAttribute { get; set; } = null;
     public bool? IsDerived { get; set; } = null;
     public bool? HasGenericParameters { get; set; } = null;
-    public List<string> MethodNamesToMatch { get; set; } = [];
-    public List<string> MethodNamesToIgnore { get; set; } = [];
+    public List<string> MatchMethods { get; set; }
+    public List<string> IgnoreMethods { get; set; }
 
-    public List<string> FieldNamesToMatch { get; set; } = [];
-    public List<string> FieldNamesToIgnore { get; set; } = [];
-    public List<string> PropertyNamesToMatch { get; set; } = [];
-    public List<string> PropertyNamesToIgnore { get; set; } = [];
+    public List<string> MatchFields { get; set; }
+    public List<string> IgnoreFields { get; set; }
+    public List<string> MatchProperties { get; set; }
+    public List<string> IgnorePropterties { get; set; }
 
-    public List<string> NestedTypesToMatch { get; set; } = [];
-    public List<string> NestedTypesToIgnore { get; set; } = [];
+    public List<string> MatchNestedTypes { get; set; }
+    public List<string> IgnoreNestedTypes { get; set; }
 
     public SearchParams()
     {

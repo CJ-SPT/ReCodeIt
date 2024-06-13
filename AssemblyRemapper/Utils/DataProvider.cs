@@ -55,6 +55,24 @@ internal static class DataProvider
         Remaps = JsonConvert.DeserializeObject<HashSet<RemapModel>>(jsonText);
     }
 
+    public static void UpdateMapping()
+    {
+        if (!File.Exists(AppSettings.MappingPath))
+        {
+            throw new InvalidOperationException($"path `{AppSettings.MappingPath}` does not exist...");
+        }
+
+        JsonSerializerSettings settings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
+
+        var jsonText = JsonConvert.SerializeObject(Remaps, settings);
+
+        File.WriteAllText(AppSettings.MappingPath, jsonText);
+    }
+
     public static void LoadAssemblyDefinition()
     {
         DefaultAssemblyResolver resolver = new();

@@ -174,14 +174,14 @@ internal static class SearchExtentions
     public static EMatchResult MatchMethods(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         // We're not searching for methods and this type contains methods
-        if (parms.MethodNamesToMatch.Count == 0 && parms.MethodNamesToIgnore.Count == 0)
+        if (parms.MatchMethods.Count == 0 && parms.IgnoreMethods.Count == 0)
         {
             return type.HasMethods
                 ? EMatchResult.NoMatch
                 : EMatchResult.Match;
         }
 
-        var skippAll = parms.MethodNamesToIgnore.Contains("*");
+        var skippAll = parms.IgnoreMethods.Contains("*");
 
         // The type has methods and we dont want any
         if (type.HasMethods is true && skippAll is true)
@@ -206,13 +206,13 @@ internal static class SearchExtentions
         foreach (var method in type.Methods)
         {
             // Type contains a method we dont want
-            if (parms.MethodNamesToIgnore.Contains(method.Name))
+            if (parms.IgnoreMethods.Contains(method.Name))
             {
                 score.FailureReason = EFailureReason.HasMethods;
                 return EMatchResult.NoMatch;
             }
 
-            foreach (var name in parms.MethodNamesToMatch)
+            foreach (var name in parms.MatchMethods)
             {
                 // Method name match
                 if (method.Name == name)
@@ -228,13 +228,13 @@ internal static class SearchExtentions
 
     public static EMatchResult MatchFields(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.FieldNamesToMatch.Count == 0 && parms.FieldNamesToIgnore.Count == 0)
+        if (parms.MatchFields.Count == 0 && parms.IgnoreFields.Count == 0)
         {
             return EMatchResult.Disabled;
         }
 
         // `*` is the wildcard to ignore all fields that exist on types
-        if (!type.HasFields && parms.FieldNamesToIgnore.Contains("*"))
+        if (!type.HasFields && parms.IgnoreFields.Contains("*"))
         {
             return EMatchResult.Match;
         }
@@ -243,14 +243,14 @@ internal static class SearchExtentions
 
         foreach (var field in type.Fields)
         {
-            if (parms.FieldNamesToIgnore.Contains(field.Name))
+            if (parms.IgnoreFields.Contains(field.Name))
             {
                 // Type contains blacklisted field
                 score.FailureReason = EFailureReason.HasFields;
                 return EMatchResult.NoMatch;
             }
 
-            if (parms.FieldNamesToMatch.Contains(field.Name))
+            if (parms.MatchFields.Contains(field.Name))
             {
                 matchCount++;
                 score.Score++;
@@ -262,13 +262,13 @@ internal static class SearchExtentions
 
     public static EMatchResult MatchProperties(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.PropertyNamesToMatch.Count == 0 && parms.PropertyNamesToIgnore.Count == 0)
+        if (parms.MatchProperties.Count == 0 && parms.IgnorePropterties.Count == 0)
         {
             return EMatchResult.Disabled;
         }
 
         // `*` is the wildcard to ignore all fields that exist on types
-        if (!type.HasProperties && parms.PropertyNamesToIgnore.Contains("*"))
+        if (!type.HasProperties && parms.IgnorePropterties.Contains("*"))
         {
             score.Score++;
             return EMatchResult.Match;
@@ -278,14 +278,14 @@ internal static class SearchExtentions
 
         foreach (var property in type.Properties)
         {
-            if (parms.PropertyNamesToIgnore.Contains(property.Name))
+            if (parms.IgnorePropterties.Contains(property.Name))
             {
                 // Type contains blacklisted property
                 score.FailureReason = EFailureReason.HasProperties;
                 return EMatchResult.NoMatch;
             }
 
-            if (parms.PropertyNamesToMatch.Contains(property.Name))
+            if (parms.MatchProperties.Contains(property.Name))
             {
                 matchCount++;
                 score.Score++;
@@ -297,13 +297,13 @@ internal static class SearchExtentions
 
     public static EMatchResult MatchNestedTypes(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        if (parms.NestedTypesToMatch.Count == 0 && parms.NestedTypesToIgnore.Count == 0)
+        if (parms.MatchNestedTypes.Count == 0 && parms.IgnoreNestedTypes.Count == 0)
         {
             return EMatchResult.Disabled;
         }
 
         // `*` is the wildcard to ignore all fields that exist on types
-        if (type.HasNestedTypes && parms.NestedTypesToIgnore.Contains("*"))
+        if (type.HasNestedTypes && parms.IgnoreNestedTypes.Contains("*"))
         {
             score.FailureReason = EFailureReason.HasNestedTypes;
             return EMatchResult.NoMatch;
@@ -313,14 +313,14 @@ internal static class SearchExtentions
 
         foreach (var nestedType in type.NestedTypes)
         {
-            if (parms.NestedTypesToIgnore.Contains(nestedType.Name))
+            if (parms.IgnoreNestedTypes.Contains(nestedType.Name))
             {
                 // Type contains blacklisted nested type
                 score.FailureReason = EFailureReason.HasNestedTypes;
                 return EMatchResult.NoMatch;
             }
 
-            if (parms.NestedTypesToMatch.Contains(nestedType.Name))
+            if (parms.MatchNestedTypes.Contains(nestedType.Name))
             {
                 matchCount++;
                 score.Score++;

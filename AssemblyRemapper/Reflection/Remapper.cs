@@ -204,6 +204,8 @@ internal class Remapper
             }
         }
 
+        highestScore.RemapModel.OriginalTypeName = highestScore.Definition.Name;
+
         // Rename type and all associated type members
         Renamer.RenameAll(highestScore);
 
@@ -220,9 +222,11 @@ internal class Remapper
         var remappedPath = Path.Combine(strippedPath, filename);
 
         DataProvider.AssemblyDefinition.Write(remappedPath);
+        DataProvider.UpdateMapping();
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{remappedPath}`", ConsoleColor.Green);
+        Logger.Log("Original type names updated on mapping file.", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 }
