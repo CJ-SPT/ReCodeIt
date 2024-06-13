@@ -60,23 +60,18 @@ internal class Remapper
     {
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
-            var result = ScoreType(type, mapping);
-
-            if (result is not EMatchResult.NoMatch)
-            {
-                //Logger.LogDebug($"Remap [{type.Name} : {mapping.NewTypeName}] failed with reason {result}", silent: true);
-            }
+            var _ = FindMatch(type, mapping);
         }
     }
 
     /// <summary>
-    /// Score the type against the remap checking against all remap properties
+    /// Find a match result
     /// </summary>
     /// <param name="type">Type to score</param>
     /// <param name="remap">Remap to check against</param>
     /// <param name="parentTypeName"></param>
-    /// <returns>Failure reason or none if matched</returns>
-    private EMatchResult ScoreType(TypeDefinition type, RemapModel remap)
+    /// <returns>EMatchResult</returns>
+    private EMatchResult FindMatch(TypeDefinition type, RemapModel remap)
     {
         // Handle Direct Remaps by strict naming first bypasses everything else
         if (remap.UseForceRename)
