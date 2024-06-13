@@ -23,8 +23,8 @@ internal class Remapper
         if (DataProvider.AppSettings.ScoringMode) { return; }
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
-        HandlePublicize();
-        HandleUnseal();
+        Publicizer.Publicize();
+        Publicizer.Unseal();
 
         // We are done, write the assembly
         WriteAssembly();
@@ -50,56 +50,6 @@ internal class Remapper
             {
                 //Logger.LogDebug($"Remap [{type.Name} : {mapping.NewTypeName}] failed with reason {result}", silent: true);
             }
-        }
-    }
-
-    private void HandlePublicize()
-    {
-        if (!DataProvider.AppSettings.Publicize) { return; }
-
-        Logger.Log("Starting publicization...", ConsoleColor.Green);
-
-        foreach (var type in DataProvider.ModuleDefinition.Types)
-        {
-            if (type.IsNotPublic) { type.IsPublic = true; }
-
-            // We only want to do methods and properties
-
-            if (type.HasMethods)
-            {
-                foreach (var method in type.Methods)
-                {
-                    method.IsPublic = true;
-                }
-            }
-
-            if (type.HasProperties)
-            {
-                foreach (var property in type.Properties)
-                {
-                    if (property.SetMethod != null)
-                    {
-                        property.SetMethod.IsPublic = true;
-                    }
-
-                    if (property.GetMethod != null)
-                    {
-                        property.GetMethod.IsPublic = true;
-                    }
-                }
-            }
-        }
-    }
-
-    private void HandleUnseal()
-    {
-        if (!DataProvider.AppSettings.Unseal) { return; }
-
-        Logger.Log("Starting unseal...", ConsoleColor.Green);
-
-        foreach (var type in DataProvider.ModuleDefinition.Types)
-        {
-            if (type.IsSealed) { type.IsSealed = false; }
         }
     }
 
@@ -192,6 +142,7 @@ internal class Remapper
             return EFailureReason.HasNestedTypes;
         }
 
+        remap.OriginalTypeName = type.Name;
         score.AddScoreToResult();
 
         return EFailureReason.None;
@@ -203,6 +154,8 @@ internal class Remapper
 
         var oldName = type.Name;
         type.Name = remap.NewTypeName;
+
+        remap.OriginalTypeName = type.Name;
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);

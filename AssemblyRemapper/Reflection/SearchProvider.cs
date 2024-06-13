@@ -139,9 +139,12 @@ internal static class SearchProvider
             return EMatchResult.Disabled;
         }
 
-        var boolToCheck = parms.IsPublic == true ? type.IsPublic : type.IsNotPublic;
-
-        if (boolToCheck == !parms.IsPublic)
+        if (parms.IsPublic is false && type.IsNotPublic is true)
+        {
+            score.Score++;
+            return EMatchResult.Match;
+        }
+        else if (parms.IsPublic is true && type.IsPublic is true)
         {
             score.Score++;
             return EMatchResult.Match;
