@@ -3,7 +3,7 @@ using AssemblyRemapper.Utils;
 using Mono.Cecil;
 using Mono.Collections.Generic;
 
-namespace AssemblyRemapper.Reflection;
+namespace AssemblyRemapper.Remapper;
 
 internal static class Renamer
 {

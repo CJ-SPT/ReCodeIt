@@ -1,11 +1,12 @@
 ﻿using AssemblyRemapper.Enums;
 using AssemblyRemapper.Models;
+using AssemblyRemapper.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
 
-namespace AssemblyRemapper.Reflection;
+namespace AssemblyRemapper.Remapper.Search;
 
-internal static class SearchExtentions
+internal static class TypeDefExtensions
 {
     public static EMatchResult MatchIsAbstract(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
@@ -181,52 +182,56 @@ internal static class SearchExtentions
         return EMatchResult.NoMatch;
     }
 
+    public static EMatchResult MatchConstructors(this TypeDefinition type, SearchParams parms, ScoringModel score)
+    {
+        var matches = new List<EMatchResult> { };
+
+        if (parms.ConstructorParameterCount is not null)
+        {
+            matches.Add(Constructors.GetTypeByParameterCount(type, parms, score));
+        }
+
+        return matches.GetMatch();
+    }
+
+    /// <summary>
+    /// Handle running all method matching routines
+    /// </summary>
+    /// <returns>Match if any search criteria met</returns>
     public static EMatchResult MatchMethods(this TypeDefinition type, SearchParams parms, ScoringModel score)
     {
-        // We're not searching for methods and this type contains methods
-        if (parms.MatchMethods.Count is 0 && parms.IgnoreMethods.Count is 0)
+        var matches = new List<EMatchResult> { };
+
+        if (parms.MatchMethods.Count > 0 && parms.IgnoreMethods.Contains("*") is true)
         {
-            return EMatchResult.Disabled;
+            Logger.Log($"Cannot both ignore all methods and search for a method on {score.ProposedNewName}.", ConsoleColor.Red);
+            return EMatchResult.NoMatch;
+        }
+        else if (parms.MatchMethods.Count > 0)
+        {
+            matches.Add(Methods.GetTypeWithMethods(type, parms, score));
         }
 
-        var skippAll = parms.IgnoreMethods.Contains("*");
-        var methodCount = type.Methods.Count - type.GetConstructors().Count();
-
-        // Subtract method count from constructor count to check for real methods
-        if (methodCount is 0 && skippAll is true)
+        if (parms.IgnoreMethods.Count > 0)
         {
-            return EMatchResult.Match;
+            Logger.Log("TypeWithoutMethods");
+            matches.Add(Methods.GetTypeWithoutMethods(type, parms, score));
         }
 
-        // Handle Ignore methods
-        foreach (var method in type.Methods)
+        if (parms.IgnoreMethods.Contains("*"))
         {
-            if (parms.IgnoreMethods.Contains(method.Name))
-            {
-                // Contains blacklisted method, no match
-                score.FailureReason = EFailureReason.HasMethods;
-                score.Score--;
-                return EMatchResult.NoMatch;
-            }
+            Logger.Log("TypeWithNoMethods");
+            matches.Add(Methods.GetTypeWithNoMethods(type, parms, score));
         }
 
-        var matchCount = 0;
-
-        // Handle match methods
-        foreach (var method in type.Methods)
+        if (parms.MethodCount > 0)
         {
-            foreach (var name in parms.MatchMethods)
-            {
-                // Method name match
-                if (method.Name == name)
-                {
-                    matchCount += 1;
-                    score.Score++;
-                }
-            }
+            Logger.Log("TypeByNumberOfMethods");
+            matches.Add(Methods.GetTypeByNumberOfMethods(type, parms, score));
         }
 
-        return matchCount > 0 ? EMatchResult.Match : EMatchResult.NoMatch;
+        // return match if any condition matched
+        return matches.GetMatch();
     }
 
     public static EMatchResult MatchFields(this TypeDefinition type, SearchParams parms, ScoringModel score)
@@ -241,6 +246,7 @@ internal static class SearchExtentions
         // Type has fields, we dont want any
         if (type.HasFields is false && skippAll is true)
         {
+            score.Score++;
             return EMatchResult.Match;
         }
 

@@ -13,6 +13,7 @@ internal enum EFailureReason
     HasGenericParameters,
     HasAttribute,
     IsAttribute,
+    Constructor,
     HasMethods,
     HasFields,
     HasProperties,

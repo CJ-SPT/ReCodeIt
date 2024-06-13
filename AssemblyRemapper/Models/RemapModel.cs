@@ -14,9 +14,6 @@ internal class RemapModel
     [JsonIgnore]
     public EFailureReason FailureReason { get; set; }
 
-    [JsonIgnore]
-    public HashSet<ScoringModel> Scores { get; set; } = [];
-
     public string NewTypeName { get; set; } = string.Empty;
 
     public string OriginalTypeName { get; set; } = string.Empty;
@@ -31,18 +28,39 @@ internal class RemapModel
 /// </summary>
 internal class SearchParams
 {
+    #region BOOL_PARAMS
+
     public bool? IsPublic { get; set; } = null;
     public bool? IsAbstract { get; set; } = null;
     public bool? IsInterface { get; set; } = null;
     public bool? IsEnum { get; set; } = null;
     public bool? IsNested { get; set; } = null;
-    public string? ParentName { get; set; } = null;
     public bool? IsSealed { get; set; } = null;
     public bool? HasAttribute { get; set; } = null;
     public bool? IsDerived { get; set; } = null;
     public bool? HasGenericParameters { get; set; } = null;
-    public string MatchBaseClass { get; set; }
-    public string IgnoreBaseClass { get; set; }
+
+    #endregion BOOL_PARAMS
+
+    #region STR_PARAMS
+
+    public string? ParentName { get; set; } = null;
+    public string? MatchBaseClass { get; set; } = null;
+    public string? IgnoreBaseClass { get; set; } = null;
+
+    #endregion STR_PARAMS
+
+    #region INT_PARAMS
+
+    public int? ConstructorParameterCount { get; set; } = null;
+    public int? MethodCount { get; set; } = null;
+    public int? FieldCount { get; set; } = null;
+    public int? PropertyCount { get; set; } = null;
+
+    #endregion INT_PARAMS
+
+    #region LISTS
+
     public List<string> MatchMethods { get; set; }
     public List<string> IgnoreMethods { get; set; }
     public List<string> MatchFields { get; set; }
@@ -51,6 +69,8 @@ internal class SearchParams
     public List<string> IgnorePropterties { get; set; }
     public List<string> MatchNestedTypes { get; set; }
     public List<string> IgnoreNestedTypes { get; set; }
+
+    #endregion LISTS
 
     public SearchParams()
     {

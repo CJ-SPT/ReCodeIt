@@ -1,23 +1,40 @@
 [
     // TEMPLATE
-    //    NOTE: You only need to add the properties you need inside of `SearchParams`
+    //    NOTE: Only add the properties you need inside of `SearchParams`
+    // The remapper will take any and all consideration you give it 
+    // it uses any input you give it its matching, so only use parameters you need.
+    // Tldr; The remapper is a giant state machine, you get what you ask for
     {
         "NewTypeName": "TEMPLATE",          // This is the name we want to change it to
         "OriginalTypeName": "",             // This is the name of the object in the assembly, Can be used to store what type you're changing as its not read unless "UseDirectRename" is true, it is also written to after remapping
         "UseForceRename": false,            // If this is true, directly remap using the name in the assembly from the above property
         "SearchParams": {                   // null means disabled
-            "IsPublic": null,               // Is the Type public? (bool)
-            "IsAbstract": null,             // Is the Type Abstract? (bool)
-            "IsInterface": null,            // Is the Type an Interface? (bool)
-            "IsEnum": null,                 // Is the Type an Enum? (bool)
-            "IsNested": null,               // Is the Type Nested? (bool)
-            "ParentName": "",               // The Name of the parent type if it is nested, can be left empty (string)
-            "IsSealed": null,               // Is the Type Sealed? (bool)
-            "HasAttribute": null,           // Does the Type have an attribute? (bool)
-            "IsDerived": null,              // Does the Type inherit from another Type? (bool)
+            
+            // Bool parameters
+        
+            "IsPublic": false,              // Is the Type public? 
+            "IsAbstract": false,            // Is the Type Abstract? 
+            "IsInterface": false,           // Is the Type an Interface? 
+            "IsEnum": false,                // Is the Type an Enum? 
+            "IsNested": false,              // Is the Type Nested? 
+            "IsSealed": false,              // Is the Type Sealed? 
+            "HasAttribute": false,          // Does the Type have an attribute? 
+            "IsDerived": false,             // Does the Type inherit from another Type? 
+            "HasGenericParameters": false,  // Does the type have generic parameters? 
+            
+            // String parameters
+            
+            "ParentName": "",               // The Name of the parent type (IsNested must be enabled)
             "MatchBaseClass": "",           // Base class to match (IsDerived must be enabled)
             "IgnoreBaseClass": "",          // Base class to ignore (IsDerived must be enabled)
-            "HasGenericParameters": null,   // Does the type have generic parameters? (bool)
+
+            // Integer parameters
+            
+            "ConstructorParameterCount": 0, // Match types that have a constructor parameter of this length
+            "MethodCount": 0,               // Match types that have a method count this length
+            "FieldCount": 0,                // Match types that have a method count this length
+            "PropertyCount": 0,             // Match types that have a method count this length
+
             // Note:
             //      - You can can filter the ignore list with a wild card '*' to match all types that have none of that search parameter
             //      - These are all lists of strings

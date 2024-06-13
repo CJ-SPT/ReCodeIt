@@ -1,4 +1,4 @@
-﻿using AssemblyRemapper.Reflection;
+﻿using AssemblyRemapper.Remapper;
 using AssemblyRemapper.Utils;
 
 namespace AssemblyRemapper.Commands
@@ -23,7 +23,7 @@ namespace AssemblyRemapper.Commands
         {
             if (command == "remap" || command == "Remap")
             {
-                var remapper = new Remapper();
+                var remapper = new Remapper.Remapper();
 
                 DataProvider.LoadMappingFile();
                 DataProvider.LoadAssemblyDefinition();

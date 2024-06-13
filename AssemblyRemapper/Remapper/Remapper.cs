@@ -1,9 +1,10 @@
 ﻿using AssemblyRemapper.Enums;
 using AssemblyRemapper.Models;
+using AssemblyRemapper.Remapper.Search;
 using AssemblyRemapper.Utils;
 using Mono.Cecil;
 
-namespace AssemblyRemapper.Reflection;
+namespace AssemblyRemapper.Remapper;
 
 internal class Remapper
 {
@@ -146,6 +147,12 @@ internal class Remapper
         {
             remap.FailureReason = EFailureReason.HasAttribute;
             return EFailureReason.HasAttribute;
+        }
+
+        if (type.MatchConstructors(remap.SearchParams, score) == EMatchResult.NoMatch)
+        {
+            remap.FailureReason = EFailureReason.Constructor;
+            return EFailureReason.Constructor;
         }
 
         if (type.MatchMethods(remap.SearchParams, score) == EMatchResult.NoMatch)

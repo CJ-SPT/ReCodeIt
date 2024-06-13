@@ -1,6 +1,6 @@
 ﻿using AssemblyRemapper.Utils;
 
-namespace AssemblyRemapper.Reflection;
+namespace AssemblyRemapper.Remapper;
 
 internal static class Publicizer
 {
