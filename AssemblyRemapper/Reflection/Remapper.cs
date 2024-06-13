@@ -7,6 +7,9 @@ namespace AssemblyRemapper.Reflection;
 
 internal class Remapper
 {
+    /// <summary>
+    /// Start the remapping process
+    /// </summary>
     public void InitializeRemap()
     {
         DisplayBasicModuleInformation();
@@ -30,6 +33,9 @@ internal class Remapper
         WriteAssembly();
     }
 
+    /// <summary>
+    /// Display information about the module we are remapping
+    /// </summary>
     private void DisplayBasicModuleInformation()
     {
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
@@ -40,6 +46,10 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
+    /// <summary>
+    /// Loop over all types in the assembly and score them
+    /// </summary>
+    /// <param name="mapping">Mapping to score</param>
     private void HandleMapping(RemapModel mapping)
     {
         foreach (var type in DataProvider.ModuleDefinition.Types)
@@ -53,7 +63,14 @@ internal class Remapper
         }
     }
 
-    private EFailureReason ScoreType(TypeDefinition type, RemapModel remap, string parentTypeName = "")
+    /// <summary>
+    /// Score the type against the remap checking against all remap properties
+    /// </summary>
+    /// <param name="type">Type to score</param>
+    /// <param name="remap">Remap to check against</param>
+    /// <param name="parentTypeName"></param>
+    /// <returns>Failure reason or none if matched</returns>
+    private EFailureReason ScoreType(TypeDefinition type, RemapModel remap)
     {
         // Handle Direct Remaps by strict naming first bypasses everything else
         if (remap.UseForceRename)
@@ -64,7 +81,7 @@ internal class Remapper
 
         foreach (var nestedType in type.NestedTypes)
         {
-            ScoreType(nestedType, remap, type.Name);
+            ScoreType(nestedType, remap);
         }
 
         var score = new ScoringModel
@@ -181,11 +198,14 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
+    /// <summary>
+    /// Choose the best possible match from all remaps
+    /// </summary>
     private void ChooseBestMatches()
     {
         foreach (var score in DataProvider.ScoringModels)
         {
-            ChooseBestMatch(score.Value, true);
+            ChooseBestMatch(score.Value);
         }
 
         var failures = 0;
@@ -210,17 +230,17 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
-    private void ChooseBestMatch(HashSet<ScoringModel> scores, bool isBest = false)
+    /// <summary>
+    /// Choose best match from a collection of scores, then start the renaming process
+    /// </summary>
+    /// <param name="scores">Scores to rate</param>
+    private void ChooseBestMatch(HashSet<ScoringModel> scores)
     {
         if (scores.Count == 0) { return; }
 
         var highestScore = scores.OrderByDescending(score => score.Score).FirstOrDefault();
 
         if (highestScore is null) { return; }
-
-        var potentialText = isBest
-            ? "Best potential"
-            : "Next potential";
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
@@ -245,6 +265,9 @@ internal class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
+    /// <summary>
+    /// Write the assembly back to disk and update the mapping file on disk
+    /// </summary>
     private void WriteAssembly()
     {
         var filename = Path.GetFileNameWithoutExtension(DataProvider.AppSettings.AssemblyPath);
