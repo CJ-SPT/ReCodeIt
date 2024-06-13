@@ -3,7 +3,7 @@
 /// <summary>
 /// Remap config
 /// </summary>
-internal class Settings
+public class Settings
 {
     public AppSettings AppSettings { get; set; }
     public RemapperSettings RemapperSettings { get; set; }
@@ -11,14 +11,14 @@ internal class Settings
     public AutoMapperSettings AutoMapperSettings { get; set; }
 }
 
-internal class AppSettings
+public class AppSettings
 {
     public bool Debug { get; set; } = false;
     public bool SilentMode { get; set; } = true;
     public bool MatchMode { get; set; } = false;
 }
 
-internal class RemapperSettings
+public class RemapperSettings
 {
     public int MaxMatchCount { get; set; } = 5;
 
@@ -30,7 +30,7 @@ internal class RemapperSettings
     public string MappingPath { get; set; } = string.Empty;
 }
 
-internal class AutoMapperSettings
+public class AutoMapperSettings
 {
     public int RequiredMatches { get; set; } = 5;
     public bool MatchMode { get; set; } = true;

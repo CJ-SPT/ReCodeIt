@@ -2,7 +2,7 @@
 
 namespace AssemblyRemapper.Remapper;
 
-internal static class Publicizer
+public static class Publicizer
 {
     public static void Publicize()
     {

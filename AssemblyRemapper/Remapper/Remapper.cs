@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace AssemblyRemapper.Remapper;
 
-internal class Remapper
+public class Remapper
 {
     private static Stopwatch Stopwatch = new();
 

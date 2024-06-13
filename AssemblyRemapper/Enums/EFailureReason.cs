@@ -1,6 +1,6 @@
 ﻿namespace AssemblyRemapper.Enums;
 
-internal enum EFailureReason
+public enum EFailureReason
 {
     None,
     IsAbstract,

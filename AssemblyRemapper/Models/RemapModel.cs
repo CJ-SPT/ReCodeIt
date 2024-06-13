@@ -6,7 +6,7 @@ namespace AssemblyRemapper.Models;
 /// <summary>
 /// Object to store linq statements in inside of json to search and remap classes
 /// </summary>
-internal class RemapModel
+public class RemapModel
 {
     [JsonIgnore]
     public bool Succeeded { get; set; } = false;
@@ -26,7 +26,7 @@ internal class RemapModel
 /// <summary>
 /// Search filters to find types and remap them
 /// </summary>
-internal class SearchParams
+public class SearchParams
 {
     #region BOOL_PARAMS
 

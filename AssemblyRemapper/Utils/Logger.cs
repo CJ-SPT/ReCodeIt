@@ -1,6 +1,6 @@
 ﻿namespace AssemblyRemapper.Utils;
 
-internal static class Logger
+public static class Logger
 {
     static Logger()
     {

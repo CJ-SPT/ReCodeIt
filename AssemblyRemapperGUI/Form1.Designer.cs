@@ -28,18 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            toolStrip1 = new ToolStrip();
             SuspendLayout();
+            // 
+            // toolStrip1
+            // 
+            toolStrip1.ImageScalingSize = new Size(24, 24);
+            toolStrip1.Location = new Point(0, 0);
+            toolStrip1.Name = "toolStrip1";
+            toolStrip1.Size = new Size(1584, 25);
+            toolStrip1.TabIndex = 0;
+            toolStrip1.Text = "toolStrip1";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1584, 1027);
+            Controls.Add(toolStrip1);
             Name = "Form1";
             Text = "Cj's Assembly Tool V0.1.0";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private ToolStrip toolStrip1;
     }
 }

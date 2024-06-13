@@ -3,7 +3,7 @@ using Mono.Cecil;
 
 namespace AssemblyRemapper.Models;
 
-internal class ScoringModel
+public class ScoringModel
 {
     public string ProposedNewName { get; set; }
     public int Score { get; set; } = 0;

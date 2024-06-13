@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace AssemblyRemapper.Utils;
 
-internal static class DataProvider
+public static class DataProvider
 {
     static DataProvider()
     {
