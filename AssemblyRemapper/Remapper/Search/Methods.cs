@@ -19,7 +19,7 @@ internal static class Methods
         if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Methods
-            .Where(method => parms.IncludeMethods.Contains(method.Name))
+            .Where(method => parms.IncludeMethods.Any(include => method.Name.Contains(include)))
             .Count();
 
         score.Score += matches;
