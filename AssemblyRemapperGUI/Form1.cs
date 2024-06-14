@@ -65,14 +65,14 @@ namespace AssemblyRemapperGUI
                     FieldCount = FieldCountEnabled.GetCount(FieldCountUpDown),
                     PropertyCount = PropertyCountEnabled.GetCount(PropertyCountUpDown),
                     NestedTypeCount = NestedTypeCountEnabled.GetCount(NestedTypeCountUpDown),
-                    IncludeMethods = [],
-                    ExcludeMethods = [],
-                    IncludeFields = [],
-                    ExcludeFields = [],
-                    IncludeProperties = [],
-                    ExcludeProperties = [],
-                    IncludeNestedTypes = [],
-                    ExcludeNestedTypes = [],
+                    IncludeMethods = GUI.GetAllEntriesFromListBox(MethodIncludeBox),
+                    ExcludeMethods = GUI.GetAllEntriesFromListBox(MethodExcludeBox),
+                    IncludeFields = GUI.GetAllEntriesFromListBox(FieldIncludeBox),
+                    ExcludeFields = GUI.GetAllEntriesFromListBox(FieldExcludeBox),
+                    IncludeProperties = GUI.GetAllEntriesFromListBox(PropertiesIncludeBox),
+                    ExcludeProperties = GUI.GetAllEntriesFromListBox(PropertiesExcludeBox),
+                    IncludeNestedTypes = GUI.GetAllEntriesFromListBox(NestedTypesIncludeBox),
+                    ExcludeNestedTypes = GUI.GetAllEntriesFromListBox(NestedTypesExcludeBox),
                 }
             };
 
