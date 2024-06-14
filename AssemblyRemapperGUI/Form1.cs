@@ -15,10 +15,8 @@ namespace AssemblyRemapperGUI
             InitializeComponent();
             PopulateDomainUpDowns();
 
-            foreach (var remap in DataProvider.Remaps)
-            {
-                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
-            }
+            Remapper.OnComplete += ReloadTreeView;
+            ReloadTreeView(this, EventArgs.Empty);
         }
 
         #region BUTTONS
@@ -101,7 +99,7 @@ namespace AssemblyRemapperGUI
         {
             if (Remapper.IsRunning) { return; }
 
-            Task.Run(() => Remapper.InitializeRemap());
+            Remapper.InitializeRemap();
         }
 
         private void SaveMappingFileButton_Click(object sender, EventArgs e)
@@ -337,6 +335,21 @@ namespace AssemblyRemapperGUI
             HasAttributeUpDown.BuildStringList("HasAttribute");
             IsDerivedUpDown.BuildStringList("IsDerived");
             HasGenericParametersUpDown.BuildStringList("HasGenericParams");
+        }
+
+        /// <summary>
+        /// Subscribes the the remappers OnComplete event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ReloadTreeView(object sender, EventArgs e)
+        {
+            RemapTreeView.Nodes.Clear();
+
+            foreach (var remap in DataProvider.Remaps)
+            {
+                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+            }
         }
     }
 }

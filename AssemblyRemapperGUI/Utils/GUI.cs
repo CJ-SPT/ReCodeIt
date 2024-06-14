@@ -132,7 +132,7 @@ internal static class GUI
         remapTreeItem.Nodes.Add(IsDerivedNode);
         remapTreeItem.Nodes.Add(HasGenericsNode);
 
-        if (model.SearchParams.IncludeMethods.Count > 0)
+        if (model.SearchParams.IncludeMethods?.Count > 0)
         {
             var includeMethodsNode =
                 GenerateNodeFromList(model.SearchParams.IncludeMethods, "Include Methods");
@@ -140,7 +140,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(includeMethodsNode);
         }
 
-        if (model.SearchParams.ExcludeMethods.Count > 0)
+        if (model.SearchParams.ExcludeMethods?.Count > 0)
         {
             var excludeMethodsNode =
                 GenerateNodeFromList(model.SearchParams.ExcludeMethods, "Exclude Methods");
@@ -148,7 +148,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(excludeMethodsNode);
         }
 
-        if (model.SearchParams.IncludeFields.Count > 0)
+        if (model.SearchParams.IncludeFields?.Count > 0)
         {
             var includeFieldsNode =
                 GenerateNodeFromList(model.SearchParams.IncludeFields, "Include Fields");
@@ -156,7 +156,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(includeFieldsNode);
         }
 
-        if (model.SearchParams.ExcludeFields.Count > 0)
+        if (model.SearchParams.ExcludeFields?.Count > 0)
         {
             var excludeFieldsNode =
                 GenerateNodeFromList(model.SearchParams.ExcludeFields, "Exclude Fields");
@@ -164,7 +164,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(excludeFieldsNode);
         }
 
-        if (model.SearchParams.IncludeProperties.Count > 0)
+        if (model.SearchParams.IncludeProperties?.Count > 0)
         {
             var includeProperties =
                 GenerateNodeFromList(model.SearchParams.IncludeProperties, "Include Properties");
@@ -172,7 +172,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(includeProperties);
         }
 
-        if (model.SearchParams.ExcludeProperties.Count > 0)
+        if (model.SearchParams.ExcludeProperties?.Count > 0)
         {
             var excludeProperties =
                 GenerateNodeFromList(model.SearchParams.ExcludeProperties, "Exclude Properties");
@@ -180,7 +180,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(excludeProperties);
         }
 
-        if (model.SearchParams.IncludeNestedTypes.Count > 0)
+        if (model.SearchParams.IncludeNestedTypes?.Count > 0)
         {
             var includeNestedTypes =
                 GenerateNodeFromList(model.SearchParams.IncludeNestedTypes, "Include Nested Types");
@@ -188,7 +188,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(includeNestedTypes);
         }
 
-        if (model.SearchParams.IncludeNestedTypes.Count > 0)
+        if (model.SearchParams.IncludeNestedTypes?.Count > 0)
         {
             var excludeNestedTypes =
                 GenerateNodeFromList(model.SearchParams.ExcludeNestedTypes, "Exclude Nested Types");

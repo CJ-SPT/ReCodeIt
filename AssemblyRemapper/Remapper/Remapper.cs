@@ -11,6 +11,10 @@ public class Remapper
 {
     public static bool IsRunning { get; private set; } = false;
 
+    public delegate void OnCompleteHandler(object sender, EventArgs e);
+
+    public event OnCompleteHandler OnComplete;
+
     private static Stopwatch Stopwatch = new();
 
     /// <summary>
@@ -260,6 +264,7 @@ public class Remapper
 
         Reset();
         IsRunning = false;
+        OnComplete.Invoke(this, EventArgs.Empty);
     }
 
     private void Reset()
