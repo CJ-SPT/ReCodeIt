@@ -73,6 +73,8 @@ internal static class GUI
 
         var remapTreeItem = new TreeNode($"Remap: {model.NewTypeName}");
 
+        var originalTypeName = new TreeNode($"Original Name: {model.OriginalTypeName}");
+
         var forceRenameNode = new TreeNode($"Force Rename: {(model.UseForceRename ? model.UseForceRename : "Disabled")}");
 
         var ispublicNode = new TreeNode($"IsPublic: {(isPublic != null ? isPublic : "Disabled")}");
@@ -118,6 +120,7 @@ internal static class GUI
             remapTreeItem.Nodes.Add(new TreeNode($"Nested Type Count: {model.SearchParams.NestedTypeCount}"));
         }
 
+        remapTreeItem.Nodes.Add(originalTypeName);
         remapTreeItem.Nodes.Add(forceRenameNode);
         remapTreeItem.Nodes.Add(ispublicNode);
         remapTreeItem.Nodes.Add(isAbstractNode);
