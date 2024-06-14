@@ -33,10 +33,11 @@ partial class AssemblyToolGUI
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        ConstuctorCountUpDown = new NumericUpDown();
+        ConstructorCountEnabled = new CheckBox();
         LoadMappingFileButton = new Button();
         SaveMappingFileButton = new Button();
         RunRemapButton = new Button();
-        ScoreButton = new Button();
         Inclusions = new TabControl();
         tabPage1 = new TabPage();
         ExcludeMethodTextBox = new TextBox();
@@ -104,6 +105,7 @@ partial class AssemblyToolGUI
         ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
         Inclusions.SuspendLayout();
         tabPage1.SuspendLayout();
         tabPage2.SuspendLayout();
@@ -137,10 +139,11 @@ partial class AssemblyToolGUI
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(ConstuctorCountUpDown);
+        groupBox1.Controls.Add(ConstructorCountEnabled);
         groupBox1.Controls.Add(LoadMappingFileButton);
         groupBox1.Controls.Add(SaveMappingFileButton);
         groupBox1.Controls.Add(RunRemapButton);
-        groupBox1.Controls.Add(ScoreButton);
         groupBox1.Controls.Add(Inclusions);
         groupBox1.Controls.Add(NewTypeName);
         groupBox1.Controls.Add(ForceRenameCheckbox);
@@ -174,6 +177,23 @@ partial class AssemblyToolGUI
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
         // 
+        // ConstuctorCountUpDown
+        // 
+        ConstuctorCountUpDown.Location = new Point(224, 178);
+        ConstuctorCountUpDown.Name = "ConstuctorCountUpDown";
+        ConstuctorCountUpDown.Size = new Size(55, 31);
+        ConstuctorCountUpDown.TabIndex = 19;
+        // 
+        // ConstructorCountEnabled
+        // 
+        ConstructorCountEnabled.AutoSize = true;
+        ConstructorCountEnabled.Location = new Point(287, 184);
+        ConstructorCountEnabled.Name = "ConstructorCountEnabled";
+        ConstructorCountEnabled.Size = new Size(238, 29);
+        ConstructorCountEnabled.TabIndex = 20;
+        ConstructorCountEnabled.Text = "Constructor Param Count";
+        ConstructorCountEnabled.UseVisualStyleBackColor = true;
+        // 
         // LoadMappingFileButton
         // 
         LoadMappingFileButton.Location = new Point(601, 489);
@@ -196,23 +216,13 @@ partial class AssemblyToolGUI
         // 
         // RunRemapButton
         // 
-        RunRemapButton.Location = new Point(580, 185);
+        RunRemapButton.Location = new Point(580, 145);
         RunRemapButton.Name = "RunRemapButton";
         RunRemapButton.Size = new Size(168, 34);
         RunRemapButton.TabIndex = 16;
         RunRemapButton.Text = "Run Remap";
         RunRemapButton.UseVisualStyleBackColor = true;
         RunRemapButton.Click += RunRemapButton_Click;
-        // 
-        // ScoreButton
-        // 
-        ScoreButton.Location = new Point(580, 145);
-        ScoreButton.Name = "ScoreButton";
-        ScoreButton.Size = new Size(168, 34);
-        ScoreButton.TabIndex = 5;
-        ScoreButton.Text = "Score Remap";
-        ScoreButton.UseVisualStyleBackColor = true;
-        ScoreButton.Click += ScoreButton_Click;
         // 
         // Inclusions
         // 
@@ -616,7 +626,7 @@ partial class AssemblyToolGUI
         // PropertyCountEnabled
         // 
         PropertyCountEnabled.AutoSize = true;
-        PropertyCountEnabled.Location = new Point(287, 258);
+        PropertyCountEnabled.Location = new Point(287, 291);
         PropertyCountEnabled.Name = "PropertyCountEnabled";
         PropertyCountEnabled.Size = new Size(159, 29);
         PropertyCountEnabled.TabIndex = 11;
@@ -635,7 +645,7 @@ partial class AssemblyToolGUI
         // NestedTypeCountEnabled
         // 
         NestedTypeCountEnabled.AutoSize = true;
-        NestedTypeCountEnabled.Location = new Point(287, 293);
+        NestedTypeCountEnabled.Location = new Point(287, 326);
         NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
         NestedTypeCountEnabled.Size = new Size(189, 29);
         NestedTypeCountEnabled.TabIndex = 12;
@@ -644,7 +654,7 @@ partial class AssemblyToolGUI
         // 
         // PropertyCountUpDown
         // 
-        PropertyCountUpDown.Location = new Point(224, 258);
+        PropertyCountUpDown.Location = new Point(224, 291);
         PropertyCountUpDown.Name = "PropertyCountUpDown";
         PropertyCountUpDown.Size = new Size(55, 31);
         PropertyCountUpDown.TabIndex = 5;
@@ -661,7 +671,7 @@ partial class AssemblyToolGUI
         // 
         // FieldCountUpDown
         // 
-        FieldCountUpDown.Location = new Point(224, 220);
+        FieldCountUpDown.Location = new Point(224, 253);
         FieldCountUpDown.Name = "FieldCountUpDown";
         FieldCountUpDown.Size = new Size(55, 31);
         FieldCountUpDown.TabIndex = 3;
@@ -678,7 +688,7 @@ partial class AssemblyToolGUI
         // FieldCountEnabled
         // 
         FieldCountEnabled.AutoSize = true;
-        FieldCountEnabled.Location = new Point(287, 223);
+        FieldCountEnabled.Location = new Point(287, 256);
         FieldCountEnabled.Name = "FieldCountEnabled";
         FieldCountEnabled.Size = new Size(128, 29);
         FieldCountEnabled.TabIndex = 13;
@@ -695,7 +705,7 @@ partial class AssemblyToolGUI
         // 
         // MethodCountUpDown
         // 
-        MethodCountUpDown.Location = new Point(224, 182);
+        MethodCountUpDown.Location = new Point(224, 215);
         MethodCountUpDown.Name = "MethodCountUpDown";
         MethodCountUpDown.Size = new Size(55, 31);
         MethodCountUpDown.TabIndex = 6;
@@ -745,7 +755,7 @@ partial class AssemblyToolGUI
         // 
         // NestedTypeCountUpDown
         // 
-        NestedTypeCountUpDown.Location = new Point(224, 296);
+        NestedTypeCountUpDown.Location = new Point(224, 329);
         NestedTypeCountUpDown.Name = "NestedTypeCountUpDown";
         NestedTypeCountUpDown.Size = new Size(55, 31);
         NestedTypeCountUpDown.TabIndex = 4;
@@ -798,7 +808,7 @@ partial class AssemblyToolGUI
         // MethodCountEnabled
         // 
         MethodCountEnabled.AutoSize = true;
-        MethodCountEnabled.Location = new Point(287, 188);
+        MethodCountEnabled.Location = new Point(287, 221);
         MethodCountEnabled.Name = "MethodCountEnabled";
         MethodCountEnabled.Size = new Size(154, 29);
         MethodCountEnabled.TabIndex = 14;
@@ -837,6 +847,7 @@ partial class AssemblyToolGUI
         TabPageRemapper.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).EndInit();
         Inclusions.ResumeLayout(false);
         tabPage1.ResumeLayout(false);
         tabPage1.PerformLayout();
@@ -860,7 +871,6 @@ partial class AssemblyToolGUI
     private GroupBox groupBox1;
     private TabControl Inclusions;
     private TabPage tabPage1;
-    private NumericUpDown MethodCountUpDown;
     private TextBox ExcludeMethodTextBox;
     private TextBox IncludeMethodTextBox;
     private Button MethodExcludeRemoveButton;
@@ -905,7 +915,6 @@ partial class AssemblyToolGUI
     private CheckBox ForceRenameCheckbox;
     private TextBox OriginalTypeName;
     private TextBox NewTypeName;
-    private Button ScoreButton;
     private Button RemoveRemapButton;
     private Button AddRemapButton;
     private ListView RemapListView;
@@ -919,7 +928,6 @@ partial class AssemblyToolGUI
     private DomainUpDown IsNestedUpDown;
     private DomainUpDown IsEnumUpDown;
     private DomainUpDown IsAbstractUpDown;
-    private CheckBox MethodCountEnabled;
     private CheckBox FieldCountEnabled;
     private CheckBox PropertyCountEnabled;
     private CheckBox NestedTypeCountEnabled;
@@ -928,4 +936,8 @@ partial class AssemblyToolGUI
     private Button SaveMappingFileButton;
     private Button RunRemapButton;
     private Button LoadMappingFileButton;
+    private NumericUpDown ConstuctorCountUpDown;
+    private CheckBox ConstructorCountEnabled;
+    private NumericUpDown MethodCountUpDown;
+    private CheckBox MethodCountEnabled;
 }

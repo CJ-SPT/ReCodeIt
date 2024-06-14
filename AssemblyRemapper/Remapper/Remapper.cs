@@ -9,6 +9,8 @@ namespace AssemblyRemapper.Remapper;
 
 public class Remapper
 {
+    public static bool IsRunning { get; private set; } = false;
+
     private static Stopwatch Stopwatch = new();
 
     /// <summary>
@@ -16,6 +18,7 @@ public class Remapper
     /// </summary>
     public void InitializeRemap()
     {
+        IsRunning = true;
         DisplayBasicModuleInformation();
 
         Stopwatch.Start();
@@ -29,7 +32,11 @@ public class Remapper
 
         ChooseBestMatches();
 
-        if (DataProvider.Settings.AppSettings.MatchMode) { return; }
+        if (DataProvider.Settings.AppSettings.MatchMode)
+        {
+            IsRunning = false;
+            return;
+        }
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
         if (!DataProvider.Settings.Remapper.Publicize)
@@ -243,7 +250,7 @@ public class Remapper
         var remappedPath = Path.Combine(strippedPath, filename);
 
         DataProvider.AssemblyDefinition.Write(remappedPath);
-        //DataProvider.UpdateMapping();
+        DataProvider.UpdateMapping();
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{remappedPath}`", ConsoleColor.Green);
@@ -251,6 +258,19 @@ public class Remapper
         Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F0} seconds", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
 
-        Stopwatch.Stop();
+        Reset();
+        IsRunning = false;
+    }
+
+    private void Reset()
+    {
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
+        Logger.Log("Reloading assembly definitions", ConsoleColor.Yellow);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
+
+        DataProvider.LoadAssemblyDefinition();
+        DataProvider.ScoringModels = [];
+
+        Stopwatch.Reset();
     }
 }

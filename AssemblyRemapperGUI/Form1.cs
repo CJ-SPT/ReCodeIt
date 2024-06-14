@@ -70,6 +70,7 @@ namespace AssemblyRemapperGUI
                     : BaseClassExcludeTextField.Text,
 
                     // Constructor - TODO
+                    ConstructorParameterCount = ConstructorCountEnabled.GetCount(ConstuctorCountUpDown),
                     MethodCount = MethodCountEnabled.GetCount(MethodCountUpDown),
                     FieldCount = FieldCountEnabled.GetCount(FieldCountUpDown),
                     PropertyCount = PropertyCountEnabled.GetCount(PropertyCountUpDown),
@@ -96,13 +97,11 @@ namespace AssemblyRemapperGUI
             RemapTreeView.SelectedNode?.Remove();
         }
 
-        private void ScoreButton_Click(object sender, EventArgs e)
-        {
-        }
-
         private void RunRemapButton_Click(object sender, EventArgs e)
         {
-            Remapper.InitializeRemap();
+            if (Remapper.IsRunning) { return; }
+
+            Task.Run(() => Remapper.InitializeRemap());
         }
 
         private void SaveMappingFileButton_Click(object sender, EventArgs e)

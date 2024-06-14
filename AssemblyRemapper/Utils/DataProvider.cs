@@ -127,6 +127,9 @@ public static class DataProvider
 
     public static void LoadAssemblyDefinition()
     {
+        AssemblyDefinition = null;
+        ModuleDefinition = null;
+
         DefaultAssemblyResolver resolver = new();
         resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.Remapper.AssemblyPath)); // Replace with the correct path : (6/14) I have no idea what I met by that
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
