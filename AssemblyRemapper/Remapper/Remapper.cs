@@ -243,7 +243,7 @@ public class Remapper
         var remappedPath = Path.Combine(strippedPath, filename);
 
         DataProvider.AssemblyDefinition.Write(remappedPath);
-        DataProvider.UpdateMapping();
+        //DataProvider.UpdateMapping();
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{remappedPath}`", ConsoleColor.Green);

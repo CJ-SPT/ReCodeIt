@@ -1,20 +1,29 @@
 using AssemblyRemapper.Enums;
 using AssemblyRemapper.Models;
 using AssemblyRemapper.Remapper;
+using AssemblyRemapper.Utils;
 using RemapperGUI.Utils;
 
 namespace AssemblyRemapperGUI
 {
     public partial class AssemblyToolGUI : Form
     {
-        public static Remapper Remapper { get; private set; }
+        public static Remapper Remapper { get; private set; } = new();
 
         public AssemblyToolGUI()
         {
             InitializeComponent();
+            PopulateDomainUpDowns();
+
+            foreach (var remap in DataProvider.Remaps)
+            {
+                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+            }
         }
 
         #region BUTTONS
+
+        #region MAIN_BUTTONS
 
         /// <summary>
         /// Construct a new remap when the button is pressed
@@ -25,7 +34,7 @@ namespace AssemblyRemapperGUI
         {
             if (NewTypeName.Text == string.Empty)
             {
-                MessageBox.Show("Please enter a new type name", "Invald data");
+                MessageBox.Show("Please enter a new type name", "Invalid data");
                 return;
             }
 
@@ -77,16 +86,65 @@ namespace AssemblyRemapperGUI
             };
 
             RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+            DataProvider.Remaps.Add(remap);
+            ResetAll();
         }
 
         private void RemoveRemapButton_Click(object sender, EventArgs e)
         {
+            DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
             RemapTreeView.SelectedNode?.Remove();
         }
 
         private void ScoreButton_Click(object sender, EventArgs e)
         {
         }
+
+        private void RunRemapButton_Click(object sender, EventArgs e)
+        {
+            Remapper.InitializeRemap();
+        }
+
+        private void SaveMappingFileButton_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(
+                "Are you sure?",
+                "Confirmation",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            {
+                DataProvider.SaveMapping();
+            }
+        }
+
+        private void LoadMappingFileButton_Click(object sender, EventArgs e)
+        {
+            var fDialog = new OpenFileDialog
+            {
+                Title = "Select a mapping file",
+                Filter = "JSON Files (*.json)|*.json|JSONC Files (*.jsonc)|*.jsonc|All Files (*.*)|*.*",
+                Multiselect = false
+            };
+
+            if (fDialog.ShowDialog() == DialogResult.OK)
+            {
+                var fileName = fDialog.FileName;
+
+                DataProvider.LoadMappingFile(fileName);
+            }
+
+            RemapTreeView.Nodes.Clear();
+
+            foreach (var remap in DataProvider.Remaps)
+            {
+                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+            }
+        }
+
+        #endregion MAIN_BUTTONS
+
+        #region LISTBOX_BUTTONS
 
         private void MethodIncludeAddButton_Click(object sender, EventArgs e)
         {
@@ -216,6 +274,70 @@ namespace AssemblyRemapperGUI
             }
         }
 
+        #endregion LISTBOX_BUTTONS
+
         #endregion BUTTONS
+
+        // Reset All UI elements to default
+        private void ResetAll()
+        {
+            PopulateDomainUpDowns();
+
+            // Text fields
+
+            NewTypeName.Clear();
+            BaseClassIncludeTextFIeld.Clear();
+            BaseClassExcludeTextField.Clear();
+            NestedTypeParentName.Clear();
+            BaseClassExcludeTextField.Clear();
+            IncludeMethodTextBox.Clear();
+            ExcludeMethodTextBox.Clear();
+            FieldsIncludeTextInput.Clear();
+            FieldsExcludeTextInput.Clear();
+            PropertiesIncludeTextField.Clear();
+            PropertiesExcludeTextField.Clear();
+            NestedTypesIncludeTextField.Clear();
+            NestedTypesExcludeTextField.Clear();
+
+            // Numeric UpDowns
+
+            MethodCountUpDown.Value = 0;
+            FieldCountUpDown.Value = 0;
+            PropertyCountUpDown.Value = 0;
+            NestedTypeCountUpDown.Value = 0;
+
+            // Check boxes
+
+            ForceRenameCheckbox.Checked = false;
+            MethodCountEnabled.Checked = false;
+            FieldCountEnabled.Checked = false;
+            PropertyCountEnabled.Checked = false;
+            NestedTypeCountEnabled.Checked = false;
+
+            // List boxes
+
+            MethodIncludeBox.Items.Clear();
+            MethodExcludeBox.Items.Clear();
+            FieldIncludeBox.Items.Clear();
+            FieldExcludeBox.Items.Clear();
+            PropertiesIncludeBox.Items.Clear();
+            PropertiesExcludeBox.Items.Clear();
+            NestedTypesIncludeBox.Items.Clear();
+            NestedTypesExcludeBox.Items.Clear();
+        }
+
+        private void PopulateDomainUpDowns()
+        {
+            // Clear them all first just incase
+            IsPublicUpDown.BuildStringList("IsPublic");
+            IsAbstractUpDown.BuildStringList("IsAbstract");
+            IsInterfaceUpDown.BuildStringList("IsInterface");
+            IsEnumUpDown.BuildStringList("IsEnum");
+            IsNestedUpDown.BuildStringList("IsNested");
+            IsSealedUpDown.BuildStringList("IsSealed");
+            HasAttributeUpDown.BuildStringList("HasAttribute");
+            IsDerivedUpDown.BuildStringList("IsDerived");
+            HasGenericParametersUpDown.BuildStringList("HasGenericParams");
+        }
     }
 }

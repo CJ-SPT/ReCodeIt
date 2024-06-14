@@ -10,7 +10,7 @@ public static class DataProvider
     {
     }
 
-    public static HashSet<RemapModel> Remaps { get; private set; } = [];
+    public static List<RemapModel> Remaps { get; private set; } = [];
 
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
@@ -41,19 +41,23 @@ public static class DataProvider
         Logger.Log($"Settings loaded from '{settingsPath}'");
     }
 
-    public static void LoadMappingFile()
+    public static void LoadMappingFile(string path = "")
     {
         if (!File.Exists(Settings.Remapper.MappingPath))
         {
             throw new InvalidOperationException($"path `{Settings.Remapper.MappingPath}` does not exist...");
         }
 
-        var jsonText = File.ReadAllText(Settings.Remapper.MappingPath);
+        var fpath = path == string.Empty
+            ? Settings.Remapper.MappingPath
+            : path;
+
+        var jsonText = File.ReadAllText(fpath);
 
         Remaps = [];
         ScoringModels = [];
 
-        Remaps = JsonConvert.DeserializeObject<HashSet<RemapModel>>(jsonText);
+        Remaps = JsonConvert.DeserializeObject<List<RemapModel>>(jsonText);
 
         var properties = typeof(SearchParams).GetProperties();
 
@@ -71,14 +75,27 @@ public static class DataProvider
         Logger.Log($"Mapping file loaded from '{Settings.Remapper.MappingPath}'");
     }
 
+    public static void SaveMapping()
+    {
+        JsonSerializerSettings settings = new()
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
+
+        var jsonText = JsonConvert.SerializeObject(Remaps, settings);
+
+        File.WriteAllText(Settings.Remapper.MappingPath, jsonText);
+    }
+
     public static void UpdateMapping()
     {
         if (!File.Exists(Settings.Remapper.MappingPath))
         {
-            throw new InvalidOperationException($"path `{Settings.Remapper.MappingPath}` does not exist...");
+            throw new FileNotFoundException($"path `{Settings.Remapper.MappingPath}` does not exist...");
         }
 
-        JsonSerializerSettings settings = new JsonSerializerSettings
+        JsonSerializerSettings settings = new()
         {
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented
@@ -104,19 +121,21 @@ public static class DataProvider
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
         File.WriteAllText(Settings.Remapper.MappingPath, jsonText);
+
+        Logger.Log($"Mapping file saved to {Settings.Remapper.MappingPath}");
     }
 
     public static void LoadAssemblyDefinition()
     {
         DefaultAssemblyResolver resolver = new();
-        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.Remapper.AssemblyPath)); // Replace with the correct path
+        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.Remapper.AssemblyPath)); // Replace with the correct path : (6/14) I have no idea what I met by that
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
 
         AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.Remapper.AssemblyPath, parameters);
 
         if (AssemblyDefinition is null)
         {
-            throw new InvalidOperationException("AssemblyDefinition was null...");
+            throw new NullReferenceException("AssemblyDefinition was null...");
         }
 
         var fileName = Path.GetFileName(Settings.Remapper.AssemblyPath);

@@ -1,5 +1,4 @@
 ﻿using AssemblyRemapper.Models;
-using AssemblyRemapper.Utils;
 
 namespace RemapperGUI.Utils;
 
@@ -32,6 +31,27 @@ internal static class GUI
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Builds the name list for the this updown
+    /// </summary>
+    /// <param name="domainUpDown"></param>
+    /// <param name="name"></param>
+    public static void BuildStringList(this DomainUpDown domainUpDown, string name)
+    {
+        domainUpDown.Items.Clear();
+        domainUpDown.Text = name + " (Disabled)";
+        domainUpDown.ReadOnly = true;
+
+        var list = new List<string>
+        {
+            name + " (Disabled)",
+            "True",
+            "False",
+        };
+
+        domainUpDown.Items.AddRange(list);
     }
 
     /// <summary>
@@ -72,6 +92,31 @@ internal static class GUI
         var IsDerivedNode = new TreeNode($"IsDerived: {(IsDerived != null ? IsDerived : "Disabled")}");
 
         var HasGenericsNode = new TreeNode($"HasGenericParameters: {(HasGenericParameters != null ? HasGenericParameters : "Disabled")}");
+
+        if (model.SearchParams.ConstructorParameterCount > 0)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"Constructor Parameter Count: {model.SearchParams.ConstructorParameterCount}"));
+        }
+
+        if (model.SearchParams.MethodCount > 0)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"Method Count: {model.SearchParams.MethodCount}"));
+        }
+
+        if (model.SearchParams.FieldCount > 0)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"Field Count: {model.SearchParams.FieldCount}"));
+        }
+
+        if (model.SearchParams.PropertyCount > 0)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"Property Count: {model.SearchParams.PropertyCount}"));
+        }
+
+        if (model.SearchParams.NestedTypeCount > 0)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"Nested Type Count: {model.SearchParams.NestedTypeCount}"));
+        }
 
         remapTreeItem.Nodes.Add(forceRenameNode);
         remapTreeItem.Nodes.Add(ispublicNode);
@@ -180,7 +225,6 @@ internal static class GUI
 
         foreach (var entry in lb.Items)
         {
-            Logger.Log(entry);
             tmp.Add((string)entry);
         }
 

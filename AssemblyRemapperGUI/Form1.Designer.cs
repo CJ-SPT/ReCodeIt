@@ -33,6 +33,9 @@ partial class AssemblyToolGUI
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        LoadMappingFileButton = new Button();
+        SaveMappingFileButton = new Button();
+        RunRemapButton = new Button();
         ScoreButton = new Button();
         Inclusions = new TabControl();
         tabPage1 = new TabPage();
@@ -97,8 +100,6 @@ partial class AssemblyToolGUI
         MethodCountEnabled = new CheckBox();
         IsSealedUpDown = new DomainUpDown();
         TabControlMain = new TabControl();
-        menuStrip1 = new MenuStrip();
-        SettingsButton = new ToolStripMenuItem();
         colorDialog1 = new ColorDialog();
         ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
         TabPageRemapper.SuspendLayout();
@@ -113,7 +114,6 @@ partial class AssemblyToolGUI
         ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).BeginInit();
         TabControlMain.SuspendLayout();
-        menuStrip1.SuspendLayout();
         SuspendLayout();
         // 
         // TabPageRemapper
@@ -124,7 +124,7 @@ partial class AssemblyToolGUI
         TabPageRemapper.Location = new Point(4, 34);
         TabPageRemapper.Name = "TabPageRemapper";
         TabPageRemapper.Padding = new Padding(3);
-        TabPageRemapper.Size = new Size(1695, 1055);
+        TabPageRemapper.Size = new Size(1336, 953);
         TabPageRemapper.TabIndex = 1;
         TabPageRemapper.Text = "Remapper";
         // 
@@ -137,6 +137,9 @@ partial class AssemblyToolGUI
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(LoadMappingFileButton);
+        groupBox1.Controls.Add(SaveMappingFileButton);
+        groupBox1.Controls.Add(RunRemapButton);
         groupBox1.Controls.Add(ScoreButton);
         groupBox1.Controls.Add(Inclusions);
         groupBox1.Controls.Add(NewTypeName);
@@ -171,6 +174,36 @@ partial class AssemblyToolGUI
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
         // 
+        // LoadMappingFileButton
+        // 
+        LoadMappingFileButton.Location = new Point(601, 489);
+        LoadMappingFileButton.Name = "LoadMappingFileButton";
+        LoadMappingFileButton.Size = new Size(168, 34);
+        LoadMappingFileButton.TabIndex = 18;
+        LoadMappingFileButton.Text = "Load Mapping File";
+        LoadMappingFileButton.UseVisualStyleBackColor = true;
+        LoadMappingFileButton.Click += LoadMappingFileButton_Click;
+        // 
+        // SaveMappingFileButton
+        // 
+        SaveMappingFileButton.Location = new Point(427, 489);
+        SaveMappingFileButton.Name = "SaveMappingFileButton";
+        SaveMappingFileButton.Size = new Size(168, 34);
+        SaveMappingFileButton.TabIndex = 17;
+        SaveMappingFileButton.Text = "Save Mapping File";
+        SaveMappingFileButton.UseVisualStyleBackColor = true;
+        SaveMappingFileButton.Click += SaveMappingFileButton_Click;
+        // 
+        // RunRemapButton
+        // 
+        RunRemapButton.Location = new Point(580, 185);
+        RunRemapButton.Name = "RunRemapButton";
+        RunRemapButton.Size = new Size(168, 34);
+        RunRemapButton.TabIndex = 16;
+        RunRemapButton.Text = "Run Remap";
+        RunRemapButton.UseVisualStyleBackColor = true;
+        RunRemapButton.Click += RunRemapButton_Click;
+        // 
         // ScoreButton
         // 
         ScoreButton.Location = new Point(580, 145);
@@ -187,15 +220,16 @@ partial class AssemblyToolGUI
         Inclusions.Controls.Add(tabPage2);
         Inclusions.Controls.Add(tabPage3);
         Inclusions.Controls.Add(tabPage4);
-        Inclusions.Location = new Point(6, 453);
+        Inclusions.Location = new Point(6, 529);
         Inclusions.Name = "Inclusions";
         Inclusions.SelectedIndex = 0;
-        Inclusions.Size = new Size(751, 455);
+        Inclusions.Size = new Size(751, 364);
         Inclusions.TabIndex = 14;
         // 
         // tabPage1
         // 
         tabPage1.BackColor = SystemColors.ControlDarkDark;
+        tabPage1.BorderStyle = BorderStyle.FixedSingle;
         tabPage1.Controls.Add(ExcludeMethodTextBox);
         tabPage1.Controls.Add(IncludeMethodTextBox);
         tabPage1.Controls.Add(MethodExcludeRemoveButton);
@@ -207,7 +241,7 @@ partial class AssemblyToolGUI
         tabPage1.Location = new Point(4, 34);
         tabPage1.Name = "tabPage1";
         tabPage1.Padding = new Padding(3);
-        tabPage1.Size = new Size(743, 417);
+        tabPage1.Size = new Size(743, 326);
         tabPage1.TabIndex = 0;
         tabPage1.Text = "Methods";
         // 
@@ -299,7 +333,7 @@ partial class AssemblyToolGUI
         tabPage2.Location = new Point(4, 34);
         tabPage2.Name = "tabPage2";
         tabPage2.Padding = new Padding(3);
-        tabPage2.Size = new Size(743, 417);
+        tabPage2.Size = new Size(743, 326);
         tabPage2.TabIndex = 1;
         tabPage2.Text = "Fields";
         // 
@@ -391,7 +425,7 @@ partial class AssemblyToolGUI
         tabPage3.Location = new Point(4, 34);
         tabPage3.Name = "tabPage3";
         tabPage3.Padding = new Padding(3);
-        tabPage3.Size = new Size(743, 417);
+        tabPage3.Size = new Size(743, 326);
         tabPage3.TabIndex = 2;
         tabPage3.Text = "Properties";
         // 
@@ -483,7 +517,7 @@ partial class AssemblyToolGUI
         tabPage4.Location = new Point(4, 34);
         tabPage4.Name = "tabPage4";
         tabPage4.Padding = new Padding(3);
-        tabPage4.Size = new Size(743, 417);
+        tabPage4.Size = new Size(743, 326);
         tabPage4.TabIndex = 3;
         tabPage4.Text = "Other";
         // 
@@ -591,9 +625,6 @@ partial class AssemblyToolGUI
         // 
         // IsInterfaceUpDown
         // 
-        IsInterfaceUpDown.Items.Add("Disabled");
-        IsInterfaceUpDown.Items.Add("False");
-        IsInterfaceUpDown.Items.Add("True");
         IsInterfaceUpDown.Location = new Point(10, 183);
         IsInterfaceUpDown.Name = "IsInterfaceUpDown";
         IsInterfaceUpDown.Size = new Size(208, 31);
@@ -637,9 +668,6 @@ partial class AssemblyToolGUI
         // 
         // IsPublicUpDown
         // 
-        IsPublicUpDown.Items.Add("Disabled");
-        IsPublicUpDown.Items.Add("False");
-        IsPublicUpDown.Items.Add("True");
         IsPublicUpDown.Location = new Point(10, 107);
         IsPublicUpDown.Name = "IsPublicUpDown";
         IsPublicUpDown.Size = new Size(208, 31);
@@ -674,9 +702,6 @@ partial class AssemblyToolGUI
         // 
         // IsAbstractUpDown
         // 
-        IsAbstractUpDown.Items.Add("Disabled");
-        IsAbstractUpDown.Items.Add("False");
-        IsAbstractUpDown.Items.Add("True");
         IsAbstractUpDown.Location = new Point(10, 144);
         IsAbstractUpDown.Name = "IsAbstractUpDown";
         IsAbstractUpDown.Size = new Size(208, 31);
@@ -702,9 +727,6 @@ partial class AssemblyToolGUI
         // 
         // HasGenericParametersUpDown
         // 
-        HasGenericParametersUpDown.Items.Add("Disabled");
-        HasGenericParametersUpDown.Items.Add("False");
-        HasGenericParametersUpDown.Items.Add("True");
         HasGenericParametersUpDown.Location = new Point(10, 366);
         HasGenericParametersUpDown.Name = "HasGenericParametersUpDown";
         HasGenericParametersUpDown.Size = new Size(208, 31);
@@ -714,9 +736,6 @@ partial class AssemblyToolGUI
         // 
         // IsEnumUpDown
         // 
-        IsEnumUpDown.Items.Add("Disabled");
-        IsEnumUpDown.Items.Add("False");
-        IsEnumUpDown.Items.Add("True");
         IsEnumUpDown.Location = new Point(10, 255);
         IsEnumUpDown.Name = "IsEnumUpDown";
         IsEnumUpDown.Size = new Size(208, 31);
@@ -743,9 +762,6 @@ partial class AssemblyToolGUI
         // 
         // IsDerivedUpDown
         // 
-        IsDerivedUpDown.Items.Add("Disabled");
-        IsDerivedUpDown.Items.Add("False");
-        IsDerivedUpDown.Items.Add("True");
         IsDerivedUpDown.Location = new Point(10, 329);
         IsDerivedUpDown.Name = "IsDerivedUpDown";
         IsDerivedUpDown.Size = new Size(208, 31);
@@ -755,9 +771,6 @@ partial class AssemblyToolGUI
         // 
         // IsNestedUpDown
         // 
-        IsNestedUpDown.Items.Add("Disabled");
-        IsNestedUpDown.Items.Add("False");
-        IsNestedUpDown.Items.Add("True");
         IsNestedUpDown.Location = new Point(10, 68);
         IsNestedUpDown.Name = "IsNestedUpDown";
         IsNestedUpDown.Size = new Size(208, 31);
@@ -767,9 +780,6 @@ partial class AssemblyToolGUI
         // 
         // HasAttributeUpDown
         // 
-        HasAttributeUpDown.Items.Add("Disabled");
-        HasAttributeUpDown.Items.Add("False");
-        HasAttributeUpDown.Items.Add("True");
         HasAttributeUpDown.Location = new Point(10, 292);
         HasAttributeUpDown.Name = "HasAttributeUpDown";
         HasAttributeUpDown.Size = new Size(208, 31);
@@ -797,9 +807,6 @@ partial class AssemblyToolGUI
         // 
         // IsSealedUpDown
         // 
-        IsSealedUpDown.Items.Add("Disabled");
-        IsSealedUpDown.Items.Add("False");
-        IsSealedUpDown.Items.Add("True");
         IsSealedUpDown.Location = new Point(10, 218);
         IsSealedUpDown.Name = "IsSealedUpDown";
         IsSealedUpDown.Size = new Size(208, 31);
@@ -810,36 +817,19 @@ partial class AssemblyToolGUI
         // TabControlMain
         // 
         TabControlMain.Controls.Add(TabPageRemapper);
-        TabControlMain.Location = new Point(12, 40);
+        TabControlMain.Location = new Point(-5, 1);
         TabControlMain.Name = "TabControlMain";
         TabControlMain.SelectedIndex = 0;
-        TabControlMain.Size = new Size(1703, 1093);
+        TabControlMain.Size = new Size(1344, 991);
         TabControlMain.TabIndex = 6;
-        // 
-        // menuStrip1
-        // 
-        menuStrip1.ImageScalingSize = new Size(24, 24);
-        menuStrip1.Items.AddRange(new ToolStripItem[] { SettingsButton });
-        menuStrip1.Location = new Point(0, 0);
-        menuStrip1.Name = "menuStrip1";
-        menuStrip1.Size = new Size(1297, 33);
-        menuStrip1.TabIndex = 7;
-        menuStrip1.Text = "menuStrip1";
-        // 
-        // SettingsButton
-        // 
-        SettingsButton.Name = "SettingsButton";
-        SettingsButton.Size = new Size(92, 29);
-        SettingsButton.Text = "Settings";
         // 
         // AssemblyToolGUI
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.ControlDarkDark;
-        ClientSize = new Size(1297, 998);
+        ClientSize = new Size(1297, 966);
         Controls.Add(TabControlMain);
-        Controls.Add(menuStrip1);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "AssemblyToolGUI";
         Text = "Cj's Assembly Tool V0.1.0";
@@ -861,10 +851,7 @@ partial class AssemblyToolGUI
         ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).EndInit();
         TabControlMain.ResumeLayout(false);
-        menuStrip1.ResumeLayout(false);
-        menuStrip1.PerformLayout();
         ResumeLayout(false);
-        PerformLayout();
     }
 
     #endregion
@@ -923,8 +910,6 @@ partial class AssemblyToolGUI
     private Button AddRemapButton;
     private ListView RemapListView;
     private TabControl TabControlMain;
-    private MenuStrip menuStrip1;
-    private ToolStripMenuItem SettingsButton;
     private DomainUpDown IsPublicUpDown;
     private ColorDialog colorDialog1;
     private DomainUpDown HasGenericParametersUpDown;
@@ -940,4 +925,7 @@ partial class AssemblyToolGUI
     private CheckBox NestedTypeCountEnabled;
     private DomainUpDown IsInterfaceUpDown;
     private TreeView RemapTreeView;
+    private Button SaveMappingFileButton;
+    private Button RunRemapButton;
+    private Button LoadMappingFileButton;
 }
