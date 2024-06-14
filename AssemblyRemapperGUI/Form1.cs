@@ -23,14 +23,18 @@ namespace AssemblyRemapperGUI
         /// <param name="e"></param>
         private void AddRemapButton_Click(object sender, EventArgs e)
         {
-            MethodIncludeBox.Items.Add("TEST");
+            if (NewTypeName.Text == string.Empty)
+            {
+                MessageBox.Show("Please enter a new type name", "Invald data");
+                return;
+            }
 
             var remap = new RemapModel
             {
                 Succeeded = false,
                 FailureReason = EFailureReason.None,
                 NewTypeName = NewTypeName.Text,
-                OriginalTypeName = OriginalTypeName.Text,
+                OriginalTypeName = OriginalTypeName.Text == string.Empty ? null : OriginalTypeName.Text,
                 UseForceRename = ForceRenameCheckbox.Checked,
                 SearchParams = new SearchParams
                 {
@@ -56,7 +60,7 @@ namespace AssemblyRemapperGUI
                     ? null
                     : BaseClassExcludeTextField.Text,
 
-                    // Constructor
+                    // Constructor - TODO
                     MethodCount = MethodCountEnabled.GetCount(MethodCountUpDown),
                     FieldCount = FieldCountEnabled.GetCount(FieldCountUpDown),
                     PropertyCount = PropertyCountEnabled.GetCount(PropertyCountUpDown),
@@ -71,10 +75,13 @@ namespace AssemblyRemapperGUI
                     ExcludeNestedTypes = [],
                 }
             };
+
+            RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
         }
 
         private void RemoveRemapButton_Click(object sender, EventArgs e)
         {
+            RemapTreeView.SelectedNode?.Remove();
         }
 
         private void ScoreButton_Click(object sender, EventArgs e)
