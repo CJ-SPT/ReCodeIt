@@ -5,7 +5,7 @@ using Mono.Collections.Generic;
 
 namespace AssemblyRemapper.Remapper;
 
-public static class Renamer
+internal static class Renamer
 {
     public static void RenameAll(ScoringModel score)
     {

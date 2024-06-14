@@ -24,26 +24,17 @@ public static class Logger
 
     public static void Log(object message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
     {
-        if (silent)
+        if (!silent)
         {
-            WriteToDisk(message);
-            return;
+            Console.ForegroundColor = color;
+            Console.WriteLine(message);
         }
 
-        Console.ForegroundColor = color;
-        Console.WriteLine(message);
-        Console.ResetColor();
         WriteToDisk(message);
     }
 
     public static void LogDebug(object message, ConsoleColor color = ConsoleColor.Gray, bool silent = false)
     {
-        if (silent)
-        {
-            WriteToDisk(message);
-            return;
-        }
-
         if (DataProvider.Settings.AppSettings.Debug)
         {
             Console.ForegroundColor = color;
@@ -51,6 +42,8 @@ public static class Logger
             Console.ResetColor();
             WriteToDisk(message);
         }
+
+        WriteToDisk(message);
     }
 
     private static void WriteToDisk(object message)

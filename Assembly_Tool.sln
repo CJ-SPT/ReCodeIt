@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RemapperLib", "AssemblyRemapper\RemapperLib.csproj", "{84BF5F6E-9EEC-4B08-BE72-9F419A369124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibRemap", "AssemblyRemapper\LibRemap.csproj", "{84BF5F6E-9EEC-4B08-BE72-9F419A369124}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemapperGUI", "AssemblyRemapperGUI\RemapperGUI.csproj", "{A854A2C9-EB8B-4B70-BB79-17F689756F48}"
 EndProject

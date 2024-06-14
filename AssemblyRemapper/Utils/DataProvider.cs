@@ -8,7 +8,6 @@ public static class DataProvider
 {
     static DataProvider()
     {
-        LoadAppSettings();
     }
 
     public static HashSet<RemapModel> Remaps { get; private set; } = [];
@@ -21,7 +20,7 @@ public static class DataProvider
 
     public static ModuleDefinition ModuleDefinition { get; private set; }
 
-    private static void LoadAppSettings()
+    public static void LoadAppSettings()
     {
         var settingsPath = Path.Combine(AppContext.BaseDirectory, "Data", "Settings.jsonc");
 
@@ -38,16 +37,18 @@ public static class DataProvider
         };
 
         Settings = JsonConvert.DeserializeObject<Settings>(jsonText, settings);
+
+        Logger.Log($"Settings loaded from '{settingsPath}'");
     }
 
     public static void LoadMappingFile()
     {
-        if (!File.Exists(Settings.RemapperSettings.MappingPath))
+        if (!File.Exists(Settings.Remapper.MappingPath))
         {
-            throw new InvalidOperationException($"path `{Settings.RemapperSettings.MappingPath}` does not exist...");
+            throw new InvalidOperationException($"path `{Settings.Remapper.MappingPath}` does not exist...");
         }
 
-        var jsonText = File.ReadAllText(Settings.RemapperSettings.MappingPath);
+        var jsonText = File.ReadAllText(Settings.Remapper.MappingPath);
 
         Remaps = [];
         ScoringModels = [];
@@ -66,13 +67,15 @@ public static class DataProvider
                 }
             }
         }
+
+        Logger.Log($"Mapping file loaded from '{Settings.Remapper.MappingPath}'");
     }
 
     public static void UpdateMapping()
     {
-        if (!File.Exists(Settings.RemapperSettings.MappingPath))
+        if (!File.Exists(Settings.Remapper.MappingPath))
         {
-            throw new InvalidOperationException($"path `{Settings.RemapperSettings.MappingPath}` does not exist...");
+            throw new InvalidOperationException($"path `{Settings.Remapper.MappingPath}` does not exist...");
         }
 
         JsonSerializerSettings settings = new JsonSerializerSettings
@@ -100,28 +103,29 @@ public static class DataProvider
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
-        File.WriteAllText(Settings.RemapperSettings.MappingPath, jsonText);
+        File.WriteAllText(Settings.Remapper.MappingPath, jsonText);
     }
 
     public static void LoadAssemblyDefinition()
     {
         DefaultAssemblyResolver resolver = new();
-        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.RemapperSettings.AssemblyPath)); // Replace with the correct path
+        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.Remapper.AssemblyPath)); // Replace with the correct path
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
 
-        AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.RemapperSettings.AssemblyPath, parameters);
+        AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.Remapper.AssemblyPath, parameters);
 
         if (AssemblyDefinition is null)
         {
             throw new InvalidOperationException("AssemblyDefinition was null...");
         }
 
-        var fileName = Path.GetFileName(Settings.RemapperSettings.AssemblyPath);
+        var fileName = Path.GetFileName(Settings.Remapper.AssemblyPath);
 
         foreach (var module in AssemblyDefinition.Modules.ToArray())
         {
             if (module.Name == fileName)
             {
+                Logger.Log($"Module definition {module.Name} found'");
                 ModuleDefinition = module;
                 return;
             }

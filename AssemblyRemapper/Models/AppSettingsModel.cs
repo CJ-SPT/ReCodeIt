@@ -6,9 +6,9 @@
 public class Settings
 {
     public AppSettings AppSettings { get; set; }
-    public RemapperSettings RemapperSettings { get; set; }
+    public RemapperSettings Remapper { get; set; }
 
-    public AutoMapperSettings AutoMapperSettings { get; set; }
+    public AutoMapperSettings AutoMapper { get; set; }
 }
 
 public class AppSettings

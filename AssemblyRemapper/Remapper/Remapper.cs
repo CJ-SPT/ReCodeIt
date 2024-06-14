@@ -32,12 +32,12 @@ public class Remapper
         if (DataProvider.Settings.AppSettings.MatchMode) { return; }
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
-        if (!DataProvider.Settings.RemapperSettings.Publicize)
+        if (!DataProvider.Settings.Remapper.Publicize)
         {
             Publicizer.Publicize();
         }
 
-        if (!DataProvider.Settings.RemapperSettings.Unseal)
+        if (!DataProvider.Settings.Remapper.Unseal)
         {
             Publicizer.Unseal();
         }
@@ -54,8 +54,8 @@ public class Remapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
         Logger.Log($"Starting remap...", ConsoleColor.Yellow);
         Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
-        Logger.Log($"Publicize: {DataProvider.Settings.RemapperSettings.Publicize}", ConsoleColor.Yellow);
-        Logger.Log($"Unseal: {DataProvider.Settings.RemapperSettings.Unseal}", ConsoleColor.Yellow);
+        Logger.Log($"Publicize: {DataProvider.Settings.Remapper.Publicize}", ConsoleColor.Yellow);
+        Logger.Log($"Unseal: {DataProvider.Settings.Remapper.Unseal}", ConsoleColor.Yellow);
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
@@ -199,7 +199,7 @@ public class Remapper
 
         var filteredScores = scores
             .OrderByDescending(score => score.Score)
-            .Take(DataProvider.Settings.RemapperSettings.MaxMatchCount);
+            .Take(DataProvider.Settings.Remapper.MaxMatchCount);
 
         var highestScore = filteredScores.FirstOrDefault();
 
@@ -235,7 +235,7 @@ public class Remapper
     /// </summary>
     private void WriteAssembly()
     {
-        var filename = Path.GetFileNameWithoutExtension(DataProvider.Settings.RemapperSettings.AssemblyPath);
+        var filename = Path.GetFileNameWithoutExtension(DataProvider.Settings.Remapper.AssemblyPath);
         var strippedPath = Path.GetDirectoryName(filename);
 
         filename = $"{filename}-Remapped.dll";
