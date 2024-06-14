@@ -35,7 +35,7 @@ partial class AssemblyToolGUI
         Inclusions = new TabControl();
         tabPage1 = new TabPage();
         groupBox4 = new GroupBox();
-        numericUpDown4 = new NumericUpDown();
+        MethodCountUpDown = new NumericUpDown();
         label4 = new Label();
         ExcludeMethodTextBox = new TextBox();
         IncludeMethodTextBox = new TextBox();
@@ -72,7 +72,7 @@ partial class AssemblyToolGUI
         tabPage4 = new TabPage();
         groupBox6 = new GroupBox();
         NestedTypeCountUpDown = new NumericUpDown();
-        BaseClassExclueTextFiel = new TextBox();
+        BaseClassExcludeTextField = new TextBox();
         NestedTypeParentName = new TextBox();
         label2 = new Label();
         BaseClassIncludeTextFIeld = new TextBox();
@@ -85,6 +85,7 @@ partial class AssemblyToolGUI
         NestedTypesExcludeBox = new ListBox();
         NestedTypesIncludeBox = new ListBox();
         groupBox3 = new GroupBox();
+        IsSealed = new CheckBox();
         IsInterface = new CheckBox();
         IsAbstract = new CheckBox();
         HasGenericParameters = new CheckBox();
@@ -94,7 +95,7 @@ partial class AssemblyToolGUI
         IsNested = new CheckBox();
         HasAttribute = new CheckBox();
         groupBox2 = new GroupBox();
-        checkBox1 = new CheckBox();
+        ForceRenameCheckbox = new CheckBox();
         OriginalTypeName = new TextBox();
         NewTypeName = new TextBox();
         ScoreButton = new Button();
@@ -110,7 +111,7 @@ partial class AssemblyToolGUI
         Inclusions.SuspendLayout();
         tabPage1.SuspendLayout();
         groupBox4.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)numericUpDown4).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).BeginInit();
         tabPage2.SuspendLayout();
         groupBox5.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)FieldCountUpDown).BeginInit();
@@ -186,7 +187,7 @@ partial class AssemblyToolGUI
         // 
         // groupBox4
         // 
-        groupBox4.Controls.Add(numericUpDown4);
+        groupBox4.Controls.Add(MethodCountUpDown);
         groupBox4.Controls.Add(label4);
         groupBox4.Location = new Point(6, 329);
         groupBox4.Name = "groupBox4";
@@ -195,12 +196,12 @@ partial class AssemblyToolGUI
         groupBox4.TabStop = false;
         groupBox4.Text = "Other";
         // 
-        // numericUpDown4
+        // MethodCountUpDown
         // 
-        numericUpDown4.Location = new Point(6, 30);
-        numericUpDown4.Name = "numericUpDown4";
-        numericUpDown4.Size = new Size(55, 31);
-        numericUpDown4.TabIndex = 6;
+        MethodCountUpDown.Location = new Point(6, 30);
+        MethodCountUpDown.Name = "MethodCountUpDown";
+        MethodCountUpDown.Size = new Size(55, 31);
+        MethodCountUpDown.TabIndex = 6;
         // 
         // label4
         // 
@@ -547,7 +548,7 @@ partial class AssemblyToolGUI
         // groupBox6
         // 
         groupBox6.Controls.Add(NestedTypeCountUpDown);
-        groupBox6.Controls.Add(BaseClassExclueTextFiel);
+        groupBox6.Controls.Add(BaseClassExcludeTextField);
         groupBox6.Controls.Add(NestedTypeParentName);
         groupBox6.Controls.Add(label2);
         groupBox6.Controls.Add(BaseClassIncludeTextFIeld);
@@ -565,13 +566,13 @@ partial class AssemblyToolGUI
         NestedTypeCountUpDown.Size = new Size(55, 31);
         NestedTypeCountUpDown.TabIndex = 4;
         // 
-        // BaseClassExclueTextFiel
+        // BaseClassExcludeTextField
         // 
-        BaseClassExclueTextFiel.Location = new Point(6, 141);
-        BaseClassExclueTextFiel.Name = "BaseClassExclueTextFiel";
-        BaseClassExclueTextFiel.PlaceholderText = "Exclude Base Class";
-        BaseClassExclueTextFiel.Size = new Size(239, 31);
-        BaseClassExclueTextFiel.TabIndex = 1;
+        BaseClassExcludeTextField.Location = new Point(6, 141);
+        BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
+        BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
+        BaseClassExcludeTextField.Size = new Size(239, 31);
+        BaseClassExcludeTextField.TabIndex = 1;
         // 
         // NestedTypeParentName
         // 
@@ -674,6 +675,7 @@ partial class AssemblyToolGUI
         // 
         // groupBox3
         // 
+        groupBox3.Controls.Add(IsSealed);
         groupBox3.Controls.Add(IsInterface);
         groupBox3.Controls.Add(IsAbstract);
         groupBox3.Controls.Add(HasGenericParameters);
@@ -689,6 +691,16 @@ partial class AssemblyToolGUI
         groupBox3.TabStop = false;
         groupBox3.Text = "True or False Checks";
         // 
+        // IsSealed
+        // 
+        IsSealed.AutoSize = true;
+        IsSealed.Location = new Point(6, 121);
+        IsSealed.Name = "IsSealed";
+        IsSealed.Size = new Size(103, 29);
+        IsSealed.TabIndex = 12;
+        IsSealed.Text = "IsSealed";
+        IsSealed.UseVisualStyleBackColor = true;
+        // 
         // IsInterface
         // 
         IsInterface.AutoSize = true;
@@ -702,7 +714,7 @@ partial class AssemblyToolGUI
         // IsAbstract
         // 
         IsAbstract.AutoSize = true;
-        IsAbstract.Location = new Point(6, 120);
+        IsAbstract.Location = new Point(125, 30);
         IsAbstract.Name = "IsAbstract";
         IsAbstract.Size = new Size(117, 29);
         IsAbstract.TabIndex = 5;
@@ -742,7 +754,7 @@ partial class AssemblyToolGUI
         // IsEnum
         // 
         IsEnum.AutoSize = true;
-        IsEnum.Location = new Point(125, 31);
+        IsEnum.Location = new Point(269, 121);
         IsEnum.Name = "IsEnum";
         IsEnum.Size = new Size(96, 29);
         IsEnum.TabIndex = 7;
@@ -771,7 +783,7 @@ partial class AssemblyToolGUI
         // 
         // groupBox2
         // 
-        groupBox2.Controls.Add(checkBox1);
+        groupBox2.Controls.Add(ForceRenameCheckbox);
         groupBox2.Controls.Add(OriginalTypeName);
         groupBox2.Controls.Add(NewTypeName);
         groupBox2.Location = new Point(6, 30);
@@ -781,15 +793,15 @@ partial class AssemblyToolGUI
         groupBox2.TabStop = false;
         groupBox2.Text = "Main settings";
         // 
-        // checkBox1
+        // ForceRenameCheckbox
         // 
-        checkBox1.AutoSize = true;
-        checkBox1.Location = new Point(568, 32);
-        checkBox1.Name = "checkBox1";
-        checkBox1.Size = new Size(183, 29);
-        checkBox1.TabIndex = 2;
-        checkBox1.Text = "Use Force Rename";
-        checkBox1.UseVisualStyleBackColor = true;
+        ForceRenameCheckbox.AutoSize = true;
+        ForceRenameCheckbox.Location = new Point(568, 32);
+        ForceRenameCheckbox.Name = "ForceRenameCheckbox";
+        ForceRenameCheckbox.Size = new Size(183, 29);
+        ForceRenameCheckbox.TabIndex = 2;
+        ForceRenameCheckbox.Text = "Use Force Rename";
+        ForceRenameCheckbox.UseVisualStyleBackColor = true;
         // 
         // OriginalTypeName
         // 
@@ -889,7 +901,7 @@ partial class AssemblyToolGUI
         tabPage1.PerformLayout();
         groupBox4.ResumeLayout(false);
         groupBox4.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)numericUpDown4).EndInit();
+        ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).EndInit();
         tabPage2.ResumeLayout(false);
         tabPage2.PerformLayout();
         groupBox5.ResumeLayout(false);
@@ -923,7 +935,7 @@ partial class AssemblyToolGUI
     private TabControl Inclusions;
     private TabPage tabPage1;
     private GroupBox groupBox4;
-    private NumericUpDown numericUpDown4;
+    private NumericUpDown MethodCountUpDown;
     private Label label4;
     private TextBox ExcludeMethodTextBox;
     private TextBox IncludeMethodTextBox;
@@ -960,7 +972,7 @@ partial class AssemblyToolGUI
     private TabPage tabPage4;
     private GroupBox groupBox6;
     private NumericUpDown NestedTypeCountUpDown;
-    private TextBox BaseClassExclueTextFiel;
+    private TextBox BaseClassExcludeTextField;
     private TextBox NestedTypeParentName;
     private Label label2;
     private TextBox BaseClassIncludeTextFIeld;
@@ -982,7 +994,7 @@ partial class AssemblyToolGUI
     private CheckBox IsNested;
     private CheckBox HasAttribute;
     private GroupBox groupBox2;
-    private CheckBox checkBox1;
+    private CheckBox ForceRenameCheckbox;
     private TextBox OriginalTypeName;
     private TextBox NewTypeName;
     private Button ScoreButton;
@@ -992,4 +1004,5 @@ partial class AssemblyToolGUI
     private TabControl TabControlMain;
     private MenuStrip menuStrip1;
     private ToolStripMenuItem SettingsButton;
+    private CheckBox IsSealed;
 }
