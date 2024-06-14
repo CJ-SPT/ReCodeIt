@@ -2,11 +2,32 @@
 
 internal static class GUI
 {
-    public static void AddToListBox()
+    /// <summary>
+    /// Returns the value of the count or null if disabled
+    /// </summary>
+    /// <param name="box"></param>
+    /// <returns></returns>
+    public static int? GetCount(this CheckBox box, NumericUpDown upDown)
     {
+        if (box.Checked)
+        {
+            return (int?)upDown.Value;
+        }
+
+        return null;
     }
 
-    public static void RemoveFromListBox()
+    public static bool? GetEnabled(this DomainUpDown domainUpDown)
     {
+        if (domainUpDown.Text == "True")
+        {
+            return true;
+        }
+        else if (domainUpDown.Text == "False")
+        {
+            return false;
+        }
+
+        return null;
     }
 }

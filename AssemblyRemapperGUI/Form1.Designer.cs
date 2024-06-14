@@ -32,6 +32,29 @@ partial class AssemblyToolGUI
         bindingSource1 = new BindingSource(components);
         TabPageRemapper = new TabPage();
         groupBox1 = new GroupBox();
+        ScoreButton = new Button();
+        groupBox3 = new GroupBox();
+        IsInterfaceUpDown = new DomainUpDown();
+        NestedTypeParentName = new TextBox();
+        BaseClassExcludeTextField = new TextBox();
+        MethodCountEnabled = new CheckBox();
+        NestedTypeCountUpDown = new NumericUpDown();
+        BaseClassIncludeTextFIeld = new TextBox();
+        FieldCountEnabled = new CheckBox();
+        PropertyCountUpDown = new NumericUpDown();
+        PropertyCountEnabled = new CheckBox();
+        NestedTypeCountEnabled = new CheckBox();
+        FieldCountUpDown = new NumericUpDown();
+        MethodCountUpDown = new NumericUpDown();
+        HasGenericParametersUpDown = new DomainUpDown();
+        IsDerivedUpDown = new DomainUpDown();
+        HasAttributeUpDown = new DomainUpDown();
+        IsSealedUpDown = new DomainUpDown();
+        IsNestedUpDown = new DomainUpDown();
+        IsEnumUpDown = new DomainUpDown();
+        IsAbstractUpDown = new DomainUpDown();
+        IsPublicUpDown = new DomainUpDown();
+        RemoveRemapButton = new Button();
         Inclusions = new TabControl();
         tabPage1 = new TabPage();
         ExcludeMethodTextBox = new TextBox();
@@ -62,9 +85,6 @@ partial class AssemblyToolGUI
         PropertiesIncludeBox = new ListBox();
         tabPage4 = new TabPage();
         groupBox6 = new GroupBox();
-        BaseClassExcludeTextField = new TextBox();
-        NestedTypeParentName = new TextBox();
-        BaseClassIncludeTextFIeld = new TextBox();
         NestedTypesExcludeTextField = new TextBox();
         NestedTypesIncludeTextField = new TextBox();
         NestedTypesExcludeRemoveButton = new Button();
@@ -73,21 +93,6 @@ partial class AssemblyToolGUI
         NestedTypesAddButton = new Button();
         NestedTypesExcludeBox = new ListBox();
         NestedTypesIncludeBox = new ListBox();
-        ScoreButton = new Button();
-        groupBox3 = new GroupBox();
-        NestedTypeCountUpDown = new NumericUpDown();
-        PropertiesCountUpDown = new NumericUpDown();
-        FieldCountUpDown = new NumericUpDown();
-        MethodCountUpDown = new NumericUpDown();
-        HasGenericParametersUpDown = new DomainUpDown();
-        IsDerivedUpDown = new DomainUpDown();
-        HasAttributeUpDown = new DomainUpDown();
-        IsSealedUpDown = new DomainUpDown();
-        domainUpDown4 = new DomainUpDown();
-        IsEnumUpDown = new DomainUpDown();
-        IsAbstractUpDown = new DomainUpDown();
-        IsPublicUpDown = new DomainUpDown();
-        RemoveRemapButton = new Button();
         AddRemapButton = new Button();
         groupBox2 = new GroupBox();
         ForceRenameCheckbox = new CheckBox();
@@ -98,24 +103,19 @@ partial class AssemblyToolGUI
         menuStrip1 = new MenuStrip();
         SettingsButton = new ToolStripMenuItem();
         colorDialog1 = new ColorDialog();
-        PropertyCountEnabled = new CheckBox();
-        NestedTypeCountEnabled = new CheckBox();
-        FieldCountEnabled = new CheckBox();
-        MethodCountEnabled = new CheckBox();
         ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
+        groupBox3.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)PropertyCountUpDown).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)FieldCountUpDown).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).BeginInit();
         Inclusions.SuspendLayout();
         tabPage1.SuspendLayout();
         tabPage2.SuspendLayout();
         tabPage3.SuspendLayout();
         tabPage4.SuspendLayout();
-        groupBox6.SuspendLayout();
-        groupBox3.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)PropertiesCountUpDown).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)FieldCountUpDown).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).BeginInit();
         groupBox2.SuspendLayout();
         TabControlMain.SuspendLayout();
         menuStrip1.SuspendLayout();
@@ -135,10 +135,10 @@ partial class AssemblyToolGUI
         // 
         // groupBox1
         // 
-        groupBox1.Controls.Add(Inclusions);
         groupBox1.Controls.Add(ScoreButton);
         groupBox1.Controls.Add(groupBox3);
         groupBox1.Controls.Add(RemoveRemapButton);
+        groupBox1.Controls.Add(Inclusions);
         groupBox1.Controls.Add(AddRemapButton);
         groupBox1.Controls.Add(groupBox2);
         groupBox1.Location = new Point(6, 11);
@@ -148,16 +148,256 @@ partial class AssemblyToolGUI
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
         // 
+        // ScoreButton
+        // 
+        ScoreButton.Location = new Point(356, 914);
+        ScoreButton.Name = "ScoreButton";
+        ScoreButton.Size = new Size(168, 34);
+        ScoreButton.TabIndex = 5;
+        ScoreButton.Text = "Score Remap";
+        ScoreButton.UseVisualStyleBackColor = true;
+        ScoreButton.Click += ScoreButton_Click;
+        // 
+        // groupBox3
+        // 
+        groupBox3.Controls.Add(IsInterfaceUpDown);
+        groupBox3.Controls.Add(NestedTypeParentName);
+        groupBox3.Controls.Add(BaseClassExcludeTextField);
+        groupBox3.Controls.Add(MethodCountEnabled);
+        groupBox3.Controls.Add(NestedTypeCountUpDown);
+        groupBox3.Controls.Add(BaseClassIncludeTextFIeld);
+        groupBox3.Controls.Add(FieldCountEnabled);
+        groupBox3.Controls.Add(PropertyCountUpDown);
+        groupBox3.Controls.Add(PropertyCountEnabled);
+        groupBox3.Controls.Add(NestedTypeCountEnabled);
+        groupBox3.Controls.Add(FieldCountUpDown);
+        groupBox3.Controls.Add(MethodCountUpDown);
+        groupBox3.Controls.Add(HasGenericParametersUpDown);
+        groupBox3.Controls.Add(IsDerivedUpDown);
+        groupBox3.Controls.Add(HasAttributeUpDown);
+        groupBox3.Controls.Add(IsSealedUpDown);
+        groupBox3.Controls.Add(IsNestedUpDown);
+        groupBox3.Controls.Add(IsEnumUpDown);
+        groupBox3.Controls.Add(IsAbstractUpDown);
+        groupBox3.Controls.Add(IsPublicUpDown);
+        groupBox3.Location = new Point(6, 124);
+        groupBox3.Name = "groupBox3";
+        groupBox3.Size = new Size(751, 323);
+        groupBox3.TabIndex = 4;
+        groupBox3.TabStop = false;
+        groupBox3.Text = "General";
+        // 
+        // IsInterfaceUpDown
+        // 
+        IsInterfaceUpDown.Items.Add("False");
+        IsInterfaceUpDown.Items.Add("True");
+        IsInterfaceUpDown.Location = new Point(10, 106);
+        IsInterfaceUpDown.Name = "IsInterfaceUpDown";
+        IsInterfaceUpDown.Size = new Size(208, 31);
+        IsInterfaceUpDown.Sorted = true;
+        IsInterfaceUpDown.TabIndex = 15;
+        IsInterfaceUpDown.Text = "IsInterface";
+        // 
+        // NestedTypeParentName
+        // 
+        NestedTypeParentName.Location = new Point(10, 226);
+        NestedTypeParentName.Name = "NestedTypeParentName";
+        NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
+        NestedTypeParentName.Size = new Size(208, 31);
+        NestedTypeParentName.TabIndex = 0;
+        // 
+        // BaseClassExcludeTextField
+        // 
+        BaseClassExcludeTextField.Location = new Point(224, 263);
+        BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
+        BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
+        BaseClassExcludeTextField.Size = new Size(208, 31);
+        BaseClassExcludeTextField.TabIndex = 1;
+        // 
+        // MethodCountEnabled
+        // 
+        MethodCountEnabled.AutoSize = true;
+        MethodCountEnabled.Location = new Point(537, 30);
+        MethodCountEnabled.Name = "MethodCountEnabled";
+        MethodCountEnabled.Size = new Size(154, 29);
+        MethodCountEnabled.TabIndex = 14;
+        MethodCountEnabled.Text = "Method Count";
+        MethodCountEnabled.UseVisualStyleBackColor = true;
+        // 
+        // NestedTypeCountUpDown
+        // 
+        NestedTypeCountUpDown.Location = new Point(474, 141);
+        NestedTypeCountUpDown.Name = "NestedTypeCountUpDown";
+        NestedTypeCountUpDown.Size = new Size(55, 31);
+        NestedTypeCountUpDown.TabIndex = 4;
+        // 
+        // BaseClassIncludeTextFIeld
+        // 
+        BaseClassIncludeTextFIeld.Location = new Point(10, 263);
+        BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
+        BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
+        BaseClassIncludeTextFIeld.Size = new Size(208, 31);
+        BaseClassIncludeTextFIeld.TabIndex = 2;
+        // 
+        // FieldCountEnabled
+        // 
+        FieldCountEnabled.AutoSize = true;
+        FieldCountEnabled.Location = new Point(537, 71);
+        FieldCountEnabled.Name = "FieldCountEnabled";
+        FieldCountEnabled.Size = new Size(128, 29);
+        FieldCountEnabled.TabIndex = 13;
+        FieldCountEnabled.Text = "Field Count";
+        FieldCountEnabled.UseVisualStyleBackColor = true;
+        // 
+        // PropertyCountUpDown
+        // 
+        PropertyCountUpDown.Location = new Point(474, 104);
+        PropertyCountUpDown.Name = "PropertyCountUpDown";
+        PropertyCountUpDown.Size = new Size(55, 31);
+        PropertyCountUpDown.TabIndex = 5;
+        // 
+        // PropertyCountEnabled
+        // 
+        PropertyCountEnabled.AutoSize = true;
+        PropertyCountEnabled.Location = new Point(537, 106);
+        PropertyCountEnabled.Name = "PropertyCountEnabled";
+        PropertyCountEnabled.Size = new Size(159, 29);
+        PropertyCountEnabled.TabIndex = 11;
+        PropertyCountEnabled.Text = "Property Count";
+        PropertyCountEnabled.UseVisualStyleBackColor = true;
+        // 
+        // NestedTypeCountEnabled
+        // 
+        NestedTypeCountEnabled.AutoSize = true;
+        NestedTypeCountEnabled.Location = new Point(537, 141);
+        NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
+        NestedTypeCountEnabled.Size = new Size(189, 29);
+        NestedTypeCountEnabled.TabIndex = 12;
+        NestedTypeCountEnabled.Text = "Nested Type Count";
+        NestedTypeCountEnabled.UseVisualStyleBackColor = true;
+        // 
+        // FieldCountUpDown
+        // 
+        FieldCountUpDown.Location = new Point(474, 67);
+        FieldCountUpDown.Name = "FieldCountUpDown";
+        FieldCountUpDown.Size = new Size(55, 31);
+        FieldCountUpDown.TabIndex = 3;
+        // 
+        // MethodCountUpDown
+        // 
+        MethodCountUpDown.Location = new Point(474, 30);
+        MethodCountUpDown.Name = "MethodCountUpDown";
+        MethodCountUpDown.Size = new Size(55, 31);
+        MethodCountUpDown.TabIndex = 6;
+        // 
+        // HasGenericParametersUpDown
+        // 
+        HasGenericParametersUpDown.Items.Add("False");
+        HasGenericParametersUpDown.Items.Add("True");
+        HasGenericParametersUpDown.Location = new Point(224, 108);
+        HasGenericParametersUpDown.Name = "HasGenericParametersUpDown";
+        HasGenericParametersUpDown.Size = new Size(208, 31);
+        HasGenericParametersUpDown.Sorted = true;
+        HasGenericParametersUpDown.TabIndex = 7;
+        HasGenericParametersUpDown.Text = "HasGenericParameters";
+        // 
+        // IsDerivedUpDown
+        // 
+        IsDerivedUpDown.Items.Add("False");
+        IsDerivedUpDown.Items.Add("True");
+        IsDerivedUpDown.Location = new Point(224, 71);
+        IsDerivedUpDown.Name = "IsDerivedUpDown";
+        IsDerivedUpDown.Size = new Size(208, 31);
+        IsDerivedUpDown.Sorted = true;
+        IsDerivedUpDown.TabIndex = 6;
+        IsDerivedUpDown.Text = "IsDerived";
+        // 
+        // HasAttributeUpDown
+        // 
+        HasAttributeUpDown.Items.Add("False");
+        HasAttributeUpDown.Items.Add("True");
+        HasAttributeUpDown.Location = new Point(224, 30);
+        HasAttributeUpDown.Name = "HasAttributeUpDown";
+        HasAttributeUpDown.Size = new Size(208, 31);
+        HasAttributeUpDown.Sorted = true;
+        HasAttributeUpDown.TabIndex = 5;
+        HasAttributeUpDown.Text = "HasAttribute";
+        // 
+        // IsSealedUpDown
+        // 
+        IsSealedUpDown.Items.Add("False");
+        IsSealedUpDown.Items.Add("True");
+        IsSealedUpDown.Location = new Point(10, 141);
+        IsSealedUpDown.Name = "IsSealedUpDown";
+        IsSealedUpDown.Size = new Size(208, 31);
+        IsSealedUpDown.Sorted = true;
+        IsSealedUpDown.TabIndex = 4;
+        IsSealedUpDown.Text = "IsSealed";
+        // 
+        // IsNestedUpDown
+        // 
+        IsNestedUpDown.Items.Add("False");
+        IsNestedUpDown.Items.Add("True");
+        IsNestedUpDown.Location = new Point(224, 145);
+        IsNestedUpDown.Name = "IsNestedUpDown";
+        IsNestedUpDown.Size = new Size(208, 31);
+        IsNestedUpDown.Sorted = true;
+        IsNestedUpDown.TabIndex = 3;
+        IsNestedUpDown.Text = "IsNested";
+        // 
+        // IsEnumUpDown
+        // 
+        IsEnumUpDown.Items.Add("False");
+        IsEnumUpDown.Items.Add("True");
+        IsEnumUpDown.Location = new Point(10, 178);
+        IsEnumUpDown.Name = "IsEnumUpDown";
+        IsEnumUpDown.Size = new Size(208, 31);
+        IsEnumUpDown.Sorted = true;
+        IsEnumUpDown.TabIndex = 2;
+        IsEnumUpDown.Text = "IsEnum";
+        // 
+        // IsAbstractUpDown
+        // 
+        IsAbstractUpDown.Items.Add("False");
+        IsAbstractUpDown.Items.Add("True");
+        IsAbstractUpDown.Location = new Point(10, 67);
+        IsAbstractUpDown.Name = "IsAbstractUpDown";
+        IsAbstractUpDown.Size = new Size(208, 31);
+        IsAbstractUpDown.Sorted = true;
+        IsAbstractUpDown.TabIndex = 1;
+        IsAbstractUpDown.Text = "IsAbstract";
+        // 
+        // IsPublicUpDown
+        // 
+        IsPublicUpDown.Items.Add("False");
+        IsPublicUpDown.Items.Add("True");
+        IsPublicUpDown.Location = new Point(10, 30);
+        IsPublicUpDown.Name = "IsPublicUpDown";
+        IsPublicUpDown.Size = new Size(208, 31);
+        IsPublicUpDown.Sorted = true;
+        IsPublicUpDown.TabIndex = 0;
+        IsPublicUpDown.Text = "IsPublic";
+        // 
+        // RemoveRemapButton
+        // 
+        RemoveRemapButton.Location = new Point(182, 914);
+        RemoveRemapButton.Name = "RemoveRemapButton";
+        RemoveRemapButton.Size = new Size(168, 34);
+        RemoveRemapButton.TabIndex = 2;
+        RemoveRemapButton.Text = "Remove Remap";
+        RemoveRemapButton.UseVisualStyleBackColor = true;
+        RemoveRemapButton.Click += RemoveRemapButton_Click;
+        // 
         // Inclusions
         // 
         Inclusions.Controls.Add(tabPage1);
         Inclusions.Controls.Add(tabPage2);
         Inclusions.Controls.Add(tabPage3);
         Inclusions.Controls.Add(tabPage4);
-        Inclusions.Location = new Point(6, 315);
+        Inclusions.Location = new Point(6, 453);
         Inclusions.Name = "Inclusions";
         Inclusions.SelectedIndex = 0;
-        Inclusions.Size = new Size(751, 478);
+        Inclusions.Size = new Size(751, 455);
         Inclusions.TabIndex = 14;
         // 
         // tabPage1
@@ -174,7 +414,7 @@ partial class AssemblyToolGUI
         tabPage1.Location = new Point(4, 34);
         tabPage1.Name = "tabPage1";
         tabPage1.Padding = new Padding(3);
-        tabPage1.Size = new Size(743, 520);
+        tabPage1.Size = new Size(743, 417);
         tabPage1.TabIndex = 0;
         tabPage1.Text = "Methods";
         // 
@@ -266,7 +506,7 @@ partial class AssemblyToolGUI
         tabPage2.Location = new Point(4, 34);
         tabPage2.Name = "tabPage2";
         tabPage2.Padding = new Padding(3);
-        tabPage2.Size = new Size(743, 520);
+        tabPage2.Size = new Size(743, 417);
         tabPage2.TabIndex = 1;
         tabPage2.Text = "Fields";
         // 
@@ -358,7 +598,7 @@ partial class AssemblyToolGUI
         tabPage3.Location = new Point(4, 34);
         tabPage3.Name = "tabPage3";
         tabPage3.Padding = new Padding(3);
-        tabPage3.Size = new Size(743, 520);
+        tabPage3.Size = new Size(743, 417);
         tabPage3.TabIndex = 2;
         tabPage3.Text = "Properties";
         // 
@@ -451,45 +691,18 @@ partial class AssemblyToolGUI
         tabPage4.Location = new Point(4, 34);
         tabPage4.Name = "tabPage4";
         tabPage4.Padding = new Padding(3);
-        tabPage4.Size = new Size(743, 440);
+        tabPage4.Size = new Size(743, 417);
         tabPage4.TabIndex = 3;
         tabPage4.Text = "Other";
         // 
         // groupBox6
         // 
-        groupBox6.Controls.Add(BaseClassExcludeTextField);
-        groupBox6.Controls.Add(NestedTypeParentName);
-        groupBox6.Controls.Add(BaseClassIncludeTextFIeld);
         groupBox6.Location = new Point(6, 328);
         groupBox6.Name = "groupBox6";
         groupBox6.Size = new Size(737, 422);
         groupBox6.TabIndex = 28;
         groupBox6.TabStop = false;
         groupBox6.Text = "Other";
-        // 
-        // BaseClassExcludeTextField
-        // 
-        BaseClassExcludeTextField.Location = new Point(6, 67);
-        BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
-        BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
-        BaseClassExcludeTextField.Size = new Size(239, 31);
-        BaseClassExcludeTextField.TabIndex = 1;
-        // 
-        // NestedTypeParentName
-        // 
-        NestedTypeParentName.Location = new Point(252, 30);
-        NestedTypeParentName.Name = "NestedTypeParentName";
-        NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
-        NestedTypeParentName.Size = new Size(239, 31);
-        NestedTypeParentName.TabIndex = 0;
-        // 
-        // BaseClassIncludeTextFIeld
-        // 
-        BaseClassIncludeTextFIeld.Location = new Point(7, 30);
-        BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
-        BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
-        BaseClassIncludeTextFIeld.Size = new Size(239, 31);
-        BaseClassIncludeTextFIeld.TabIndex = 2;
         // 
         // NestedTypesExcludeTextField
         // 
@@ -565,178 +778,9 @@ partial class AssemblyToolGUI
         NestedTypesIncludeBox.Size = new Size(353, 229);
         NestedTypesIncludeBox.TabIndex = 20;
         // 
-        // ScoreButton
-        // 
-        ScoreButton.Location = new Point(357, 799);
-        ScoreButton.Name = "ScoreButton";
-        ScoreButton.Size = new Size(168, 34);
-        ScoreButton.TabIndex = 5;
-        ScoreButton.Text = "Score Remap";
-        ScoreButton.UseVisualStyleBackColor = true;
-        ScoreButton.Click += ScoreButton_Click;
-        // 
-        // groupBox3
-        // 
-        groupBox3.Controls.Add(MethodCountEnabled);
-        groupBox3.Controls.Add(NestedTypeCountUpDown);
-        groupBox3.Controls.Add(FieldCountEnabled);
-        groupBox3.Controls.Add(PropertiesCountUpDown);
-        groupBox3.Controls.Add(PropertyCountEnabled);
-        groupBox3.Controls.Add(NestedTypeCountEnabled);
-        groupBox3.Controls.Add(FieldCountUpDown);
-        groupBox3.Controls.Add(MethodCountUpDown);
-        groupBox3.Controls.Add(HasGenericParametersUpDown);
-        groupBox3.Controls.Add(IsDerivedUpDown);
-        groupBox3.Controls.Add(HasAttributeUpDown);
-        groupBox3.Controls.Add(IsSealedUpDown);
-        groupBox3.Controls.Add(domainUpDown4);
-        groupBox3.Controls.Add(IsEnumUpDown);
-        groupBox3.Controls.Add(IsAbstractUpDown);
-        groupBox3.Controls.Add(IsPublicUpDown);
-        groupBox3.Location = new Point(6, 124);
-        groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(751, 185);
-        groupBox3.TabIndex = 4;
-        groupBox3.TabStop = false;
-        groupBox3.Text = "General";
-        // 
-        // NestedTypeCountUpDown
-        // 
-        NestedTypeCountUpDown.Location = new Point(474, 141);
-        NestedTypeCountUpDown.Name = "NestedTypeCountUpDown";
-        NestedTypeCountUpDown.Size = new Size(55, 31);
-        NestedTypeCountUpDown.TabIndex = 4;
-        // 
-        // PropertiesCountUpDown
-        // 
-        PropertiesCountUpDown.Location = new Point(474, 104);
-        PropertiesCountUpDown.Name = "PropertiesCountUpDown";
-        PropertiesCountUpDown.Size = new Size(55, 31);
-        PropertiesCountUpDown.TabIndex = 5;
-        // 
-        // FieldCountUpDown
-        // 
-        FieldCountUpDown.Location = new Point(474, 67);
-        FieldCountUpDown.Name = "FieldCountUpDown";
-        FieldCountUpDown.Size = new Size(55, 31);
-        FieldCountUpDown.TabIndex = 3;
-        // 
-        // MethodCountUpDown
-        // 
-        MethodCountUpDown.Location = new Point(474, 30);
-        MethodCountUpDown.Name = "MethodCountUpDown";
-        MethodCountUpDown.Size = new Size(55, 31);
-        MethodCountUpDown.TabIndex = 6;
-        // 
-        // HasGenericParametersUpDown
-        // 
-        HasGenericParametersUpDown.Items.Add("Disabled");
-        HasGenericParametersUpDown.Items.Add("False");
-        HasGenericParametersUpDown.Items.Add("True");
-        HasGenericParametersUpDown.Location = new Point(224, 141);
-        HasGenericParametersUpDown.Name = "HasGenericParametersUpDown";
-        HasGenericParametersUpDown.Size = new Size(208, 31);
-        HasGenericParametersUpDown.Sorted = true;
-        HasGenericParametersUpDown.TabIndex = 7;
-        HasGenericParametersUpDown.Text = "HasGenericParameters";
-        // 
-        // IsDerivedUpDown
-        // 
-        IsDerivedUpDown.Items.Add("Disabled");
-        IsDerivedUpDown.Items.Add("False");
-        IsDerivedUpDown.Items.Add("True");
-        IsDerivedUpDown.Location = new Point(224, 104);
-        IsDerivedUpDown.Name = "IsDerivedUpDown";
-        IsDerivedUpDown.Size = new Size(208, 31);
-        IsDerivedUpDown.Sorted = true;
-        IsDerivedUpDown.TabIndex = 6;
-        IsDerivedUpDown.Text = "IsDerived";
-        // 
-        // HasAttributeUpDown
-        // 
-        HasAttributeUpDown.Items.Add("Disabled");
-        HasAttributeUpDown.Items.Add("False");
-        HasAttributeUpDown.Items.Add("True");
-        HasAttributeUpDown.Location = new Point(224, 67);
-        HasAttributeUpDown.Name = "HasAttributeUpDown";
-        HasAttributeUpDown.Size = new Size(208, 31);
-        HasAttributeUpDown.Sorted = true;
-        HasAttributeUpDown.TabIndex = 5;
-        HasAttributeUpDown.Text = "HasAttribute";
-        // 
-        // IsSealedUpDown
-        // 
-        IsSealedUpDown.Items.Add("Disabled");
-        IsSealedUpDown.Items.Add("False");
-        IsSealedUpDown.Items.Add("True");
-        IsSealedUpDown.Location = new Point(224, 30);
-        IsSealedUpDown.Name = "IsSealedUpDown";
-        IsSealedUpDown.Size = new Size(208, 31);
-        IsSealedUpDown.Sorted = true;
-        IsSealedUpDown.TabIndex = 4;
-        IsSealedUpDown.Text = "IsSealed";
-        // 
-        // domainUpDown4
-        // 
-        domainUpDown4.Items.Add("Disabled");
-        domainUpDown4.Items.Add("False");
-        domainUpDown4.Items.Add("True");
-        domainUpDown4.Location = new Point(10, 141);
-        domainUpDown4.Name = "domainUpDown4";
-        domainUpDown4.Size = new Size(208, 31);
-        domainUpDown4.Sorted = true;
-        domainUpDown4.TabIndex = 3;
-        domainUpDown4.Text = "IsNested";
-        // 
-        // IsEnumUpDown
-        // 
-        IsEnumUpDown.Items.Add("Disabled");
-        IsEnumUpDown.Items.Add("False");
-        IsEnumUpDown.Items.Add("True");
-        IsEnumUpDown.Location = new Point(10, 104);
-        IsEnumUpDown.Name = "IsEnumUpDown";
-        IsEnumUpDown.Size = new Size(208, 31);
-        IsEnumUpDown.Sorted = true;
-        IsEnumUpDown.TabIndex = 2;
-        IsEnumUpDown.Text = "IsEnum";
-        // 
-        // IsAbstractUpDown
-        // 
-        IsAbstractUpDown.Items.Add("Disabled");
-        IsAbstractUpDown.Items.Add("False");
-        IsAbstractUpDown.Items.Add("True");
-        IsAbstractUpDown.Location = new Point(10, 67);
-        IsAbstractUpDown.Name = "IsAbstractUpDown";
-        IsAbstractUpDown.Size = new Size(208, 31);
-        IsAbstractUpDown.Sorted = true;
-        IsAbstractUpDown.TabIndex = 1;
-        IsAbstractUpDown.Text = "IsAbstract";
-        // 
-        // IsPublicUpDown
-        // 
-        IsPublicUpDown.Items.Add("Disabled");
-        IsPublicUpDown.Items.Add("False");
-        IsPublicUpDown.Items.Add("True");
-        IsPublicUpDown.Location = new Point(10, 30);
-        IsPublicUpDown.Name = "IsPublicUpDown";
-        IsPublicUpDown.Size = new Size(208, 31);
-        IsPublicUpDown.Sorted = true;
-        IsPublicUpDown.TabIndex = 0;
-        IsPublicUpDown.Text = "IsPublic";
-        // 
-        // RemoveRemapButton
-        // 
-        RemoveRemapButton.Location = new Point(183, 799);
-        RemoveRemapButton.Name = "RemoveRemapButton";
-        RemoveRemapButton.Size = new Size(168, 34);
-        RemoveRemapButton.TabIndex = 2;
-        RemoveRemapButton.Text = "Remove Remap";
-        RemoveRemapButton.UseVisualStyleBackColor = true;
-        RemoveRemapButton.Click += RemoveRemapButton_Click;
-        // 
         // AddRemapButton
         // 
-        AddRemapButton.Location = new Point(9, 799);
+        AddRemapButton.Location = new Point(8, 914);
         AddRemapButton.Name = "AddRemapButton";
         AddRemapButton.Size = new Size(168, 34);
         AddRemapButton.TabIndex = 4;
@@ -816,46 +860,6 @@ partial class AssemblyToolGUI
         SettingsButton.Size = new Size(92, 29);
         SettingsButton.Text = "Settings";
         // 
-        // PropertyCountEnabled
-        // 
-        PropertyCountEnabled.AutoSize = true;
-        PropertyCountEnabled.Location = new Point(537, 106);
-        PropertyCountEnabled.Name = "PropertyCountEnabled";
-        PropertyCountEnabled.Size = new Size(159, 29);
-        PropertyCountEnabled.TabIndex = 11;
-        PropertyCountEnabled.Text = "Property Count";
-        PropertyCountEnabled.UseVisualStyleBackColor = true;
-        // 
-        // NestedTypeCountEnabled
-        // 
-        NestedTypeCountEnabled.AutoSize = true;
-        NestedTypeCountEnabled.Location = new Point(537, 141);
-        NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
-        NestedTypeCountEnabled.Size = new Size(189, 29);
-        NestedTypeCountEnabled.TabIndex = 12;
-        NestedTypeCountEnabled.Text = "Nested Type Count";
-        NestedTypeCountEnabled.UseVisualStyleBackColor = true;
-        // 
-        // FieldCountEnabled
-        // 
-        FieldCountEnabled.AutoSize = true;
-        FieldCountEnabled.Location = new Point(537, 71);
-        FieldCountEnabled.Name = "FieldCountEnabled";
-        FieldCountEnabled.Size = new Size(128, 29);
-        FieldCountEnabled.TabIndex = 13;
-        FieldCountEnabled.Text = "Field Count";
-        FieldCountEnabled.UseVisualStyleBackColor = true;
-        // 
-        // MethodCountEnabled
-        // 
-        MethodCountEnabled.AutoSize = true;
-        MethodCountEnabled.Location = new Point(537, 30);
-        MethodCountEnabled.Name = "MethodCountEnabled";
-        MethodCountEnabled.Size = new Size(154, 29);
-        MethodCountEnabled.TabIndex = 14;
-        MethodCountEnabled.Text = "Method Count";
-        MethodCountEnabled.UseVisualStyleBackColor = true;
-        // 
         // AssemblyToolGUI
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -870,6 +874,12 @@ partial class AssemblyToolGUI
         ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
         TabPageRemapper.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
+        groupBox3.ResumeLayout(false);
+        groupBox3.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).EndInit();
+        ((System.ComponentModel.ISupportInitialize)PropertyCountUpDown).EndInit();
+        ((System.ComponentModel.ISupportInitialize)FieldCountUpDown).EndInit();
+        ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).EndInit();
         Inclusions.ResumeLayout(false);
         tabPage1.ResumeLayout(false);
         tabPage1.PerformLayout();
@@ -879,14 +889,6 @@ partial class AssemblyToolGUI
         tabPage3.PerformLayout();
         tabPage4.ResumeLayout(false);
         tabPage4.PerformLayout();
-        groupBox6.ResumeLayout(false);
-        groupBox6.PerformLayout();
-        groupBox3.ResumeLayout(false);
-        groupBox3.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).EndInit();
-        ((System.ComponentModel.ISupportInitialize)PropertiesCountUpDown).EndInit();
-        ((System.ComponentModel.ISupportInitialize)FieldCountUpDown).EndInit();
-        ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).EndInit();
         groupBox2.ResumeLayout(false);
         groupBox2.PerformLayout();
         TabControlMain.ResumeLayout(false);
@@ -922,7 +924,7 @@ partial class AssemblyToolGUI
     private ListBox FieldExcludeBox;
     private ListBox FieldIncludeBox;
     private TabPage tabPage3;
-    private NumericUpDown PropertiesCountUpDown;
+    private NumericUpDown PropertyCountUpDown;
     private TextBox PropertiesExcludeTextField;
     private TextBox PropertiesIncludeTextField;
     private Button PropertiesExcludeRemoveButton;
@@ -963,11 +965,12 @@ partial class AssemblyToolGUI
     private DomainUpDown IsDerivedUpDown;
     private DomainUpDown HasAttributeUpDown;
     private DomainUpDown IsSealedUpDown;
-    private DomainUpDown domainUpDown4;
+    private DomainUpDown IsNestedUpDown;
     private DomainUpDown IsEnumUpDown;
     private DomainUpDown IsAbstractUpDown;
     private CheckBox MethodCountEnabled;
     private CheckBox FieldCountEnabled;
     private CheckBox PropertyCountEnabled;
     private CheckBox NestedTypeCountEnabled;
+    private DomainUpDown IsInterfaceUpDown;
 }

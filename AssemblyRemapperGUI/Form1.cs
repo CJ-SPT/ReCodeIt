@@ -1,6 +1,7 @@
 using AssemblyRemapper.Enums;
 using AssemblyRemapper.Models;
 using AssemblyRemapper.Remapper;
+using RemapperGUI.Utils;
 
 namespace AssemblyRemapperGUI
 {
@@ -33,23 +34,33 @@ namespace AssemblyRemapperGUI
                 UseForceRename = ForceRenameCheckbox.Checked,
                 SearchParams = new SearchParams
                 {
-                    IsPublic = IsPublic.Checked,
-                    //IsAbstract = IsAbstract.Checked,
-                    //IsInterface = IsInterface.Checked,
-                    //IsEnum = IsEnum.Checked,
-                    //IsNested = IsNested.Checked,
-                    //IsSealed = IsSealed.Checked,
-                    //HasAttribute = HasAttribute.Checked,
-                    //IsDerived = IsDerived.Checked,
-                    //HasGenericParameters = HasGenericParameters.Checked,
-                    ParentName = NestedTypeParentName.Text,
-                    MatchBaseClass = BaseClassExcludeTextField.Text,
-                    IgnoreBaseClass = BaseClassIncludeTextFIeld.Text,
+                    IsPublic = IsPublicUpDown.GetEnabled(),
+                    IsAbstract = IsAbstractUpDown.GetEnabled(),
+                    IsInterface = IsInterfaceUpDown.GetEnabled(),
+                    IsEnum = IsEnumUpDown.GetEnabled(),
+                    IsNested = IsNestedUpDown.GetEnabled(),
+                    IsSealed = IsSealedUpDown.GetEnabled(),
+                    HasAttribute = HasAttributeUpDown.GetEnabled(),
+                    IsDerived = IsDerivedUpDown.GetEnabled(),
+                    HasGenericParameters = HasGenericParametersUpDown.GetEnabled(),
+
+                    ParentName = NestedTypeParentName.Text == string.Empty
+                    ? null
+                    : NestedTypeParentName.Text,
+
+                    MatchBaseClass = BaseClassIncludeTextFIeld.Text == string.Empty
+                    ? null
+                    : BaseClassIncludeTextFIeld.Text,
+
+                    IgnoreBaseClass = BaseClassExcludeTextField.Text == string.Empty
+                    ? null
+                    : BaseClassExcludeTextField.Text,
+
                     // Constructor
-                    MethodCount = (int)MethodCountUpDown.Value,
-                    FieldCount = (int)FieldCountUpDown.Value,
-                    PropertyCount = (int)PropertiesCountUpDown.Value,
-                    NestedTypeCount = (int)NestedTypeCountUpDown.Value,
+                    MethodCount = MethodCountEnabled.GetCount(MethodCountUpDown),
+                    FieldCount = FieldCountEnabled.GetCount(FieldCountUpDown),
+                    PropertyCount = PropertyCountEnabled.GetCount(PropertyCountUpDown),
+                    NestedTypeCount = NestedTypeCountEnabled.GetCount(NestedTypeCountUpDown),
                     IncludeMethods = [],
                     ExcludeMethods = [],
                     IncludeFields = [],
