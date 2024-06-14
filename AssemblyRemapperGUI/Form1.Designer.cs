@@ -101,7 +101,29 @@ partial class AssemblyToolGUI
         MethodCountEnabled = new CheckBox();
         IsSealedUpDown = new DomainUpDown();
         TabControlMain = new TabControl();
+        tabPage5 = new TabPage();
+        groupBox3 = new GroupBox();
+        label1 = new Label();
+        MaxMatchCountUpDown = new NumericUpDown();
+        groupBox4 = new GroupBox();
+        label2 = new Label();
+        AutoMapperRequiredMatchesUpDown = new NumericUpDown();
+        groupBox2 = new GroupBox();
+        MappingChooseButton = new Button();
+        UnsealCheckbox = new CheckBox();
+        RenamePropertiesCheckbox = new CheckBox();
+        PublicizeCheckbox = new CheckBox();
+        OutputDirectoryButton = new Button();
+        RenameFieldsCheckbox = new CheckBox();
+        PickAssemblyPathButton = new Button();
+        MappingPathTextBox = new TextBox();
+        OutputPathTextBox = new TextBox();
+        AssemblyPathTextBox = new TextBox();
+        SilentModeCheckbox = new CheckBox();
+        DebugLoggingCheckbox = new CheckBox();
         colorDialog1 = new ColorDialog();
+        openFileDialog1 = new OpenFileDialog();
+        fileSystemWatcher1 = new FileSystemWatcher();
         ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
@@ -116,6 +138,13 @@ partial class AssemblyToolGUI
         ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).BeginInit();
         TabControlMain.SuspendLayout();
+        tabPage5.SuspendLayout();
+        groupBox3.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).BeginInit();
+        groupBox4.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
+        groupBox2.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
         SuspendLayout();
         // 
         // TabPageRemapper
@@ -827,11 +856,244 @@ partial class AssemblyToolGUI
         // TabControlMain
         // 
         TabControlMain.Controls.Add(TabPageRemapper);
+        TabControlMain.Controls.Add(tabPage5);
         TabControlMain.Location = new Point(-5, 1);
         TabControlMain.Name = "TabControlMain";
         TabControlMain.SelectedIndex = 0;
         TabControlMain.Size = new Size(1344, 991);
         TabControlMain.TabIndex = 6;
+        // 
+        // tabPage5
+        // 
+        tabPage5.BackColor = SystemColors.ControlDarkDark;
+        tabPage5.Controls.Add(groupBox3);
+        tabPage5.Controls.Add(groupBox4);
+        tabPage5.Controls.Add(groupBox2);
+        tabPage5.Location = new Point(4, 34);
+        tabPage5.Name = "tabPage5";
+        tabPage5.Padding = new Padding(3);
+        tabPage5.Size = new Size(1336, 953);
+        tabPage5.TabIndex = 2;
+        tabPage5.Text = "Settings";
+        // 
+        // groupBox3
+        // 
+        groupBox3.Controls.Add(label1);
+        groupBox3.Controls.Add(MaxMatchCountUpDown);
+        groupBox3.Location = new Point(464, 6);
+        groupBox3.Name = "groupBox3";
+        groupBox3.Size = new Size(259, 285);
+        groupBox3.TabIndex = 1;
+        groupBox3.TabStop = false;
+        groupBox3.Text = "Remapper Settings";
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(69, 37);
+        label1.Name = "label1";
+        label1.Size = new Size(152, 25);
+        label1.TabIndex = 5;
+        label1.Text = "Max Match Count";
+        // 
+        // MaxMatchCountUpDown
+        // 
+        MaxMatchCountUpDown.Location = new Point(6, 35);
+        MaxMatchCountUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+        MaxMatchCountUpDown.Name = "MaxMatchCountUpDown";
+        MaxMatchCountUpDown.Size = new Size(57, 31);
+        MaxMatchCountUpDown.TabIndex = 0;
+        MaxMatchCountUpDown.Value = new decimal(new int[] { 1, 0, 0, 0 });
+        MaxMatchCountUpDown.ValueChanged += MaxMatchCountUpDown_ValueChanged;
+        // 
+        // groupBox4
+        // 
+        groupBox4.Controls.Add(label2);
+        groupBox4.Controls.Add(AutoMapperRequiredMatchesUpDown);
+        groupBox4.Location = new Point(729, 6);
+        groupBox4.Name = "groupBox4";
+        groupBox4.Size = new Size(557, 285);
+        groupBox4.TabIndex = 1;
+        groupBox4.TabStop = false;
+        groupBox4.Text = "Auto Mapper Settings";
+        // 
+        // label2
+        // 
+        label2.AutoSize = true;
+        label2.Location = new Point(69, 37);
+        label2.Name = "label2";
+        label2.Size = new Size(153, 25);
+        label2.TabIndex = 6;
+        label2.Text = "Required Matches";
+        // 
+        // AutoMapperRequiredMatchesUpDown
+        // 
+        AutoMapperRequiredMatchesUpDown.Location = new Point(6, 35);
+        AutoMapperRequiredMatchesUpDown.Name = "AutoMapperRequiredMatchesUpDown";
+        AutoMapperRequiredMatchesUpDown.Size = new Size(57, 31);
+        AutoMapperRequiredMatchesUpDown.TabIndex = 5;
+        AutoMapperRequiredMatchesUpDown.ValueChanged += AutoMapperRequiredMatchesUpDown_ValueChanged;
+        // 
+        // groupBox2
+        // 
+        groupBox2.Controls.Add(MappingChooseButton);
+        groupBox2.Controls.Add(UnsealCheckbox);
+        groupBox2.Controls.Add(RenamePropertiesCheckbox);
+        groupBox2.Controls.Add(PublicizeCheckbox);
+        groupBox2.Controls.Add(OutputDirectoryButton);
+        groupBox2.Controls.Add(RenameFieldsCheckbox);
+        groupBox2.Controls.Add(PickAssemblyPathButton);
+        groupBox2.Controls.Add(MappingPathTextBox);
+        groupBox2.Controls.Add(OutputPathTextBox);
+        groupBox2.Controls.Add(AssemblyPathTextBox);
+        groupBox2.Controls.Add(SilentModeCheckbox);
+        groupBox2.Controls.Add(DebugLoggingCheckbox);
+        groupBox2.Location = new Point(13, 6);
+        groupBox2.Name = "groupBox2";
+        groupBox2.Size = new Size(445, 285);
+        groupBox2.TabIndex = 0;
+        groupBox2.TabStop = false;
+        groupBox2.Text = "App Settings";
+        // 
+        // MappingChooseButton
+        // 
+        MappingChooseButton.Location = new Point(308, 171);
+        MappingChooseButton.Name = "MappingChooseButton";
+        MappingChooseButton.Size = new Size(112, 34);
+        MappingChooseButton.TabIndex = 8;
+        MappingChooseButton.Text = "Choose";
+        MappingChooseButton.UseVisualStyleBackColor = true;
+        MappingChooseButton.Click += MappingChooseButton_Click;
+        // 
+        // UnsealCheckbox
+        // 
+        UnsealCheckbox.AutoSize = true;
+        UnsealCheckbox.Checked = true;
+        UnsealCheckbox.CheckState = CheckState.Checked;
+        UnsealCheckbox.Location = new Point(196, 246);
+        UnsealCheckbox.Name = "UnsealCheckbox";
+        UnsealCheckbox.Size = new Size(90, 29);
+        UnsealCheckbox.TabIndex = 2;
+        UnsealCheckbox.Text = "Unseal";
+        UnsealCheckbox.UseVisualStyleBackColor = true;
+        UnsealCheckbox.CheckedChanged += UnsealCheckbox_CheckedChanged;
+        // 
+        // RenamePropertiesCheckbox
+        // 
+        RenamePropertiesCheckbox.AutoSize = true;
+        RenamePropertiesCheckbox.Checked = true;
+        RenamePropertiesCheckbox.CheckState = CheckState.Checked;
+        RenamePropertiesCheckbox.Location = new Point(6, 246);
+        RenamePropertiesCheckbox.Name = "RenamePropertiesCheckbox";
+        RenamePropertiesCheckbox.Size = new Size(186, 29);
+        RenamePropertiesCheckbox.TabIndex = 4;
+        RenamePropertiesCheckbox.Text = "Rename Properties";
+        RenamePropertiesCheckbox.UseVisualStyleBackColor = true;
+        RenamePropertiesCheckbox.CheckedChanged += RenamePropertiesCheckbox_CheckedChanged;
+        // 
+        // PublicizeCheckbox
+        // 
+        PublicizeCheckbox.AutoSize = true;
+        PublicizeCheckbox.Checked = true;
+        PublicizeCheckbox.CheckState = CheckState.Checked;
+        PublicizeCheckbox.Location = new Point(196, 211);
+        PublicizeCheckbox.Name = "PublicizeCheckbox";
+        PublicizeCheckbox.Size = new Size(106, 29);
+        PublicizeCheckbox.TabIndex = 1;
+        PublicizeCheckbox.Text = "Publicize";
+        PublicizeCheckbox.UseVisualStyleBackColor = true;
+        PublicizeCheckbox.CheckedChanged += PublicizeCheckbox_CheckedChanged;
+        // 
+        // OutputDirectoryButton
+        // 
+        OutputDirectoryButton.Location = new Point(308, 134);
+        OutputDirectoryButton.Name = "OutputDirectoryButton";
+        OutputDirectoryButton.Size = new Size(112, 34);
+        OutputDirectoryButton.TabIndex = 7;
+        OutputDirectoryButton.Text = "Choose";
+        OutputDirectoryButton.UseVisualStyleBackColor = true;
+        OutputDirectoryButton.Click += OutputDirectoryButton_Click;
+        // 
+        // RenameFieldsCheckbox
+        // 
+        RenameFieldsCheckbox.AutoSize = true;
+        RenameFieldsCheckbox.Checked = true;
+        RenameFieldsCheckbox.CheckState = CheckState.Checked;
+        RenameFieldsCheckbox.Location = new Point(6, 211);
+        RenameFieldsCheckbox.Name = "RenameFieldsCheckbox";
+        RenameFieldsCheckbox.Size = new Size(151, 29);
+        RenameFieldsCheckbox.TabIndex = 3;
+        RenameFieldsCheckbox.Text = "Rename Fields";
+        RenameFieldsCheckbox.UseVisualStyleBackColor = true;
+        RenameFieldsCheckbox.CheckedChanged += RenameFieldsCheckbox_CheckedChanged;
+        // 
+        // PickAssemblyPathButton
+        // 
+        PickAssemblyPathButton.Location = new Point(308, 100);
+        PickAssemblyPathButton.Name = "PickAssemblyPathButton";
+        PickAssemblyPathButton.Size = new Size(112, 34);
+        PickAssemblyPathButton.TabIndex = 6;
+        PickAssemblyPathButton.Text = "Choose";
+        PickAssemblyPathButton.UseVisualStyleBackColor = true;
+        PickAssemblyPathButton.Click += PickAssemblyPathButton_Click;
+        // 
+        // MappingPathTextBox
+        // 
+        MappingPathTextBox.Location = new Point(6, 174);
+        MappingPathTextBox.Name = "MappingPathTextBox";
+        MappingPathTextBox.PlaceholderText = "Mapping.json path";
+        MappingPathTextBox.ReadOnly = true;
+        MappingPathTextBox.Size = new Size(296, 31);
+        MappingPathTextBox.TabIndex = 5;
+        // 
+        // OutputPathTextBox
+        // 
+        OutputPathTextBox.Location = new Point(6, 137);
+        OutputPathTextBox.Name = "OutputPathTextBox";
+        OutputPathTextBox.PlaceholderText = "Output Directory";
+        OutputPathTextBox.ReadOnly = true;
+        OutputPathTextBox.Size = new Size(296, 31);
+        OutputPathTextBox.TabIndex = 4;
+        // 
+        // AssemblyPathTextBox
+        // 
+        AssemblyPathTextBox.Location = new Point(6, 100);
+        AssemblyPathTextBox.Name = "AssemblyPathTextBox";
+        AssemblyPathTextBox.PlaceholderText = "Assembly Path (Including file name)";
+        AssemblyPathTextBox.ReadOnly = true;
+        AssemblyPathTextBox.Size = new Size(296, 31);
+        AssemblyPathTextBox.TabIndex = 3;
+        // 
+        // SilentModeCheckbox
+        // 
+        SilentModeCheckbox.AutoSize = true;
+        SilentModeCheckbox.Location = new Point(6, 65);
+        SilentModeCheckbox.Name = "SilentModeCheckbox";
+        SilentModeCheckbox.Size = new Size(133, 29);
+        SilentModeCheckbox.TabIndex = 2;
+        SilentModeCheckbox.Text = "Silent Mode";
+        SilentModeCheckbox.UseVisualStyleBackColor = true;
+        SilentModeCheckbox.CheckedChanged += SilentModeCheckbox_CheckedChanged;
+        // 
+        // DebugLoggingCheckbox
+        // 
+        DebugLoggingCheckbox.AutoSize = true;
+        DebugLoggingCheckbox.Location = new Point(6, 30);
+        DebugLoggingCheckbox.Name = "DebugLoggingCheckbox";
+        DebugLoggingCheckbox.Size = new Size(159, 29);
+        DebugLoggingCheckbox.TabIndex = 0;
+        DebugLoggingCheckbox.Text = "Debug logging";
+        DebugLoggingCheckbox.UseVisualStyleBackColor = true;
+        DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
+        // 
+        // openFileDialog1
+        // 
+        openFileDialog1.FileName = "openFileDialog1";
+        // 
+        // fileSystemWatcher1
+        // 
+        fileSystemWatcher1.EnableRaisingEvents = true;
+        fileSystemWatcher1.SynchronizingObject = this;
         // 
         // AssemblyToolGUI
         // 
@@ -862,6 +1124,16 @@ partial class AssemblyToolGUI
         ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).EndInit();
         TabControlMain.ResumeLayout(false);
+        tabPage5.ResumeLayout(false);
+        groupBox3.ResumeLayout(false);
+        groupBox3.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).EndInit();
+        groupBox4.ResumeLayout(false);
+        groupBox4.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
+        groupBox2.ResumeLayout(false);
+        groupBox2.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
         ResumeLayout(false);
     }
 
@@ -940,4 +1212,26 @@ partial class AssemblyToolGUI
     private CheckBox ConstructorCountEnabled;
     private NumericUpDown MethodCountUpDown;
     private CheckBox MethodCountEnabled;
+    private TabPage tabPage5;
+    private GroupBox groupBox3;
+    private GroupBox groupBox4;
+    private GroupBox groupBox2;
+    private CheckBox SilentModeCheckbox;
+    private CheckBox DebugLoggingCheckbox;
+    private Button MappingChooseButton;
+    private Button OutputDirectoryButton;
+    private Button PickAssemblyPathButton;
+    private TextBox MappingPathTextBox;
+    private TextBox OutputPathTextBox;
+    private TextBox AssemblyPathTextBox;
+    private OpenFileDialog openFileDialog1;
+    private FileSystemWatcher fileSystemWatcher1;
+    private CheckBox RenamePropertiesCheckbox;
+    private CheckBox RenameFieldsCheckbox;
+    private CheckBox UnsealCheckbox;
+    private CheckBox PublicizeCheckbox;
+    private NumericUpDown MaxMatchCountUpDown;
+    private NumericUpDown AutoMapperRequiredMatchesUpDown;
+    private Label label1;
+    private Label label2;
 }

@@ -36,12 +36,6 @@ public class Remapper
 
         ChooseBestMatches();
 
-        if (DataProvider.Settings.AppSettings.MatchMode)
-        {
-            IsRunning = false;
-            return;
-        }
-
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
         if (!DataProvider.Settings.Remapper.Publicize)
         {
@@ -229,8 +223,6 @@ public class Remapper
             }
         }
 
-        if (DataProvider.Settings.AppSettings.MatchMode) { return; }
-
         highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
 
         // Rename type and all associated type members
@@ -244,7 +236,7 @@ public class Remapper
     /// </summary>
     private void WriteAssembly()
     {
-        var filename = Path.GetFileNameWithoutExtension(DataProvider.Settings.Remapper.AssemblyPath);
+        var filename = Path.GetFileNameWithoutExtension(DataProvider.Settings.AppSettings.AssemblyPath);
         var strippedPath = Path.GetDirectoryName(filename);
 
         filename = $"{filename}-Remapped.dll";

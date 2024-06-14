@@ -26,7 +26,7 @@ public static class DataProvider
 
         if (!File.Exists(settingsPath))
         {
-            throw new InvalidOperationException($"path `{settingsPath}` does not exist...");
+            throw new FileNotFoundException($"path `{settingsPath}` does not exist...");
         }
 
         var jsonText = File.ReadAllText(settingsPath);
@@ -41,15 +41,29 @@ public static class DataProvider
         Logger.Log($"Settings loaded from '{settingsPath}'");
     }
 
+    public static void SaveAppSettings()
+    {
+        var settingsPath = Path.Combine(AppContext.BaseDirectory, "Data", "Settings.jsonc");
+
+        if (!File.Exists(settingsPath))
+        {
+            throw new FileNotFoundException($"path `{settingsPath}` does not exist...");
+        }
+
+        var jsonText = JsonConvert.SerializeObject(Settings);
+
+        File.WriteAllText(settingsPath, jsonText);
+    }
+
     public static void LoadMappingFile(string path = "")
     {
-        if (!File.Exists(Settings.Remapper.MappingPath))
+        if (!File.Exists(Settings.AppSettings.MappingPath))
         {
-            throw new InvalidOperationException($"path `{Settings.Remapper.MappingPath}` does not exist...");
+            throw new InvalidOperationException($"path `{Settings.AppSettings.MappingPath}` does not exist...");
         }
 
         var fpath = path == string.Empty
-            ? Settings.Remapper.MappingPath
+            ? Settings.AppSettings.MappingPath
             : path;
 
         var jsonText = File.ReadAllText(fpath);
@@ -72,7 +86,7 @@ public static class DataProvider
             }
         }
 
-        Logger.Log($"Mapping file loaded from '{Settings.Remapper.MappingPath}'");
+        Logger.Log($"Mapping file loaded from '{Settings.AppSettings.MappingPath}'");
     }
 
     public static void SaveMapping()
@@ -85,14 +99,14 @@ public static class DataProvider
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
-        File.WriteAllText(Settings.Remapper.MappingPath, jsonText);
+        File.WriteAllText(Settings.AppSettings.MappingPath, jsonText);
     }
 
     public static void UpdateMapping()
     {
-        if (!File.Exists(Settings.Remapper.MappingPath))
+        if (!File.Exists(Settings.AppSettings.MappingPath))
         {
-            throw new FileNotFoundException($"path `{Settings.Remapper.MappingPath}` does not exist...");
+            throw new FileNotFoundException($"path `{Settings.AppSettings.MappingPath}` does not exist...");
         }
 
         JsonSerializerSettings settings = new()
@@ -120,9 +134,9 @@ public static class DataProvider
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
-        File.WriteAllText(Settings.Remapper.MappingPath, jsonText);
+        File.WriteAllText(Settings.AppSettings.MappingPath, jsonText);
 
-        Logger.Log($"Mapping file saved to {Settings.Remapper.MappingPath}");
+        Logger.Log($"Mapping file saved to {Settings.AppSettings.MappingPath}");
     }
 
     public static void LoadAssemblyDefinition()
@@ -131,17 +145,17 @@ public static class DataProvider
         ModuleDefinition = null;
 
         DefaultAssemblyResolver resolver = new();
-        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.Remapper.AssemblyPath)); // Replace with the correct path : (6/14) I have no idea what I met by that
+        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.AppSettings.AssemblyPath)); // Replace with the correct path : (6/14) I have no idea what I met by that
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
 
-        AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.Remapper.AssemblyPath, parameters);
+        AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.AppSettings.AssemblyPath, parameters);
 
         if (AssemblyDefinition is null)
         {
             throw new NullReferenceException("AssemblyDefinition was null...");
         }
 
-        var fileName = Path.GetFileName(Settings.Remapper.AssemblyPath);
+        var fileName = Path.GetFileName(Settings.AppSettings.AssemblyPath);
 
         foreach (var module in AssemblyDefinition.Modules.ToArray())
         {

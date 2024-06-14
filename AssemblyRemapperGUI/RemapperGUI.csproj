@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AssemblyRemapper\LibRemap.csproj" />
+    <ProjectReference Include="..\AssemblyRemapper\MapLib.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
