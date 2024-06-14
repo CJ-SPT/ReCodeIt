@@ -18,10 +18,8 @@ public class AppSettings
     public string AssemblyPath { get; set; } = string.Empty;
     public string OutputPath { get; set; } = string.Empty;
     public string MappingPath { get; set; } = string.Empty;
-
     public bool RenameFields { get; set; } = true;
     public bool RenameProperties { get; set; } = true;
-
     public bool Publicize { get; set; } = false;
     public bool Unseal { get; set; } = false;
 }

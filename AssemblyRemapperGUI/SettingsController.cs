@@ -2,7 +2,7 @@
 
 namespace AssemblyRemapperGUI;
 
-internal partial class AssemblyToolGUI
+public partial class AssemblyToolGUI
 {
     #region SETTINGS_BUTTONS
 
