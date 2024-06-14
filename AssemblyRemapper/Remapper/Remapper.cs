@@ -13,9 +13,9 @@ public class Remapper
 
     public delegate void OnCompleteHandler(object sender, EventArgs e);
 
-    public event OnCompleteHandler OnComplete;
+    public event OnCompleteHandler? OnComplete;
 
-    private static Stopwatch Stopwatch = new();
+    private static readonly Stopwatch Stopwatch = new();
 
     /// <summary>
     /// Start the remapping process

@@ -2,8 +2,27 @@
 
 namespace AssemblyRemapperGUI;
 
+using static DataProvider;
+
 public partial class AssemblyToolGUI
 {
+    private void RefreshSettingsPage()
+    {
+        AssemblyPathTextBox.Text = Settings.AppSettings.AssemblyPath;
+        OutputPathTextBox.Text = Settings.AppSettings.OutputPath;
+        MappingPathTextBox.Text = Settings.AppSettings.MappingPath;
+
+        DebugLoggingCheckbox.Checked = Settings.AppSettings.Debug;
+        SilentModeCheckbox.Checked = Settings.AppSettings.SilentMode;
+        RenameFieldsCheckbox.Checked = Settings.AppSettings.RenameFields;
+        RenamePropertiesCheckbox.Checked = Settings.AppSettings.RenameProperties;
+        PublicizeCheckbox.Checked = Settings.AppSettings.Publicize;
+        UnsealCheckbox.Checked = Settings.AppSettings.Unseal;
+
+        MaxMatchCountUpDown.Value = Settings.Remapper.MaxMatchCount;
+        AutoMapperRequiredMatchesUpDown.Value = Settings.AutoMapper.RequiredMatches;
+    }
+
     #region SETTINGS_BUTTONS
 
     private void PickAssemblyPathButton_Click(object sender, EventArgs e)
@@ -17,8 +36,8 @@ public partial class AssemblyToolGUI
 
         if (fDialog.ShowDialog() == DialogResult.OK)
         {
-            DataProvider.Settings.AppSettings.AssemblyPath = fDialog.FileName;
-            DataProvider.LoadAssemblyDefinition();
+            Settings.AppSettings.AssemblyPath = fDialog.FileName;
+            LoadAssemblyDefinition();
             AssemblyPathTextBox.Text = fDialog.FileName;
         }
     }
@@ -32,7 +51,7 @@ public partial class AssemblyToolGUI
 
         if (fDialog.ShowDialog() == DialogResult.OK)
         {
-            DataProvider.Settings.AppSettings.OutputPath = fDialog.SelectedPath;
+            Settings.AppSettings.OutputPath = fDialog.SelectedPath;
             OutputPathTextBox.Text = fDialog.SelectedPath;
         }
     }
@@ -48,7 +67,7 @@ public partial class AssemblyToolGUI
 
         if (fDialog.ShowDialog() == DialogResult.OK)
         {
-            DataProvider.LoadMappingFile(fDialog.FileName);
+            LoadMappingFile(fDialog.FileName);
             MappingPathTextBox.Text = fDialog.FileName;
         }
     }
@@ -59,38 +78,38 @@ public partial class AssemblyToolGUI
 
     private void DebugLoggingCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.Debug = DebugLoggingCheckbox.Checked;
-        DataProvider.SaveAppSettings();
+        Settings.AppSettings.Debug = DebugLoggingCheckbox.Checked;
+        SaveAppSettings();
     }
 
     private void SilentModeCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.SilentMode = SilentModeCheckbox.Checked;
-        DataProvider.SaveAppSettings();
+        Settings.AppSettings.SilentMode = SilentModeCheckbox.Checked;
+        SaveAppSettings();
     }
 
     private void RenameFieldsCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.RenameFields = RenameFieldsCheckbox.Checked;
-        DataProvider.SaveAppSettings();
+        Settings.AppSettings.RenameFields = RenameFieldsCheckbox.Checked;
+        SaveAppSettings();
     }
 
     private void RenamePropertiesCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.RenameProperties = RenamePropertiesCheckbox.Checked;
-        DataProvider.SaveAppSettings();
+        Settings.AppSettings.RenameProperties = RenamePropertiesCheckbox.Checked;
+        SaveAppSettings();
     }
 
     private void PublicizeCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.Publicize = PublicizeCheckbox.Checked;
-        DataProvider.SaveAppSettings();
+        Settings.AppSettings.Publicize = PublicizeCheckbox.Checked;
+        SaveAppSettings();
     }
 
     private void UnsealCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.Unseal = UnsealCheckbox.Checked;
-        DataProvider.SaveAppSettings();
+        Settings.AppSettings.Unseal = UnsealCheckbox.Checked;
+        SaveAppSettings();
     }
 
     #endregion CHECKBOXES
@@ -99,14 +118,14 @@ public partial class AssemblyToolGUI
 
     private void MaxMatchCountUpDown_ValueChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.Remapper.MaxMatchCount = (int)MaxMatchCountUpDown.Value;
-        DataProvider.SaveAppSettings();
+        Settings.Remapper.MaxMatchCount = (int)MaxMatchCountUpDown.Value;
+        SaveAppSettings();
     }
 
     private void AutoMapperRequiredMatchesUpDown_ValueChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AutoMapper.RequiredMatches = (int)AutoMapperRequiredMatchesUpDown.Value;
-        DataProvider.SaveAppSettings();
+        Settings.AutoMapper.RequiredMatches = (int)AutoMapperRequiredMatchesUpDown.Value;
+        SaveAppSettings();
     }
 
     #endregion UPDOWNS

@@ -14,6 +14,7 @@ public partial class AssemblyToolGUI : Form
     {
         InitializeComponent();
         PopulateDomainUpDowns();
+        RefreshSettingsPage();
 
         Remapper.OnComplete += ReloadTreeView;
         ReloadTreeView(this, EventArgs.Empty);
