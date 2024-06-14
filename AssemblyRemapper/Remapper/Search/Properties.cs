@@ -14,8 +14,9 @@ namespace AssemblyRemapper.Remapper.Search
             var matches = type.Properties
                 .Where(property => parms.IncludeProperties.Contains(property.Name))
                 .Count();
-
             score.Score += matches;
+
+            score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.PropertiesInclude;
 
             return matches > 0
                 ? EMatchResult.Match
@@ -32,6 +33,8 @@ namespace AssemblyRemapper.Remapper.Search
 
             score.Score += matches;
 
+            score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.PropertiesExclude;
+
             return matches > 0
                 ? EMatchResult.NoMatch
                 : EMatchResult.Match;
@@ -44,6 +47,8 @@ namespace AssemblyRemapper.Remapper.Search
             var match = type.Properties.Exactly((int)parms.PropertyCount);
 
             if (match) { score.Score++; }
+
+            score.FailureReason = match ? EFailureReason.None : EFailureReason.PropertiesCount;
 
             return match
                 ? EMatchResult.Match

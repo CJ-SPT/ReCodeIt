@@ -18,6 +18,7 @@ internal static class TypeDefExtensions
         // Interfaces cannot be abstract, and abstract cannot be static
         if (type.IsInterface || type.GetStaticConstructor() is not null)
         {
+            score.FailureReason = EFailureReason.IsAbstract;
             return EMatchResult.NoMatch;
         }
 
@@ -58,6 +59,9 @@ internal static class TypeDefExtensions
         if (type.IsNested == parms.IsNested)
         {
             score.Score++;
+            Logger.Log($"Match {type.Name}");
+            Logger.Log($"Match {parms.IsNested}");
+            Logger.Log($"type: {type.IsNested} \n");
             return EMatchResult.Match;
         }
 
@@ -102,6 +106,7 @@ internal static class TypeDefExtensions
 
         if (type.BaseType?.Name == parms.IgnoreBaseClass)
         {
+            score.FailureReason = EFailureReason.IsDerived;
             return EMatchResult.NoMatch;
         }
 

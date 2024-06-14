@@ -20,8 +20,9 @@ internal static class Fields
 
         var matches = type.Fields
             .Where(field => parms.IncludeFields.Contains(field.Name));
-
         score.Score += matches.Count();
+
+        score.FailureReason = matches.Any() ? EFailureReason.None : EFailureReason.FieldsInclude;
 
         return matches.Any()
             ? EMatchResult.Match
@@ -45,6 +46,8 @@ internal static class Fields
 
         score.Score += matches;
 
+        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.FieldsExclude;
+
         return matches > 0
             ? EMatchResult.NoMatch
             : EMatchResult.Match;
@@ -64,6 +67,8 @@ internal static class Fields
         var match = type.Fields.Exactly((int)parms.FieldCount);
 
         if (match) { score.Score++; }
+
+        score.FailureReason = match ? EFailureReason.None : EFailureReason.FieldsCount;
 
         return match
             ? EMatchResult.Match

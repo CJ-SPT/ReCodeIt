@@ -84,7 +84,7 @@ namespace AssemblyRemapperGUI
                 }
             };
 
-            RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+            RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap, this));
             DataProvider.Remaps.Add(remap);
             ResetAll();
         }
@@ -98,6 +98,8 @@ namespace AssemblyRemapperGUI
         private void RunRemapButton_Click(object sender, EventArgs e)
         {
             if (Remapper.IsRunning) { return; }
+
+            Console.Clear();
 
             Remapper.InitializeRemap();
         }
@@ -135,7 +137,7 @@ namespace AssemblyRemapperGUI
 
             foreach (var remap in DataProvider.Remaps)
             {
-                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap, this));
             }
         }
 
@@ -348,7 +350,7 @@ namespace AssemblyRemapperGUI
 
             foreach (var remap in DataProvider.Remaps)
             {
-                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap));
+                RemapTreeView.Nodes.Add(GUI.GenerateTreeNode(remap, this));
             }
         }
     }

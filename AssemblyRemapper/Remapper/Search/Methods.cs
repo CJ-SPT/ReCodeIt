@@ -24,6 +24,8 @@ internal static class Methods
 
         score.Score += matches;
 
+        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.MethodsInclude;
+
         return matches > 0
             ? EMatchResult.Match
             : EMatchResult.NoMatch;
@@ -46,6 +48,8 @@ internal static class Methods
 
         score.Score += matches;
 
+        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.MethodsExclude;
+
         return matches > 0
             ? EMatchResult.NoMatch
             : EMatchResult.Match;
@@ -66,6 +70,8 @@ internal static class Methods
         bool match = numMethods == parms.MethodCount;
 
         if (match) { score.Score++; }
+
+        score.FailureReason = match ? EFailureReason.None : EFailureReason.MethodsCount;
 
         return match
             ? EMatchResult.Match

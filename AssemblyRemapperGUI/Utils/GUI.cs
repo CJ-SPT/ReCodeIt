@@ -1,4 +1,5 @@
 ﻿using AssemblyRemapper.Models;
+using AssemblyRemapperGUI;
 
 namespace RemapperGUI.Utils;
 
@@ -59,7 +60,7 @@ internal static class GUI
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
-    public static TreeNode GenerateTreeNode(RemapModel model)
+    public static TreeNode GenerateTreeNode(RemapModel model, AssemblyToolGUI gui)
     {
         var isPublic = model.SearchParams.IsPublic == null ? null : model.SearchParams.IsPublic;
         var isAbstract = model.SearchParams.IsAbstract == null ? null : model.SearchParams.IsAbstract;

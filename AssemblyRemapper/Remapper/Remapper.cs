@@ -31,7 +31,7 @@ public class Remapper
         {
             Logger.Log($"Finding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
 
-            HandleMapping(remap);
+            ScoreMapping(remap);
         }
 
         ChooseBestMatches();
@@ -74,11 +74,11 @@ public class Remapper
     /// Loop over all types in the assembly and score them
     /// </summary>
     /// <param name="mapping">Mapping to score</param>
-    private void HandleMapping(RemapModel mapping)
+    public void ScoreMapping(RemapModel mapping)
     {
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
-            var _ = FindMatch(type, mapping);
+            FindMatch(type, mapping);
         }
     }
 
@@ -89,13 +89,13 @@ public class Remapper
     /// <param name="remap">Remap to check against</param>
     /// <param name="parentTypeName"></param>
     /// <returns>EMatchResult</returns>
-    private EMatchResult FindMatch(TypeDefinition type, RemapModel remap)
+    private void FindMatch(TypeDefinition type, RemapModel remap)
     {
         // Handle Direct Remaps by strict naming first bypasses everything else
         if (remap.UseForceRename)
         {
             HandleByDirectName(type, remap);
-            return EMatchResult.HandleDirect;
+            return;
         }
 
         foreach (var nestedType in type.NestedTypes)
@@ -132,7 +132,8 @@ public class Remapper
 
         if (NoMatch == EMatchResult.NoMatch)
         {
-            return NoMatch;
+            remap.FailureReason = score.FailureReason;
+            return;
         }
 
         var match = matches.Where(x => x.Equals(EMatchResult.Match)).Any();
@@ -145,10 +146,7 @@ public class Remapper
             remap.Succeeded = true;
             remap.FailureReason = EFailureReason.None;
             score.AddScoreToResult();
-            return EMatchResult.Match;
         }
-
-        return EMatchResult.Disabled;
     }
 
     private void HandleByDirectName(TypeDefinition type, RemapModel remap)
