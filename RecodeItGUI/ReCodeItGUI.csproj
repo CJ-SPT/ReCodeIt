@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  	<Exec Command="xcopy &quot;$(SolutionDir)Templates&quot; &quot;$(TargetDir)Data&quot; /E /I /Y" />
+  </Target>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RecodeItLib\ReCodeItLib.csproj" />
+  </ItemGroup>
+
+</Project>
