@@ -38,7 +38,7 @@ internal static class GUIHelpers
     /// </summary>
     /// <param name="domainUpDown"></param>
     /// <param name="name"></param>
-    public static void BuildStringList(this DomainUpDown domainUpDown, string name)
+    public static void BuildStringList(this DomainUpDown domainUpDown, string name, bool? update = null)
     {
         domainUpDown.Items.Clear();
         domainUpDown.Text = name + " (Disabled)";
@@ -50,6 +50,11 @@ internal static class GUIHelpers
             "True",
             "False",
         };
+
+        if (update != null)
+        {
+            domainUpDown.Text = update.ToString();
+        }
 
         domainUpDown.Items.AddRange(list);
     }
@@ -71,7 +76,7 @@ internal static class GUIHelpers
         var IsDerived = model.SearchParams.IsDerived == null ? null : model.SearchParams.IsDerived;
         var HasGenericParameters = model.SearchParams.HasGenericParameters == null ? null : model.SearchParams.HasGenericParameters;
 
-        var remapTreeItem = new TreeNode($"Remap: {model.NewTypeName}");
+        var remapTreeItem = new TreeNode($"{model.NewTypeName}");
 
         var originalTypeName = new TreeNode($"Original Name: {model.OriginalTypeName}");
 

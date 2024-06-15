@@ -9,6 +9,8 @@ public partial class ReCodeItForm : Form
 {
     public static ReCodeItRemapper Remapper { get; private set; } = new();
 
+    private RemapModel CurrentRemap { get; set; }
+
     public ReCodeItForm()
     {
         InitializeComponent();
@@ -35,7 +37,7 @@ public partial class ReCodeItForm : Form
             return;
         }
 
-        var remap = new RemapModel
+        var newRemap = new RemapModel
         {
             Succeeded = false,
             FailureReason = EFailureReason.None,
@@ -83,8 +85,31 @@ public partial class ReCodeItForm : Form
             }
         };
 
-        RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
-        DataProvider.Remaps.Add(remap);
+        var existingRemap = DataProvider.Remaps
+            .Where(remap => remap.NewTypeName == NewTypeName.Text)
+            .FirstOrDefault();
+
+        // Handle overwriting an existing remap
+        if (existingRemap != null)
+        {
+            var index = DataProvider.Remaps.IndexOf(existingRemap);
+
+            DataProvider.Remaps.Remove(existingRemap);
+            RemapTreeView.Nodes.RemoveAt(index);
+
+            DataProvider.Remaps.Insert(index, newRemap);
+            RemapTreeView.Nodes.Insert(index, GUIHelpers.GenerateTreeNode(newRemap, this));
+
+            CurrentRemap = existingRemap;
+
+            ResetAll();
+            return;
+        }
+
+        CurrentRemap = newRemap;
+        RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(newRemap, this));
+        DataProvider.Remaps.Add(newRemap);
+
         ResetAll();
     }
 
@@ -92,6 +117,11 @@ public partial class ReCodeItForm : Form
     {
         DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
         RemapTreeView.SelectedNode?.Remove();
+    }
+
+    private void EditRemapButton_Click(object sender, EventArgs e)
+    {
+        EditSelectedRemap();
     }
 
     private void RunRemapButton_Click(object sender, EventArgs e)
@@ -425,6 +455,7 @@ public partial class ReCodeItForm : Form
 
         // Numeric UpDowns
 
+        ConstuctorCountUpDown.Value = 0;
         MethodCountUpDown.Value = 0;
         FieldCountUpDown.Value = 0;
         PropertyCountUpDown.Value = 0;
@@ -433,6 +464,7 @@ public partial class ReCodeItForm : Form
         // Check boxes
 
         ForceRenameCheckbox.Checked = false;
+        ConstructorCountEnabled.Checked = false;
         MethodCountEnabled.Checked = false;
         FieldCountEnabled.Checked = false;
         PropertyCountEnabled.Checked = false;
@@ -448,6 +480,82 @@ public partial class ReCodeItForm : Form
         PropertiesExcludeBox.Items.Clear();
         NestedTypesIncludeBox.Items.Clear();
         NestedTypesExcludeBox.Items.Clear();
+    }
+
+    private void EditSelectedRemap()
+    {
+        ResetAll();
+        var remap = DataProvider.Remaps.ElementAt(RemapTreeView.SelectedNode.Index);
+
+        NewTypeName.Text = remap.NewTypeName;
+        OriginalTypeName.Text = remap.OriginalTypeName;
+        ForceRenameCheckbox.Checked = remap.UseForceRename;
+
+        BaseClassIncludeTextFIeld.Text = remap.SearchParams.MatchBaseClass;
+        BaseClassExcludeTextField.Text = remap.SearchParams.IgnoreBaseClass;
+        NestedTypeParentName.Text = remap.SearchParams.ParentName;
+
+        ConstructorCountEnabled.Checked = remap.SearchParams.ConstructorParameterCount != null ? remap.SearchParams.ConstructorParameterCount > 0 : false;
+        MethodCountEnabled.Checked = remap.SearchParams.MethodCount != null ? remap.SearchParams.MethodCount > 0 : false;
+        FieldCountEnabled.Checked = remap.SearchParams.FieldCount != null ? remap.SearchParams.FieldCount > 0 : false;
+        PropertyCountEnabled.Checked = remap.SearchParams.PropertyCount != null ? remap.SearchParams.PropertyCount > 0 : false;
+        NestedTypeCountEnabled.Checked = remap.SearchParams.NestedTypeCount != null ? remap.SearchParams.NestedTypeCount > 0 : false;
+
+        ConstuctorCountUpDown.Value = (decimal)((remap.SearchParams.ConstructorParameterCount != null ? remap.SearchParams.ConstructorParameterCount : 0));
+        MethodCountUpDown.Value = (decimal)(remap.SearchParams.MethodCount != null ? remap.SearchParams.MethodCount : 0);
+        FieldCountUpDown.Value = (decimal)(remap.SearchParams.FieldCount != null ? remap.SearchParams.FieldCount : 0);
+        PropertyCountUpDown.Value = (decimal)(remap.SearchParams.PropertyCount != null ? remap.SearchParams.PropertyCount : 0);
+        NestedTypeCountUpDown.Value = (decimal)(remap.SearchParams.NestedTypeCount != null ? remap.SearchParams.NestedTypeCount : 0);
+
+        IsPublicUpDown.BuildStringList("IsPublic", remap.SearchParams.IsPublic);
+        IsAbstractUpDown.BuildStringList("IsAbstract", remap.SearchParams.IsAbstract);
+        IsInterfaceUpDown.BuildStringList("IsInterface", remap.SearchParams.IsInterface);
+        IsEnumUpDown.BuildStringList("IsEnum", remap.SearchParams.IsEnum);
+        IsNestedUpDown.BuildStringList("IsNested", remap.SearchParams.IsNested);
+        IsSealedUpDown.BuildStringList("IsSealed", remap.SearchParams.IsSealed);
+        HasAttributeUpDown.BuildStringList("HasAttribute", remap.SearchParams.HasAttribute);
+        IsDerivedUpDown.BuildStringList("IsDerived", remap.SearchParams.IsDerived);
+        HasGenericParametersUpDown.BuildStringList("HasGenericParams", remap.SearchParams.HasGenericParameters);
+
+        foreach (var method in remap.SearchParams.IncludeMethods)
+        {
+            MethodIncludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.ExcludeMethods)
+        {
+            MethodExcludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.IncludeFields)
+        {
+            FieldIncludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.ExcludeFields)
+        {
+            FieldExcludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.IncludeProperties)
+        {
+            PropertiesIncludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.ExcludeProperties)
+        {
+            PropertiesExcludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.IncludeNestedTypes)
+        {
+            NestedTypesIncludeBox.Items.Add(method);
+        }
+
+        foreach (var method in remap.SearchParams.ExcludeNestedTypes)
+        {
+            NestedTypesExcludeBox.Items.Add(method);
+        }
     }
 
     private void PopulateDomainUpDowns()

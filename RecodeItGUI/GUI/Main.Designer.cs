@@ -33,6 +33,7 @@ partial class ReCodeItForm
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        EditRemapButton = new Button();
         ConstuctorCountUpDown = new NumericUpDown();
         ConstructorCountEnabled = new CheckBox();
         LoadMappingFileButton = new Button();
@@ -93,7 +94,7 @@ partial class ReCodeItForm
         HasGenericParametersUpDown = new DomainUpDown();
         IsEnumUpDown = new DomainUpDown();
         NestedTypeCountUpDown = new NumericUpDown();
-        AddRemapButton = new Button();
+        SaveRemapButton = new Button();
         IsDerivedUpDown = new DomainUpDown();
         IsNestedUpDown = new DomainUpDown();
         HasAttributeUpDown = new DomainUpDown();
@@ -157,7 +158,7 @@ partial class ReCodeItForm
         TabPageRemapper.Padding = new Padding(3);
         TabPageRemapper.Size = new Size(1336, 953);
         TabPageRemapper.TabIndex = 1;
-        TabPageRemapper.Text = "ReCodeItRemapper";
+        TabPageRemapper.Text = "Remapper";
         // 
         // RemapTreeView
         // 
@@ -168,6 +169,7 @@ partial class ReCodeItForm
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(EditRemapButton);
         groupBox1.Controls.Add(ConstuctorCountUpDown);
         groupBox1.Controls.Add(ConstructorCountEnabled);
         groupBox1.Controls.Add(LoadMappingFileButton);
@@ -192,7 +194,7 @@ partial class ReCodeItForm
         groupBox1.Controls.Add(HasGenericParametersUpDown);
         groupBox1.Controls.Add(IsEnumUpDown);
         groupBox1.Controls.Add(NestedTypeCountUpDown);
-        groupBox1.Controls.Add(AddRemapButton);
+        groupBox1.Controls.Add(SaveRemapButton);
         groupBox1.Controls.Add(IsDerivedUpDown);
         groupBox1.Controls.Add(IsNestedUpDown);
         groupBox1.Controls.Add(HasAttributeUpDown);
@@ -205,6 +207,16 @@ partial class ReCodeItForm
         groupBox1.TabIndex = 0;
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
+        // 
+        // EditRemapButton
+        // 
+        EditRemapButton.Location = new Point(580, 145);
+        EditRemapButton.Name = "EditRemapButton";
+        EditRemapButton.Size = new Size(168, 34);
+        EditRemapButton.TabIndex = 21;
+        EditRemapButton.Text = "Edit Remap";
+        EditRemapButton.UseVisualStyleBackColor = true;
+        EditRemapButton.Click += EditRemapButton_Click;
         // 
         // ConstuctorCountUpDown
         // 
@@ -245,7 +257,7 @@ partial class ReCodeItForm
         // 
         // RunRemapButton
         // 
-        RunRemapButton.Location = new Point(580, 145);
+        RunRemapButton.Location = new Point(580, 185);
         RunRemapButton.Name = "RunRemapButton";
         RunRemapButton.Size = new Size(168, 34);
         RunRemapButton.TabIndex = 16;
@@ -789,15 +801,15 @@ partial class ReCodeItForm
         NestedTypeCountUpDown.Size = new Size(55, 31);
         NestedTypeCountUpDown.TabIndex = 4;
         // 
-        // AddRemapButton
+        // SaveRemapButton
         // 
-        AddRemapButton.Location = new Point(580, 64);
-        AddRemapButton.Name = "AddRemapButton";
-        AddRemapButton.Size = new Size(168, 34);
-        AddRemapButton.TabIndex = 4;
-        AddRemapButton.Text = "Add Remap";
-        AddRemapButton.UseVisualStyleBackColor = true;
-        AddRemapButton.Click += AddRemapButton_Click;
+        SaveRemapButton.Location = new Point(580, 64);
+        SaveRemapButton.Name = "SaveRemapButton";
+        SaveRemapButton.Size = new Size(168, 34);
+        SaveRemapButton.TabIndex = 4;
+        SaveRemapButton.Text = "Save Remap";
+        SaveRemapButton.UseVisualStyleBackColor = true;
+        SaveRemapButton.Click += AddRemapButton_Click;
         // 
         // IsDerivedUpDown
         // 
@@ -1188,7 +1200,7 @@ partial class ReCodeItForm
     private TextBox OriginalTypeName;
     private TextBox NewTypeName;
     private Button RemoveRemapButton;
-    private Button AddRemapButton;
+    private Button SaveRemapButton;
     private ListView RemapListView;
     private TabControl TabControlMain;
     private DomainUpDown IsPublicUpDown;
@@ -1234,4 +1246,5 @@ partial class ReCodeItForm
     private NumericUpDown AutoMapperRequiredMatchesUpDown;
     private Label label1;
     private Label label2;
+    private Button EditRemapButton;
 }
