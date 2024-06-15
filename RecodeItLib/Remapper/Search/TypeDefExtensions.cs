@@ -1,8 +1,8 @@
-﻿using ReCodeIt.Enums;
+﻿using Mono.Cecil;
+using Mono.Cecil.Rocks;
+using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
-using Mono.Cecil;
-using Mono.Cecil.Rocks;
 
 namespace ReCodeIt.ReMapper.Search;
 
@@ -177,6 +177,7 @@ internal static class TypeDefExtensions
         {
             return EMatchResult.Disabled;
         }
+        var attrs = type.CustomAttributes;
 
         if (type.HasCustomAttributes == parms.HasAttribute)
         {

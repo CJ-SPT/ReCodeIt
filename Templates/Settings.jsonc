@@ -37,7 +37,9 @@
         ],
         "TokensToMatch": [                                      // The auto mapper will look for these tokens in class names and prioritize those
             "Class",
-            "GClass"
+            "GClass",
+            "GStruct",
+            "GInterface"
         ],
         "PropertyFieldBlackList": [                             // Property or fields names to ignore in the automap, these are case sanitized so case does not matter
             "Columns",

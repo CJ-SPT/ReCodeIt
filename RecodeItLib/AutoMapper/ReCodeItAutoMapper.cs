@@ -9,25 +9,9 @@ public class ReCodeItAutoMapper
 {
     private List<MappingPair> MappingPairs { get; set; } = [];
 
+    private List<string> CompilerGeneratedClasses = [];
+
     private AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
-
-    private static readonly List<string> SystemTypeIgnoreList = new()
-    {
-        "Boolean",
-        "List",
-        "Dictionary",
-        "Byte",
-        "Int16",
-        "Int36",
-        "Func",
-        "Action"
-    };
-
-    private List<string> TokensToMatch = new()
-    {
-        "Class",
-        "GClass"
-    };
 
     public void InitializeAutoMapping()
     {
@@ -36,14 +20,43 @@ public class ReCodeItAutoMapper
 
         // Clear any previous pairs
         MappingPairs = [];
+        CompilerGeneratedClasses = [];
 
-        foreach (var type in DataProvider.ModuleDefinition.Types)
+        FindCompilerGeneratedObjects(DataProvider.ModuleDefinition.Types);
+
+        Logger.Log($"Found {CompilerGeneratedClasses.Count} Compiler generated objects");
+
+        var types = DataProvider.ModuleDefinition.Types;
+
+        foreach (var type in types)
         {
             MappingPairs.AddRange(FilterFieldNames(type));
             MappingPairs.AddRange(FilterPropertyNames(type));
         }
 
         FilterTypeNames();
+    }
+
+    private void FindCompilerGeneratedObjects(Mono.Collections.Generic.Collection<TypeDefinition> types)
+    {
+        foreach (var typeDefinition in types)
+        {
+            if (typeDefinition.IsClass || typeDefinition.IsInterface || typeDefinition.IsValueType) // Check for class or struct
+            {
+                if (typeDefinition.HasCustomAttributes &&
+                    typeDefinition.CustomAttributes.Any(attr => attr.AttributeType.FullName == "System.Runtime.CompilerServices.CompilerGeneratedAttribute"))
+                {
+                    string typeName = typeDefinition.Name;
+                    CompilerGeneratedClasses.Add(typeName);
+                    //Logger.Log($"Compiler Generated object found: {typeName}", ConsoleColor.Yellow);
+                }
+            }
+
+            if (typeDefinition.NestedTypes.Count > 0)
+            {
+                FindCompilerGeneratedObjects(typeDefinition.NestedTypes);
+            }
+        }
     }
 
     /// <summary>
@@ -54,6 +67,12 @@ public class ReCodeItAutoMapper
     private List<MappingPair> FilterFieldNames(TypeDefinition type)
     {
         var fieldsWithTypes = new List<MappingPair>();
+
+        if (CompilerGeneratedClasses.Contains(type.Name))
+        {
+            //Logger.Log($"Skipping over compiler generated object: {type.Name}");
+            return fieldsWithTypes;
+        }
 
         // Handle nested types recursively
         foreach (var nestedType in type.NestedTypes)
@@ -90,6 +109,12 @@ public class ReCodeItAutoMapper
     private List<MappingPair> FilterPropertyNames(TypeDefinition type)
     {
         var propertiesWithTypes = new List<MappingPair>();
+
+        if (CompilerGeneratedClasses.Contains(type.Name))
+        {
+            //Logger.Log($"Skipping over compiler generated object: {type.Name}");
+            return propertiesWithTypes;
+        }
 
         // Handle nested types recursively
         foreach (var nestedType in type.NestedTypes)
