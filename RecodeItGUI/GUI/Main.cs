@@ -11,10 +11,14 @@ public partial class ReCodeItForm : Form
 
     private RemapModel CurrentRemap { get; set; }
 
+    private int _selectedRemapTreeIndex = 0;
+
     public ReCodeItForm()
     {
         InitializeComponent();
         PopulateDomainUpDowns();
+
+        RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
 
         Remapper.OnComplete += ReloadTreeView;
         ReloadTreeView(this, EventArgs.Empty);
@@ -121,7 +125,7 @@ public partial class ReCodeItForm : Form
 
     private void EditRemapButton_Click(object sender, EventArgs e)
     {
-        EditSelectedRemap();
+        EditSelectedRemap(this, null);
     }
 
     private void RunRemapButton_Click(object sender, EventArgs e)
@@ -482,10 +486,18 @@ public partial class ReCodeItForm : Form
         NestedTypesExcludeBox.Items.Clear();
     }
 
-    private void EditSelectedRemap()
+    private void EditSelectedRemap(object? sender, TreeNodeMouseClickEventArgs e)
     {
+        if (e?.Node.Level != 0)
+        {
+            return;
+        }
+
+        _selectedRemapTreeIndex = RemapTreeView.SelectedNode.Index;
+
         ResetAll();
-        var remap = DataProvider.Remaps.ElementAt(RemapTreeView.SelectedNode.Index);
+
+        var remap = DataProvider.Remaps.ElementAt(_selectedRemapTreeIndex);
 
         NewTypeName.Text = remap.NewTypeName;
         OriginalTypeName.Text = remap.OriginalTypeName;
