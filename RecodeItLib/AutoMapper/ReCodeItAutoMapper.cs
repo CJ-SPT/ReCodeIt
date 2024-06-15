@@ -126,16 +126,27 @@ public class ReCodeItAutoMapper
     {
         // Filter types to the ones we're looking for
         var mappingPairs = MappingPairs
-            .Where(pair => Settings.TokensToMatch.Any(token => pair.Type.Name.StartsWith(token)))
-
-            // Filter out anything that has the same name as the type, we cant remap those
-            .Where(pair => !Settings.TokensToMatch.Any(token => pair.Name.ToLower().StartsWith(token.ToLower())))
-
             // Filter based on length, short lengths dont make good class names
             .Where(pair => pair.Name.Length >= Settings.MinLengthToMatch)
 
-            // Filter based on direct name blacklist
-            .Where(pair => !Settings.PropertyFieldBlackList.Any(token => pair.Name.ToLower().StartsWith(token.ToLower())));
+            // Filter out anything that doesnt start with our specified tokens (Where pair.Type.Name
+            // is the property Type name `Class1202` and token is start identifer we are looking for `GClass`
+            .Where(pair => Settings.TokensToMatch
+                .Any(token => pair.Type.Name.StartsWith(token)))
+
+            // Filter out anything that has the same name as the type, we cant remap those
+            .Where(pair => !Settings.TokensToMatch
+                .Any(token => pair.Name.ToLower().StartsWith(token.ToLower())))
+
+            // Filter based on direct name blacklist (Where pair.Name is the property name and token
+            // is blacklisted item `Columns`
+            .Where(pair => !Settings.PropertyFieldBlackList
+                .Any(token => pair.Name.ToLower().StartsWith(token.ToLower())))
+
+            // We only want types once, so make it unique
+            .GroupBy(pair => pair.Type.FullName)
+                .Select(group => group.First())
+                .ToList();
 
         foreach (var pair in mappingPairs)
         {

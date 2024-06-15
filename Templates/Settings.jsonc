@@ -45,8 +45,9 @@
             "Template",
             "Condition",
             "Conditions",
-            "counter",
+            "Counter",
             "Instance",
+            "Command"
         ]
     }
 }
