@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using ReCodeIt.Models;
 using ReCodeIt.Utils;
 using ReCodeItLib.Utils;
 
@@ -8,7 +9,7 @@ public class ReCodeItAutoMapper
 {
     private List<MappingPair> MappingPairs { get; set; } = [];
 
-    private List<string> IgnoreNames => DataProvider.Settings.AutoMapper.TypesToIgnore;
+    private AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
 
     private static readonly List<string> SystemTypeIgnoreList = new()
     {
@@ -68,7 +69,7 @@ public class ReCodeItAutoMapper
             .Where(f => !f.FieldType.IsValueType)
 
             // We dont want fields in the system type ignore list
-            .Where(f => !IgnoreNames.Contains(f.FieldType.Name.TrimAfterSpecialChar()));
+            .Where(f => !Settings.TypesToIgnore.Contains(f.FieldType.Name.TrimAfterSpecialChar()));
 
         // Include fields from the current type
         foreach (var field in fields)
@@ -104,7 +105,7 @@ public class ReCodeItAutoMapper
             .Where(p => !p.PropertyType.IsValueType)
 
             // We dont want fields in the global ignore list
-            .Where(p => !IgnoreNames.Contains(p.PropertyType.Name.TrimAfterSpecialChar()));
+            .Where(p => !Settings.TypesToIgnore.Contains(p.PropertyType.Name.TrimAfterSpecialChar()));
 
         // Include fields from the current type
         foreach (var property in properties)
@@ -117,20 +118,31 @@ public class ReCodeItAutoMapper
         return propertiesWithTypes;
     }
 
+    /// <summary>
+    /// Filters down match pairs to match deobfuscating names 'ClassXXXX' to field or property names
+    /// that are not of the same value, also applies a length filter.
+    /// </summary>
     private void FilterTypeNames()
     {
         // Filter types to the ones we're looking for
         var mappingPairs = MappingPairs
-            .Where(pair => TokensToMatch.Any(token => pair.Type.Name.StartsWith(token)))
+            .Where(pair => Settings.TokensToMatch.Any(token => pair.Type.Name.StartsWith(token)))
 
-            // Filter out anything that has the same name as the type
-            .Where(pair => !TokensToMatch.Any(token => pair.Name.ToLower().StartsWith(token.ToLower())));
+            // Filter out anything that has the same name as the type, we cant remap those
+            .Where(pair => !Settings.TokensToMatch.Any(token => pair.Name.ToLower().StartsWith(token.ToLower())))
+
+            // Filter based on length, short lengths dont make good class names
+            .Where(pair => pair.Name.Length >= Settings.MinLengthToMatch)
+
+            // Filter based on direct name blacklist
+            .Where(pair => !Settings.PropertyFieldBlackList.Any(token => pair.Name.ToLower().StartsWith(token.ToLower())));
 
         foreach (var pair in mappingPairs)
         {
-            Logger.Log($"Type: {pair.Type.Name} identifier: {pair.Name}");
+            Logger.Log($"Type: {pair.Type.FullName} identifier: {pair.Name}");
         }
 
+        MappingPairs = mappingPairs.ToList();
         Logger.Log($"Match Count {mappingPairs.Count()}");
     }
 

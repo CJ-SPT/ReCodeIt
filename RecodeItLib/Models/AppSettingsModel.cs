@@ -38,4 +38,6 @@ public class AutoMapperSettings
     public List<string> TypesToIgnore { get; set; }
 
     public List<string> TokensToMatch { get; set; }
+
+    public List<string> PropertyFieldBlackList { get; set; }
 }

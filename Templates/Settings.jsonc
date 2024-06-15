@@ -15,7 +15,7 @@
     },
     "AutoMapper": {
         "RequiredMatches": 5,                                   // Minimum number of times a member must have this name in the assembly before considering it for remapping
-        "MinLengthToMatch": 6,                                  // Minimum length of the field/property name in code before it will be considered for a rename
+        "MinLengthToMatch": 7,                                  // Minimum length of the field/property name in code before it will be considered for a rename
         "TypesToIgnore": [                                      // Any member name you want to ignore while iterating through the assembly
             "Boolean",
             "List",
@@ -36,7 +36,17 @@
             "IEnumerator"
         ],
         "TokensToMatch": [                                      // The auto mapper will look for these tokens in class names and prioritize those
-
+            "Class",
+            "GClass"
+        ],
+        "PropertyFieldBlackList": [                             // Property or fields names to ignore in the automap, these are case sanitized so case does not matter
+            "Columns",
+            "mColumns",
+            "Template",
+            "Condition",
+            "Conditions",
+            "counter",
+            "Instance",
         ]
     }
 }
