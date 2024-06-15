@@ -2,12 +2,14 @@ using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
+using ReCodeItLib.AutoMapper;
 
 namespace ReCodeIt.GUI;
 
 public partial class ReCodeItForm : Form
 {
     public static ReCodeItRemapper Remapper { get; private set; } = new();
+    public static ReCodeItAutoMapper AutoMapper { get; private set; } = new();
 
     private RemapModel CurrentRemap { get; set; }
 
@@ -17,7 +19,7 @@ public partial class ReCodeItForm : Form
     {
         InitializeComponent();
         PopulateDomainUpDowns();
-
+        RefreshSettingsPage();
         RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
 
         Remapper.OnComplete += ReloadTreeView;
@@ -172,6 +174,11 @@ public partial class ReCodeItForm : Form
         }
     }
 
+    private void RunAutoMapButton_Click(object sender, EventArgs e)
+    {
+        AutoMapper.InitializeAutoMapping();
+    }
+
     #endregion MAIN_BUTTONS
 
     #region LISTBOX_BUTTONS
@@ -304,6 +311,32 @@ public partial class ReCodeItForm : Form
         }
     }
 
+    private void AutoMapperExcludeAddButton_Click(object sender, EventArgs e)
+    {
+        if (!AutoMapperExcludeBox.Items.Contains(AutoMapperExcludeTextField.Text))
+        {
+            DataProvider.Settings.AutoMapper.TypesToIgnore.Add(AutoMapperExcludeTextField.Text);
+            AutoMapperExcludeBox.Items.Add(AutoMapperExcludeTextField.Text);
+            AutoMapperExcludeTextField.Clear();
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void AutoMapperExcludeRemoveButton_Click(object sender, EventArgs e)
+    {
+        if (AutoMapperExcludeBox.SelectedItem != null)
+        {
+            DataProvider.Settings.AutoMapper.TypesToIgnore.RemoveAt(AutoMapperExcludeBox.SelectedIndex);
+            AutoMapperExcludeBox.Items.Remove(AutoMapperExcludeBox.SelectedItem);
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void RunAutoRemapButton_Click(object sender, EventArgs e)
+    {
+        AutoMapper.InitializeAutoMapping();
+    }
+
     #endregion LISTBOX_BUTTONS
 
     #endregion BUTTONS
@@ -322,6 +355,12 @@ public partial class ReCodeItForm : Form
         RenamePropertiesCheckbox.Checked = DataProvider.Settings.AppSettings.RenameProperties;
         PublicizeCheckbox.Checked = DataProvider.Settings.AppSettings.Publicize;
         UnsealCheckbox.Checked = DataProvider.Settings.AppSettings.Unseal;
+
+        AutoMapperExcludeBox.Items.Clear();
+        foreach (var method in DataProvider.Settings.AutoMapper.TypesToIgnore)
+        {
+            AutoMapperExcludeBox.Items.Add(method);
+        }
 
         MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
@@ -488,7 +527,7 @@ public partial class ReCodeItForm : Form
 
     private void EditSelectedRemap(object? sender, TreeNodeMouseClickEventArgs e)
     {
-        if (e?.Node.Level != 0)
+        if (e?.Node.Level != 0 || RemapTreeView?.SelectedNode?.Index < 0 || RemapTreeView?.SelectedNode?.Index == null)
         {
             return;
         }

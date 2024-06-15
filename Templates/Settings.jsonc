@@ -15,7 +15,27 @@
     },
     "AutoMapper": {
         "RequiredMatches": 5,                                   // Minimum number of times a member must have this name in the assembly before considering it for remapping
-        "NamesToIgnore": [                                      // Any member name you want to ignore while iterating through the assembly
+        "MinLengthToMatch": 6,                                  // Minimum length of the field/property name in code before it will be considered for a rename
+        "TypesToIgnore": [                                      // Any member name you want to ignore while iterating through the assembly
+            "Boolean",
+            "List",
+            "Dictionary",
+            "Byte",
+            "Int16",
+            "Int32",
+            "Func",
+            "Action",
+            "Object",
+            "String",
+            "Vector2",
+            "Vector3",
+            "Vector4",
+            "Stream",
+            "HashSet",
+            "Double",
+            "IEnumerator"
+        ],
+        "TokensToMatch": [                                      // The auto mapper will look for these tokens in class names and prioritize those
 
         ]
     }

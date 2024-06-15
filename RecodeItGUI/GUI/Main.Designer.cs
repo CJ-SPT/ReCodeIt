@@ -28,8 +28,6 @@ partial class ReCodeItForm
     /// </summary>
     private void InitializeComponent()
     {
-        components = new System.ComponentModel.Container();
-        bindingSource1 = new BindingSource(components);
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
@@ -102,13 +100,19 @@ partial class ReCodeItForm
         MethodCountEnabled = new CheckBox();
         IsSealedUpDown = new DomainUpDown();
         TabControlMain = new TabControl();
-        tabPage5 = new TabPage();
+        AutoMapperTab = new TabPage();
+        label2 = new Label();
+        AutoMapperRequiredMatchesUpDown = new NumericUpDown();
+        treeView1 = new TreeView();
+        AutoMapperExcludeTextField = new TextBox();
+        AutoMapperExcludeRemoveButton = new Button();
+        AutoMapperExcludeAddButton = new Button();
+        AutoMapperExcludeBox = new ListBox();
+        SettingsTab = new TabPage();
         groupBox3 = new GroupBox();
         label1 = new Label();
         MaxMatchCountUpDown = new NumericUpDown();
         groupBox4 = new GroupBox();
-        label2 = new Label();
-        AutoMapperRequiredMatchesUpDown = new NumericUpDown();
         groupBox2 = new GroupBox();
         MappingChooseButton = new Button();
         UnsealCheckbox = new CheckBox();
@@ -122,10 +126,7 @@ partial class ReCodeItForm
         AssemblyPathTextBox = new TextBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
-        colorDialog1 = new ColorDialog();
-        openFileDialog1 = new OpenFileDialog();
-        fileSystemWatcher1 = new FileSystemWatcher();
-        ((System.ComponentModel.ISupportInitialize)bindingSource1).BeginInit();
+        RunAutoRemapButton = new Button();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -139,13 +140,12 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).BeginInit();
         TabControlMain.SuspendLayout();
-        tabPage5.SuspendLayout();
+        AutoMapperTab.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
+        SettingsTab.SuspendLayout();
         groupBox3.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).BeginInit();
-        groupBox4.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
         groupBox2.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
         SuspendLayout();
         // 
         // TabPageRemapper
@@ -162,6 +162,7 @@ partial class ReCodeItForm
         // 
         // RemapTreeView
         // 
+        RemapTreeView.BackColor = Color.Gray;
         RemapTreeView.Location = new Point(781, 20);
         RemapTreeView.Name = "RemapTreeView";
         RemapTreeView.Size = new Size(487, 890);
@@ -210,16 +211,18 @@ partial class ReCodeItForm
         // 
         // EditRemapButton
         // 
+        EditRemapButton.BackColor = SystemColors.ButtonShadow;
         EditRemapButton.Location = new Point(580, 145);
         EditRemapButton.Name = "EditRemapButton";
         EditRemapButton.Size = new Size(168, 34);
         EditRemapButton.TabIndex = 21;
         EditRemapButton.Text = "Edit Remap";
-        EditRemapButton.UseVisualStyleBackColor = true;
+        EditRemapButton.UseVisualStyleBackColor = false;
         EditRemapButton.Click += EditRemapButton_Click;
         // 
         // ConstuctorCountUpDown
         // 
+        ConstuctorCountUpDown.BackColor = SystemColors.ScrollBar;
         ConstuctorCountUpDown.Location = new Point(224, 178);
         ConstuctorCountUpDown.Name = "ConstuctorCountUpDown";
         ConstuctorCountUpDown.Size = new Size(55, 31);
@@ -237,32 +240,35 @@ partial class ReCodeItForm
         // 
         // LoadMappingFileButton
         // 
+        LoadMappingFileButton.BackColor = SystemColors.ButtonShadow;
         LoadMappingFileButton.Location = new Point(601, 489);
         LoadMappingFileButton.Name = "LoadMappingFileButton";
         LoadMappingFileButton.Size = new Size(168, 34);
         LoadMappingFileButton.TabIndex = 18;
         LoadMappingFileButton.Text = "Load Mapping File";
-        LoadMappingFileButton.UseVisualStyleBackColor = true;
+        LoadMappingFileButton.UseVisualStyleBackColor = false;
         LoadMappingFileButton.Click += LoadMappingFileButton_Click;
         // 
         // SaveMappingFileButton
         // 
+        SaveMappingFileButton.BackColor = SystemColors.ButtonShadow;
         SaveMappingFileButton.Location = new Point(427, 489);
         SaveMappingFileButton.Name = "SaveMappingFileButton";
         SaveMappingFileButton.Size = new Size(168, 34);
         SaveMappingFileButton.TabIndex = 17;
         SaveMappingFileButton.Text = "Save Mapping File";
-        SaveMappingFileButton.UseVisualStyleBackColor = true;
+        SaveMappingFileButton.UseVisualStyleBackColor = false;
         SaveMappingFileButton.Click += SaveMappingFileButton_Click;
         // 
         // RunRemapButton
         // 
+        RunRemapButton.BackColor = SystemColors.ButtonShadow;
         RunRemapButton.Location = new Point(580, 185);
         RunRemapButton.Name = "RunRemapButton";
         RunRemapButton.Size = new Size(168, 34);
         RunRemapButton.TabIndex = 16;
         RunRemapButton.Text = "Run Remap";
-        RunRemapButton.UseVisualStyleBackColor = true;
+        RunRemapButton.UseVisualStyleBackColor = false;
         RunRemapButton.Click += RunRemapButton_Click;
         // 
         // Inclusions
@@ -298,6 +304,7 @@ partial class ReCodeItForm
         // 
         // ExcludeMethodTextBox
         // 
+        ExcludeMethodTextBox.BackColor = SystemColors.ScrollBar;
         ExcludeMethodTextBox.Location = new Point(381, 6);
         ExcludeMethodTextBox.Name = "ExcludeMethodTextBox";
         ExcludeMethodTextBox.PlaceholderText = "Exclude Methods";
@@ -306,6 +313,7 @@ partial class ReCodeItForm
         // 
         // IncludeMethodTextBox
         // 
+        IncludeMethodTextBox.BackColor = SystemColors.ScrollBar;
         IncludeMethodTextBox.Location = new Point(6, 6);
         IncludeMethodTextBox.Name = "IncludeMethodTextBox";
         IncludeMethodTextBox.PlaceholderText = "Include Methods";
@@ -354,6 +362,7 @@ partial class ReCodeItForm
         // 
         // MethodExcludeBox
         // 
+        MethodExcludeBox.BackColor = Color.Gray;
         MethodExcludeBox.FormattingEnabled = true;
         MethodExcludeBox.ItemHeight = 25;
         MethodExcludeBox.Location = new Point(381, 43);
@@ -363,6 +372,7 @@ partial class ReCodeItForm
         // 
         // MethodIncludeBox
         // 
+        MethodIncludeBox.BackColor = Color.Gray;
         MethodIncludeBox.FormattingEnabled = true;
         MethodIncludeBox.ItemHeight = 25;
         MethodIncludeBox.Location = new Point(6, 43);
@@ -390,6 +400,7 @@ partial class ReCodeItForm
         // 
         // FieldsExcludeTextInput
         // 
+        FieldsExcludeTextInput.BackColor = SystemColors.ScrollBar;
         FieldsExcludeTextInput.Location = new Point(381, 6);
         FieldsExcludeTextInput.Name = "FieldsExcludeTextInput";
         FieldsExcludeTextInput.PlaceholderText = "Exclude Fields";
@@ -398,6 +409,7 @@ partial class ReCodeItForm
         // 
         // FieldsIncludeTextInput
         // 
+        FieldsIncludeTextInput.BackColor = SystemColors.ScrollBar;
         FieldsIncludeTextInput.Location = new Point(6, 6);
         FieldsIncludeTextInput.Name = "FieldsIncludeTextInput";
         FieldsIncludeTextInput.PlaceholderText = "Include Fields";
@@ -406,46 +418,51 @@ partial class ReCodeItForm
         // 
         // FieldExcludeRemoveButton
         // 
+        FieldExcludeRemoveButton.BackColor = SystemColors.ButtonShadow;
         FieldExcludeRemoveButton.Location = new Point(622, 278);
         FieldExcludeRemoveButton.Name = "FieldExcludeRemoveButton";
         FieldExcludeRemoveButton.Size = new Size(112, 34);
         FieldExcludeRemoveButton.TabIndex = 25;
         FieldExcludeRemoveButton.Text = "Remove";
-        FieldExcludeRemoveButton.UseVisualStyleBackColor = true;
+        FieldExcludeRemoveButton.UseVisualStyleBackColor = false;
         FieldExcludeRemoveButton.Click += FieldExcludeRemoveButton_Click;
         // 
         // FieldExcludeAddButton
         // 
+        FieldExcludeAddButton.BackColor = SystemColors.ButtonShadow;
         FieldExcludeAddButton.Location = new Point(381, 278);
         FieldExcludeAddButton.Name = "FieldExcludeAddButton";
         FieldExcludeAddButton.Size = new Size(112, 34);
         FieldExcludeAddButton.TabIndex = 24;
         FieldExcludeAddButton.Text = "Add";
-        FieldExcludeAddButton.UseVisualStyleBackColor = true;
+        FieldExcludeAddButton.UseVisualStyleBackColor = false;
         FieldExcludeAddButton.Click += FieldExcludeAddButton_Click;
         // 
         // FieldIncludeRemoveButton
         // 
+        FieldIncludeRemoveButton.BackColor = SystemColors.ButtonShadow;
         FieldIncludeRemoveButton.Location = new Point(247, 278);
         FieldIncludeRemoveButton.Name = "FieldIncludeRemoveButton";
         FieldIncludeRemoveButton.Size = new Size(112, 34);
         FieldIncludeRemoveButton.TabIndex = 23;
         FieldIncludeRemoveButton.Text = "Remove";
-        FieldIncludeRemoveButton.UseVisualStyleBackColor = true;
+        FieldIncludeRemoveButton.UseVisualStyleBackColor = false;
         FieldIncludeRemoveButton.Click += FieldIncludeRemoveButton_Click;
         // 
         // FIeldIncludeAddButton
         // 
+        FIeldIncludeAddButton.BackColor = SystemColors.ButtonShadow;
         FIeldIncludeAddButton.Location = new Point(6, 278);
         FIeldIncludeAddButton.Name = "FIeldIncludeAddButton";
         FIeldIncludeAddButton.Size = new Size(112, 34);
         FIeldIncludeAddButton.TabIndex = 22;
         FIeldIncludeAddButton.Text = "Add";
-        FIeldIncludeAddButton.UseVisualStyleBackColor = true;
+        FIeldIncludeAddButton.UseVisualStyleBackColor = false;
         FIeldIncludeAddButton.Click += FIeldIncludeAddButton_Click;
         // 
         // FieldExcludeBox
         // 
+        FieldExcludeBox.BackColor = Color.Gray;
         FieldExcludeBox.FormattingEnabled = true;
         FieldExcludeBox.ItemHeight = 25;
         FieldExcludeBox.Location = new Point(382, 43);
@@ -455,6 +472,7 @@ partial class ReCodeItForm
         // 
         // FieldIncludeBox
         // 
+        FieldIncludeBox.BackColor = Color.Gray;
         FieldIncludeBox.FormattingEnabled = true;
         FieldIncludeBox.ItemHeight = 25;
         FieldIncludeBox.Location = new Point(6, 43);
@@ -482,6 +500,7 @@ partial class ReCodeItForm
         // 
         // PropertiesExcludeTextField
         // 
+        PropertiesExcludeTextField.BackColor = SystemColors.ScrollBar;
         PropertiesExcludeTextField.Location = new Point(381, 6);
         PropertiesExcludeTextField.Name = "PropertiesExcludeTextField";
         PropertiesExcludeTextField.PlaceholderText = "Exclude Properties";
@@ -490,6 +509,7 @@ partial class ReCodeItForm
         // 
         // PropertiesIncludeTextField
         // 
+        PropertiesIncludeTextField.BackColor = SystemColors.ScrollBar;
         PropertiesIncludeTextField.Location = new Point(6, 6);
         PropertiesIncludeTextField.Name = "PropertiesIncludeTextField";
         PropertiesIncludeTextField.PlaceholderText = "Include Properties";
@@ -498,46 +518,51 @@ partial class ReCodeItForm
         // 
         // PropertiesExcludeRemoveButton
         // 
+        PropertiesExcludeRemoveButton.BackColor = SystemColors.ButtonShadow;
         PropertiesExcludeRemoveButton.Location = new Point(622, 278);
         PropertiesExcludeRemoveButton.Name = "PropertiesExcludeRemoveButton";
         PropertiesExcludeRemoveButton.Size = new Size(112, 34);
         PropertiesExcludeRemoveButton.TabIndex = 25;
         PropertiesExcludeRemoveButton.Text = "Remove";
-        PropertiesExcludeRemoveButton.UseVisualStyleBackColor = true;
+        PropertiesExcludeRemoveButton.UseVisualStyleBackColor = false;
         PropertiesExcludeRemoveButton.Click += PropertiesExcludeRemoveButton_Click;
         // 
         // PropertiesExcludeAddButton
         // 
+        PropertiesExcludeAddButton.BackColor = SystemColors.ButtonShadow;
         PropertiesExcludeAddButton.Location = new Point(381, 278);
         PropertiesExcludeAddButton.Name = "PropertiesExcludeAddButton";
         PropertiesExcludeAddButton.Size = new Size(112, 34);
         PropertiesExcludeAddButton.TabIndex = 24;
         PropertiesExcludeAddButton.Text = "Add";
-        PropertiesExcludeAddButton.UseVisualStyleBackColor = true;
+        PropertiesExcludeAddButton.UseVisualStyleBackColor = false;
         PropertiesExcludeAddButton.Click += PropertiesExcludeAddButton_Click;
         // 
         // PropertiesIncludeRemoveButton
         // 
+        PropertiesIncludeRemoveButton.BackColor = SystemColors.ButtonShadow;
         PropertiesIncludeRemoveButton.Location = new Point(247, 278);
         PropertiesIncludeRemoveButton.Name = "PropertiesIncludeRemoveButton";
         PropertiesIncludeRemoveButton.Size = new Size(112, 34);
         PropertiesIncludeRemoveButton.TabIndex = 23;
         PropertiesIncludeRemoveButton.Text = "Remove";
-        PropertiesIncludeRemoveButton.UseVisualStyleBackColor = true;
+        PropertiesIncludeRemoveButton.UseVisualStyleBackColor = false;
         PropertiesIncludeRemoveButton.Click += PropertiesIncludeRemoveButton_Click;
         // 
         // PropertiesIncludeAddButton
         // 
+        PropertiesIncludeAddButton.BackColor = SystemColors.ButtonShadow;
         PropertiesIncludeAddButton.Location = new Point(6, 278);
         PropertiesIncludeAddButton.Name = "PropertiesIncludeAddButton";
         PropertiesIncludeAddButton.Size = new Size(112, 34);
         PropertiesIncludeAddButton.TabIndex = 22;
         PropertiesIncludeAddButton.Text = "Add";
-        PropertiesIncludeAddButton.UseVisualStyleBackColor = true;
+        PropertiesIncludeAddButton.UseVisualStyleBackColor = false;
         PropertiesIncludeAddButton.Click += PropertiesIncludeAddButton_Click;
         // 
         // PropertiesExcludeBox
         // 
+        PropertiesExcludeBox.BackColor = Color.Gray;
         PropertiesExcludeBox.FormattingEnabled = true;
         PropertiesExcludeBox.ItemHeight = 25;
         PropertiesExcludeBox.Location = new Point(381, 43);
@@ -547,6 +572,7 @@ partial class ReCodeItForm
         // 
         // PropertiesIncludeBox
         // 
+        PropertiesIncludeBox.BackColor = Color.Gray;
         PropertiesIncludeBox.FormattingEnabled = true;
         PropertiesIncludeBox.ItemHeight = 25;
         PropertiesIncludeBox.Location = new Point(6, 43);
@@ -574,6 +600,7 @@ partial class ReCodeItForm
         // 
         // NestedTypesExcludeTextField
         // 
+        NestedTypesExcludeTextField.BackColor = SystemColors.ScrollBar;
         NestedTypesExcludeTextField.Location = new Point(381, 6);
         NestedTypesExcludeTextField.Name = "NestedTypesExcludeTextField";
         NestedTypesExcludeTextField.PlaceholderText = "Exclude Nested Types";
@@ -582,6 +609,7 @@ partial class ReCodeItForm
         // 
         // NestedTypesIncludeTextField
         // 
+        NestedTypesIncludeTextField.BackColor = SystemColors.ScrollBar;
         NestedTypesIncludeTextField.Location = new Point(6, 6);
         NestedTypesIncludeTextField.Name = "NestedTypesIncludeTextField";
         NestedTypesIncludeTextField.PlaceholderText = "Include Nested Types";
@@ -590,46 +618,51 @@ partial class ReCodeItForm
         // 
         // NestedTypesExcludeRemoveButton
         // 
+        NestedTypesExcludeRemoveButton.BackColor = SystemColors.ButtonShadow;
         NestedTypesExcludeRemoveButton.Location = new Point(622, 278);
         NestedTypesExcludeRemoveButton.Name = "NestedTypesExcludeRemoveButton";
         NestedTypesExcludeRemoveButton.Size = new Size(112, 34);
         NestedTypesExcludeRemoveButton.TabIndex = 25;
         NestedTypesExcludeRemoveButton.Text = "Remove";
-        NestedTypesExcludeRemoveButton.UseVisualStyleBackColor = true;
+        NestedTypesExcludeRemoveButton.UseVisualStyleBackColor = false;
         NestedTypesExcludeRemoveButton.Click += NestedTypesExcludeRemoveButton_Click;
         // 
         // NestedTypesExlcudeAddButton
         // 
+        NestedTypesExlcudeAddButton.BackColor = SystemColors.ButtonShadow;
         NestedTypesExlcudeAddButton.Location = new Point(381, 278);
         NestedTypesExlcudeAddButton.Name = "NestedTypesExlcudeAddButton";
         NestedTypesExlcudeAddButton.Size = new Size(112, 34);
         NestedTypesExlcudeAddButton.TabIndex = 24;
         NestedTypesExlcudeAddButton.Text = "Add";
-        NestedTypesExlcudeAddButton.UseVisualStyleBackColor = true;
+        NestedTypesExlcudeAddButton.UseVisualStyleBackColor = false;
         NestedTypesExlcudeAddButton.Click += NestedTypesExlcudeAddButton_Click;
         // 
         // NestedTypesRemoveButton
         // 
+        NestedTypesRemoveButton.BackColor = SystemColors.ButtonShadow;
         NestedTypesRemoveButton.Location = new Point(247, 278);
         NestedTypesRemoveButton.Name = "NestedTypesRemoveButton";
         NestedTypesRemoveButton.Size = new Size(112, 34);
         NestedTypesRemoveButton.TabIndex = 23;
         NestedTypesRemoveButton.Text = "Remove";
-        NestedTypesRemoveButton.UseVisualStyleBackColor = true;
+        NestedTypesRemoveButton.UseVisualStyleBackColor = false;
         NestedTypesRemoveButton.Click += NestedTypesRemoveButton_Click;
         // 
         // NestedTypesAddButton
         // 
+        NestedTypesAddButton.BackColor = SystemColors.ButtonShadow;
         NestedTypesAddButton.Location = new Point(6, 278);
         NestedTypesAddButton.Name = "NestedTypesAddButton";
         NestedTypesAddButton.Size = new Size(112, 34);
         NestedTypesAddButton.TabIndex = 22;
         NestedTypesAddButton.Text = "Add";
-        NestedTypesAddButton.UseVisualStyleBackColor = true;
+        NestedTypesAddButton.UseVisualStyleBackColor = false;
         NestedTypesAddButton.Click += NestedTypesAddButton_Click;
         // 
         // NestedTypesExcludeBox
         // 
+        NestedTypesExcludeBox.BackColor = Color.Gray;
         NestedTypesExcludeBox.FormattingEnabled = true;
         NestedTypesExcludeBox.ItemHeight = 25;
         NestedTypesExcludeBox.Location = new Point(381, 43);
@@ -639,6 +672,7 @@ partial class ReCodeItForm
         // 
         // NestedTypesIncludeBox
         // 
+        NestedTypesIncludeBox.BackColor = Color.Gray;
         NestedTypesIncludeBox.FormattingEnabled = true;
         NestedTypesIncludeBox.ItemHeight = 25;
         NestedTypesIncludeBox.Location = new Point(6, 43);
@@ -648,6 +682,7 @@ partial class ReCodeItForm
         // 
         // NewTypeName
         // 
+        NewTypeName.BackColor = SystemColors.ScrollBar;
         NewTypeName.Location = new Point(10, 30);
         NewTypeName.Name = "NewTypeName";
         NewTypeName.PlaceholderText = "New Type Name";
@@ -676,6 +711,7 @@ partial class ReCodeItForm
         // 
         // IsInterfaceUpDown
         // 
+        IsInterfaceUpDown.BackColor = SystemColors.ScrollBar;
         IsInterfaceUpDown.Location = new Point(10, 183);
         IsInterfaceUpDown.Name = "IsInterfaceUpDown";
         IsInterfaceUpDown.Size = new Size(208, 31);
@@ -695,6 +731,7 @@ partial class ReCodeItForm
         // 
         // PropertyCountUpDown
         // 
+        PropertyCountUpDown.BackColor = SystemColors.ScrollBar;
         PropertyCountUpDown.Location = new Point(224, 291);
         PropertyCountUpDown.Name = "PropertyCountUpDown";
         PropertyCountUpDown.Size = new Size(55, 31);
@@ -702,16 +739,18 @@ partial class ReCodeItForm
         // 
         // RemoveRemapButton
         // 
+        RemoveRemapButton.BackColor = SystemColors.ButtonShadow;
         RemoveRemapButton.Location = new Point(580, 105);
         RemoveRemapButton.Name = "RemoveRemapButton";
         RemoveRemapButton.Size = new Size(168, 34);
         RemoveRemapButton.TabIndex = 2;
         RemoveRemapButton.Text = "Remove Remap";
-        RemoveRemapButton.UseVisualStyleBackColor = true;
+        RemoveRemapButton.UseVisualStyleBackColor = false;
         RemoveRemapButton.Click += RemoveRemapButton_Click;
         // 
         // FieldCountUpDown
         // 
+        FieldCountUpDown.BackColor = SystemColors.ScrollBar;
         FieldCountUpDown.Location = new Point(224, 253);
         FieldCountUpDown.Name = "FieldCountUpDown";
         FieldCountUpDown.Size = new Size(55, 31);
@@ -719,6 +758,7 @@ partial class ReCodeItForm
         // 
         // IsPublicUpDown
         // 
+        IsPublicUpDown.BackColor = SystemColors.ScrollBar;
         IsPublicUpDown.Location = new Point(10, 107);
         IsPublicUpDown.Name = "IsPublicUpDown";
         IsPublicUpDown.Size = new Size(208, 31);
@@ -738,6 +778,7 @@ partial class ReCodeItForm
         // 
         // NestedTypeParentName
         // 
+        NestedTypeParentName.BackColor = SystemColors.ScrollBar;
         NestedTypeParentName.Location = new Point(224, 106);
         NestedTypeParentName.Name = "NestedTypeParentName";
         NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
@@ -746,6 +787,7 @@ partial class ReCodeItForm
         // 
         // MethodCountUpDown
         // 
+        MethodCountUpDown.BackColor = SystemColors.ScrollBar;
         MethodCountUpDown.Location = new Point(224, 215);
         MethodCountUpDown.Name = "MethodCountUpDown";
         MethodCountUpDown.Size = new Size(55, 31);
@@ -753,6 +795,7 @@ partial class ReCodeItForm
         // 
         // IsAbstractUpDown
         // 
+        IsAbstractUpDown.BackColor = SystemColors.ScrollBar;
         IsAbstractUpDown.Location = new Point(10, 144);
         IsAbstractUpDown.Name = "IsAbstractUpDown";
         IsAbstractUpDown.Size = new Size(208, 31);
@@ -762,6 +805,7 @@ partial class ReCodeItForm
         // 
         // BaseClassIncludeTextFIeld
         // 
+        BaseClassIncludeTextFIeld.BackColor = SystemColors.ScrollBar;
         BaseClassIncludeTextFIeld.Location = new Point(224, 67);
         BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
         BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
@@ -770,6 +814,7 @@ partial class ReCodeItForm
         // 
         // OriginalTypeName
         // 
+        OriginalTypeName.BackColor = SystemColors.ScrollBar;
         OriginalTypeName.Location = new Point(224, 30);
         OriginalTypeName.Name = "OriginalTypeName";
         OriginalTypeName.PlaceholderText = "Original Type Name";
@@ -778,6 +823,7 @@ partial class ReCodeItForm
         // 
         // HasGenericParametersUpDown
         // 
+        HasGenericParametersUpDown.BackColor = SystemColors.ScrollBar;
         HasGenericParametersUpDown.Location = new Point(10, 366);
         HasGenericParametersUpDown.Name = "HasGenericParametersUpDown";
         HasGenericParametersUpDown.Size = new Size(208, 31);
@@ -787,6 +833,7 @@ partial class ReCodeItForm
         // 
         // IsEnumUpDown
         // 
+        IsEnumUpDown.BackColor = SystemColors.ScrollBar;
         IsEnumUpDown.Location = new Point(10, 255);
         IsEnumUpDown.Name = "IsEnumUpDown";
         IsEnumUpDown.Size = new Size(208, 31);
@@ -796,6 +843,7 @@ partial class ReCodeItForm
         // 
         // NestedTypeCountUpDown
         // 
+        NestedTypeCountUpDown.BackColor = SystemColors.ScrollBar;
         NestedTypeCountUpDown.Location = new Point(224, 329);
         NestedTypeCountUpDown.Name = "NestedTypeCountUpDown";
         NestedTypeCountUpDown.Size = new Size(55, 31);
@@ -803,16 +851,18 @@ partial class ReCodeItForm
         // 
         // SaveRemapButton
         // 
+        SaveRemapButton.BackColor = SystemColors.ButtonShadow;
         SaveRemapButton.Location = new Point(580, 64);
         SaveRemapButton.Name = "SaveRemapButton";
         SaveRemapButton.Size = new Size(168, 34);
         SaveRemapButton.TabIndex = 4;
         SaveRemapButton.Text = "Save Remap";
-        SaveRemapButton.UseVisualStyleBackColor = true;
+        SaveRemapButton.UseVisualStyleBackColor = false;
         SaveRemapButton.Click += AddRemapButton_Click;
         // 
         // IsDerivedUpDown
         // 
+        IsDerivedUpDown.BackColor = SystemColors.ScrollBar;
         IsDerivedUpDown.Location = new Point(10, 329);
         IsDerivedUpDown.Name = "IsDerivedUpDown";
         IsDerivedUpDown.Size = new Size(208, 31);
@@ -822,6 +872,7 @@ partial class ReCodeItForm
         // 
         // IsNestedUpDown
         // 
+        IsNestedUpDown.BackColor = SystemColors.ScrollBar;
         IsNestedUpDown.Location = new Point(10, 68);
         IsNestedUpDown.Name = "IsNestedUpDown";
         IsNestedUpDown.Size = new Size(208, 31);
@@ -831,6 +882,7 @@ partial class ReCodeItForm
         // 
         // HasAttributeUpDown
         // 
+        HasAttributeUpDown.BackColor = SystemColors.ScrollBar;
         HasAttributeUpDown.Location = new Point(10, 292);
         HasAttributeUpDown.Name = "HasAttributeUpDown";
         HasAttributeUpDown.Size = new Size(208, 31);
@@ -840,6 +892,7 @@ partial class ReCodeItForm
         // 
         // BaseClassExcludeTextField
         // 
+        BaseClassExcludeTextField.BackColor = SystemColors.ScrollBar;
         BaseClassExcludeTextField.Location = new Point(224, 145);
         BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
         BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
@@ -858,6 +911,7 @@ partial class ReCodeItForm
         // 
         // IsSealedUpDown
         // 
+        IsSealedUpDown.BackColor = SystemColors.ScrollBar;
         IsSealedUpDown.Location = new Point(10, 218);
         IsSealedUpDown.Name = "IsSealedUpDown";
         IsSealedUpDown.Size = new Size(208, 31);
@@ -868,25 +922,106 @@ partial class ReCodeItForm
         // TabControlMain
         // 
         TabControlMain.Controls.Add(TabPageRemapper);
-        TabControlMain.Controls.Add(tabPage5);
+        TabControlMain.Controls.Add(AutoMapperTab);
+        TabControlMain.Controls.Add(SettingsTab);
         TabControlMain.Location = new Point(-5, 1);
         TabControlMain.Name = "TabControlMain";
         TabControlMain.SelectedIndex = 0;
         TabControlMain.Size = new Size(1344, 991);
         TabControlMain.TabIndex = 6;
         // 
-        // tabPage5
+        // AutoMapperTab
         // 
-        tabPage5.BackColor = SystemColors.ControlDarkDark;
-        tabPage5.Controls.Add(groupBox3);
-        tabPage5.Controls.Add(groupBox4);
-        tabPage5.Controls.Add(groupBox2);
-        tabPage5.Location = new Point(4, 34);
-        tabPage5.Name = "tabPage5";
-        tabPage5.Padding = new Padding(3);
-        tabPage5.Size = new Size(1336, 953);
-        tabPage5.TabIndex = 2;
-        tabPage5.Text = "Settings";
+        AutoMapperTab.BackColor = SystemColors.ControlDarkDark;
+        AutoMapperTab.Controls.Add(RunAutoRemapButton);
+        AutoMapperTab.Controls.Add(label2);
+        AutoMapperTab.Controls.Add(AutoMapperRequiredMatchesUpDown);
+        AutoMapperTab.Controls.Add(treeView1);
+        AutoMapperTab.Controls.Add(AutoMapperExcludeTextField);
+        AutoMapperTab.Controls.Add(AutoMapperExcludeRemoveButton);
+        AutoMapperTab.Controls.Add(AutoMapperExcludeAddButton);
+        AutoMapperTab.Controls.Add(AutoMapperExcludeBox);
+        AutoMapperTab.Location = new Point(4, 34);
+        AutoMapperTab.Name = "AutoMapperTab";
+        AutoMapperTab.Padding = new Padding(3);
+        AutoMapperTab.Size = new Size(1336, 953);
+        AutoMapperTab.TabIndex = 3;
+        AutoMapperTab.Text = "Auto Mapper";
+        // 
+        // label2
+        // 
+        label2.AutoSize = true;
+        label2.Location = new Point(76, 60);
+        label2.Name = "label2";
+        label2.Size = new Size(153, 25);
+        label2.TabIndex = 27;
+        label2.Text = "Required Matches";
+        // 
+        // AutoMapperRequiredMatchesUpDown
+        // 
+        AutoMapperRequiredMatchesUpDown.Location = new Point(13, 58);
+        AutoMapperRequiredMatchesUpDown.Name = "AutoMapperRequiredMatchesUpDown";
+        AutoMapperRequiredMatchesUpDown.Size = new Size(57, 31);
+        AutoMapperRequiredMatchesUpDown.TabIndex = 26;
+        // 
+        // treeView1
+        // 
+        treeView1.Location = new Point(918, 18);
+        treeView1.Name = "treeView1";
+        treeView1.Size = new Size(368, 901);
+        treeView1.TabIndex = 25;
+        // 
+        // AutoMapperExcludeTextField
+        // 
+        AutoMapperExcludeTextField.BackColor = SystemColors.ScrollBar;
+        AutoMapperExcludeTextField.Location = new Point(6, 173);
+        AutoMapperExcludeTextField.Name = "AutoMapperExcludeTextField";
+        AutoMapperExcludeTextField.PlaceholderText = "Exclude Names";
+        AutoMapperExcludeTextField.Size = new Size(353, 31);
+        AutoMapperExcludeTextField.TabIndex = 24;
+        // 
+        // AutoMapperExcludeRemoveButton
+        // 
+        AutoMapperExcludeRemoveButton.Location = new Point(247, 445);
+        AutoMapperExcludeRemoveButton.Name = "AutoMapperExcludeRemoveButton";
+        AutoMapperExcludeRemoveButton.Size = new Size(112, 34);
+        AutoMapperExcludeRemoveButton.TabIndex = 23;
+        AutoMapperExcludeRemoveButton.Text = "Remove";
+        AutoMapperExcludeRemoveButton.UseVisualStyleBackColor = true;
+        AutoMapperExcludeRemoveButton.Click += AutoMapperExcludeRemoveButton_Click;
+        // 
+        // AutoMapperExcludeAddButton
+        // 
+        AutoMapperExcludeAddButton.Location = new Point(6, 445);
+        AutoMapperExcludeAddButton.Name = "AutoMapperExcludeAddButton";
+        AutoMapperExcludeAddButton.Size = new Size(112, 34);
+        AutoMapperExcludeAddButton.TabIndex = 22;
+        AutoMapperExcludeAddButton.Text = "Add";
+        AutoMapperExcludeAddButton.UseVisualStyleBackColor = true;
+        AutoMapperExcludeAddButton.Click += AutoMapperExcludeAddButton_Click;
+        // 
+        // AutoMapperExcludeBox
+        // 
+        AutoMapperExcludeBox.BackColor = Color.Gray;
+        AutoMapperExcludeBox.FormattingEnabled = true;
+        AutoMapperExcludeBox.ItemHeight = 25;
+        AutoMapperExcludeBox.Location = new Point(6, 210);
+        AutoMapperExcludeBox.Name = "AutoMapperExcludeBox";
+        AutoMapperExcludeBox.Size = new Size(353, 229);
+        AutoMapperExcludeBox.TabIndex = 21;
+        // 
+        // SettingsTab
+        // 
+        SettingsTab.BackColor = SystemColors.ControlDarkDark;
+        SettingsTab.Controls.Add(groupBox3);
+        SettingsTab.Controls.Add(groupBox4);
+        SettingsTab.Controls.Add(groupBox2);
+        SettingsTab.Location = new Point(4, 34);
+        SettingsTab.Name = "SettingsTab";
+        SettingsTab.Padding = new Padding(3);
+        SettingsTab.Size = new Size(1336, 953);
+        SettingsTab.TabIndex = 2;
+        SettingsTab.Text = "Settings";
         // 
         // groupBox3
         // 
@@ -920,31 +1055,12 @@ partial class ReCodeItForm
         // 
         // groupBox4
         // 
-        groupBox4.Controls.Add(label2);
-        groupBox4.Controls.Add(AutoMapperRequiredMatchesUpDown);
         groupBox4.Location = new Point(729, 6);
         groupBox4.Name = "groupBox4";
         groupBox4.Size = new Size(557, 285);
         groupBox4.TabIndex = 1;
         groupBox4.TabStop = false;
         groupBox4.Text = "Auto Mapper Settings";
-        // 
-        // label2
-        // 
-        label2.AutoSize = true;
-        label2.Location = new Point(69, 37);
-        label2.Name = "label2";
-        label2.Size = new Size(153, 25);
-        label2.TabIndex = 6;
-        label2.Text = "Required Matches";
-        // 
-        // AutoMapperRequiredMatchesUpDown
-        // 
-        AutoMapperRequiredMatchesUpDown.Location = new Point(6, 35);
-        AutoMapperRequiredMatchesUpDown.Name = "AutoMapperRequiredMatchesUpDown";
-        AutoMapperRequiredMatchesUpDown.Size = new Size(57, 31);
-        AutoMapperRequiredMatchesUpDown.TabIndex = 5;
-        AutoMapperRequiredMatchesUpDown.ValueChanged += AutoMapperRequiredMatchesUpDown_ValueChanged;
         // 
         // groupBox2
         // 
@@ -1098,14 +1214,15 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
-        // openFileDialog1
+        // RunAutoRemapButton
         // 
-        openFileDialog1.FileName = "openFileDialog1";
-        // 
-        // fileSystemWatcher1
-        // 
-        fileSystemWatcher1.EnableRaisingEvents = true;
-        fileSystemWatcher1.SynchronizingObject = this;
+        RunAutoRemapButton.Location = new Point(6, 3);
+        RunAutoRemapButton.Name = "RunAutoRemapButton";
+        RunAutoRemapButton.Size = new Size(168, 34);
+        RunAutoRemapButton.TabIndex = 28;
+        RunAutoRemapButton.Text = "Run Auto Remap";
+        RunAutoRemapButton.UseVisualStyleBackColor = true;
+        RunAutoRemapButton.Click += RunAutoRemapButton_Click;
         // 
         // ReCodeItForm
         // 
@@ -1117,7 +1234,6 @@ partial class ReCodeItForm
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
         Text = "ReCodeIt V0.1.0";
-        ((System.ComponentModel.ISupportInitialize)bindingSource1).EndInit();
         TabPageRemapper.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
@@ -1136,21 +1252,19 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)MethodCountUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).EndInit();
         TabControlMain.ResumeLayout(false);
-        tabPage5.ResumeLayout(false);
+        AutoMapperTab.ResumeLayout(false);
+        AutoMapperTab.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
+        SettingsTab.ResumeLayout(false);
         groupBox3.ResumeLayout(false);
         groupBox3.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).EndInit();
-        groupBox4.ResumeLayout(false);
-        groupBox4.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
         groupBox2.ResumeLayout(false);
         groupBox2.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
         ResumeLayout(false);
     }
 
     #endregion
-    private BindingSource bindingSource1;
     private TabPage TabPageRemapper;
     private GroupBox groupBox1;
     private TabControl Inclusions;
@@ -1204,7 +1318,6 @@ partial class ReCodeItForm
     private ListView RemapListView;
     private TabControl TabControlMain;
     private DomainUpDown IsPublicUpDown;
-    private ColorDialog colorDialog1;
     private DomainUpDown HasGenericParametersUpDown;
     private DomainUpDown IsDerivedUpDown;
     private DomainUpDown HasAttributeUpDown;
@@ -1224,7 +1337,7 @@ partial class ReCodeItForm
     private CheckBox ConstructorCountEnabled;
     private NumericUpDown MethodCountUpDown;
     private CheckBox MethodCountEnabled;
-    private TabPage tabPage5;
+    private TabPage SettingsTab;
     private GroupBox groupBox3;
     private GroupBox groupBox4;
     private GroupBox groupBox2;
@@ -1236,15 +1349,20 @@ partial class ReCodeItForm
     private TextBox MappingPathTextBox;
     private TextBox OutputPathTextBox;
     private TextBox AssemblyPathTextBox;
-    private OpenFileDialog openFileDialog1;
-    private FileSystemWatcher fileSystemWatcher1;
     private CheckBox RenamePropertiesCheckbox;
     private CheckBox RenameFieldsCheckbox;
     private CheckBox UnsealCheckbox;
     private CheckBox PublicizeCheckbox;
     private NumericUpDown MaxMatchCountUpDown;
-    private NumericUpDown AutoMapperRequiredMatchesUpDown;
     private Label label1;
-    private Label label2;
     private Button EditRemapButton;
+    private TabPage AutoMapperTab;
+    private TreeView treeView1;
+    private TextBox AutoMapperExcludeTextField;
+    private Button AutoMapperExcludeRemoveButton;
+    private Button AutoMapperExcludeAddButton;
+    private ListBox AutoMapperExcludeBox;
+    private Label label2;
+    private NumericUpDown AutoMapperRequiredMatchesUpDown;
+    private Button RunAutoRemapButton;
 }

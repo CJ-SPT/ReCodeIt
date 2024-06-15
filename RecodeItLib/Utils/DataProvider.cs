@@ -1,6 +1,6 @@
-﻿using ReCodeIt.Models;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Newtonsoft.Json;
+using ReCodeIt.Models;
 
 namespace ReCodeIt.Utils;
 
@@ -50,7 +50,12 @@ public static class DataProvider
             throw new FileNotFoundException($"path `{settingsPath}` does not exist...");
         }
 
-        var jsonText = JsonConvert.SerializeObject(Settings);
+        JsonSerializerSettings settings = new()
+        {
+            Formatting = Formatting.Indented
+        };
+
+        var jsonText = JsonConvert.SerializeObject(Settings, settings);
 
         File.WriteAllText(settingsPath, jsonText);
     }

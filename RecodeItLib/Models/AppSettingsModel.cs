@@ -13,25 +13,29 @@ public class Settings
 
 public class AppSettings
 {
-    public bool Debug { get; set; } = false;
-    public bool SilentMode { get; set; } = true;
-    public string AssemblyPath { get; set; } = string.Empty;
-    public string OutputPath { get; set; } = string.Empty;
-    public string MappingPath { get; set; } = string.Empty;
-    public bool RenameFields { get; set; } = true;
-    public bool RenameProperties { get; set; } = true;
-    public bool Publicize { get; set; } = false;
-    public bool Unseal { get; set; } = false;
+    public bool Debug { get; set; }
+    public bool SilentMode { get; set; }
+    public string AssemblyPath { get; set; }
+    public string OutputPath { get; set; }
+    public string MappingPath { get; set; }
+    public bool RenameFields { get; set; }
+    public bool RenameProperties { get; set; }
+    public bool Publicize { get; set; }
+    public bool Unseal { get; set; }
 }
 
 public class RemapperSettings
 {
-    public int MaxMatchCount { get; set; } = 5;
+    public int MaxMatchCount { get; set; }
 }
 
 public class AutoMapperSettings
 {
-    public int RequiredMatches { get; set; } = 5;
+    public int RequiredMatches { get; set; }
 
-    public List<string> NamesToIgnore { get; set; } = [];
+    public int MinLengthToMatch { get; set; }
+
+    public List<string> TypesToIgnore { get; set; }
+
+    public List<string> TokensToMatch { get; set; }
 }
