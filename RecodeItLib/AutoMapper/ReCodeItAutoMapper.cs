@@ -13,6 +13,9 @@ public class ReCodeItAutoMapper
 
     private static AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
 
+    private static bool Error { get; set; } = false;
+    private int FailureCount { get; set; } = 0;
+
     /// <summary>
     /// Start the automapping process
     /// </summary>
@@ -24,6 +27,9 @@ public class ReCodeItAutoMapper
         // Clear any previous pairs
         MappingPairs = [];
         CompilerGeneratedClasses = [];
+
+        Error = false;
+        FailureCount = 0;
 
         FindCompilerGeneratedObjects(DataProvider.ModuleDefinition.Types);
 
@@ -39,6 +45,10 @@ public class ReCodeItAutoMapper
 
         FilterTypeNames();
         SanitizeProposedNames();
+        StartRenameProcess();
+
+        if (Error) { return; }
+
         WriteChanges();
     }
 
@@ -96,13 +106,16 @@ public class ReCodeItAutoMapper
             // Skip value types
             .Where(f => !f.FieldType.IsValueType)
 
+            // TODO: Renaming arrays is strange, come back to this later
+            .Where(p => !p.FieldType.IsArray)
+
             // We dont want fields in the system type ignore list
             .Where(f => !Settings.TypesToIgnore.Contains(f.FieldType.Name.TrimAfterSpecialChar()));
 
         // Include fields from the current type
         foreach (var field in fields)
         {
-            //Logger.Log($"Collecting Field: TypeRef: {field.FieldType.Name.TrimAfterSpecialChar()} Field Name: {field.Name}");
+            //Logger.Log($"Collecting Field: OriginalTypeRef: {field.FieldType.Name.TrimAfterSpecialChar()} Field Name: {field.Name}");
 
             fieldsWithTypes.Add(new MappingPair(
                 field.FieldType,
@@ -143,13 +156,16 @@ public class ReCodeItAutoMapper
             // Skip value types
             .Where(p => !p.PropertyType.IsValueType)
 
+            // TODO: Renaming arrays is strange, come back to this later
+            .Where(p => !p.PropertyType.IsArray)
+
             // We dont want fields in the global ignore list
             .Where(p => !Settings.TypesToIgnore.Contains(p.PropertyType.Name.TrimAfterSpecialChar()));
 
         // Include fields from the current type
         foreach (var property in properties)
         {
-            //Logger.Log($"Collecting Property: TypeRef: {property.PropertyType.Name.TrimAfterSpecialChar()} Field Name: {property.Name}");
+            //Logger.Log($"Collecting Property: OriginalTypeRef: {property.PropertyType.Name.TrimAfterSpecialChar()} Field Name: {property.Name}");
 
             ;
 
@@ -175,10 +191,10 @@ public class ReCodeItAutoMapper
             .Where(pair => pair.Name.Length >= Settings.MinLengthToMatch)
 
             // Filter out anything that doesnt start with our specified tokens (Where
-            // pair.TypeRef.Name is the property TypeRef name `Class1202` and token is start
-            // identifer we are looking for `GClass`
+            // pair.OriginalTypeRef.Name is the property OriginalTypeRef name `Class1202` and token
+            // is start identifer we are looking for `GClass`
             .Where(pair => Settings.TokensToMatch
-                .Any(token => pair.TypeRef.Name.StartsWith(token)))
+                .Any(token => pair.OriginalTypeRef.Name.StartsWith(token)))
 
             // Filter out anything that has the same name as the type, we cant remap those
             .Where(pair => !Settings.TokensToMatch
@@ -194,7 +210,7 @@ public class ReCodeItAutoMapper
             .Where(pair => !pair.Name.ToCharArray().Contains('<'))
 
             // We only want types once, so make it unique
-            .GroupBy(pair => pair.TypeRef.FullName)
+            .GroupBy(pair => pair.OriginalTypeRef.FullName)
                 .Select(group => group.First())
                     .GroupBy(pair => pair.Name)
                         .Select(group => group.First())
@@ -252,7 +268,7 @@ public class ReCodeItAutoMapper
             }
 
             Logger.Log($"------------------------------------------------------------------------");
-            Logger.Log($"Original Name: {pair.OriginalName} : Sanitized Name: {pair.Name}");
+            Logger.Log($"Original Name: {pair.OriginalFullName} : Sanitized Name: {pair.Name}");
             Logger.Log($"Matched From Name: {pair.OriginalPropOrFieldName}");
             Logger.Log($"Matched From Collection: {pair.WasCollection}");
             Logger.Log($"IsInterface: {pair.IsInterface}");
@@ -261,6 +277,76 @@ public class ReCodeItAutoMapper
         }
 
         Logger.Log($"Automatically remapped {MappingPairs.Count} objects");
+    }
+
+    /// <summary>
+    /// Start renaming assembly definitions
+    /// </summary>
+    private void StartRenameProcess()
+    {
+        foreach (var type in DataProvider.ModuleDefinition.Types.ToArray())
+        {
+            foreach (var pair in MappingPairs.ToArray())
+            {
+                GatherMatchedTypeRefs(pair, type);
+            }
+        }
+
+        foreach (var pair in MappingPairs)
+        {
+            if (pair.NewTypeRef != null)
+            {
+                pair.NewTypeRef.Name = pair.Name;
+                pair.HasBeenRenamed = true;
+
+                Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
+                Logger.Log($"Renamed: {pair.OriginalShortName} to {pair.Name}", ConsoleColor.Green);
+                Logger.Log($"Original Full Name: {pair.OriginalFullName}", ConsoleColor.Green);
+                Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
+            }
+        }
+
+        // Do a final error check
+        foreach (var pair in MappingPairs)
+        {
+            if (!pair.HasBeenRenamed)
+            {
+                Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Red);
+                Logger.Log($"Renaming: {pair.OriginalTypeRef.Name} to {pair.Name} has failed", ConsoleColor.Red);
+                Logger.Log($"Matched From Collection: {pair.WasCollection}", ConsoleColor.Red);
+                Logger.Log($"Trying to match: {pair.IsInterface}", ConsoleColor.Red);
+                Logger.Log($"IsInterface: {pair.IsInterface}", ConsoleColor.Red);
+                Logger.Log($"IsStruct: {pair.IsStruct}", ConsoleColor.Red);
+                Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Red);
+
+                FailureCount++;
+                Error = true;
+            }
+        }
+
+        Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Yellow);
+        Logger.Log($"Found {MappingPairs.Count()} automatic remaps", ConsoleColor.Yellow);
+        Logger.Log($"Failed to rename: {FailureCount} mapping pairs", ConsoleColor.Yellow);
+        Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Yellow);
+    }
+
+    /// <summary>
+    /// Recursively handle all renaming on nested types on a given type
+    /// </summary>
+    /// <param name="pair"></param>
+    /// <param name="type"></param>
+    private void GatherMatchedTypeRefs(MappingPair pair, TypeDefinition type)
+    {
+        // Handle nested types recursively
+        foreach (var nestedType in type.NestedTypes.ToArray())
+        {
+            GatherMatchedTypeRefs(pair, nestedType);
+        }
+
+        if (type == pair.OriginalTypeRef || type.Name == pair.OriginalShortName && !pair.HasBeenRenamed)
+        {
+            pair.NewTypeRef = type;
+        }
     }
 
     private void WriteChanges()
@@ -281,12 +367,54 @@ public class ReCodeItAutoMapper
         bool isStruct = false,
         bool wasCollection = false)
     {
-        public TypeReference TypeRef { get; set; } = type;
-        public string OriginalName { get; set; } = type.FullName;
+        /// <summary>
+        /// The type reference for the field
+        /// </summary>
+        public TypeReference OriginalTypeRef { get; set; } = type;
+
+        /// <summary>
+        /// The type reference we want to change
+        /// </summary>
+        public TypeReference NewTypeRef { get; set; }
+
+        /// <summary>
+        /// The Original full name of the field type
+        /// </summary>
+        public string OriginalFullName { get; } = type.FullName;
+
+        /// <summary>
+        /// Original short name of the type
+        /// </summary>
+        public string OriginalShortName { get; } = type.Name;
+
+        /// <summary>
+        /// Is this field an interface?
+        /// </summary>
         public bool IsInterface { get; set; } = isInterface;
+
+        /// <summary>
+        /// Is this type a struct?
+        /// </summary>
         public bool IsStruct { get; set; } = isStruct;
+
+        /// <summary>
+        /// Was this field a collection?
+        /// </summary>
         public bool WasCollection { get; set; } = wasCollection;
+
+        /// <summary>
+        /// Has this type been renamed? Use for checking for failures at the end
+        /// </summary>
+        public bool HasBeenRenamed { get; set; } = false;
+
+        /// <summary>
+        /// This is the name we want to change the assembly class to
+        /// </summary>
         public string Name { get; set; } = name;
+
+        /// <summary>
+        /// Original name of the property or field type
+        /// </summary>
         public string OriginalPropOrFieldName { get; } = name;
     }
 }

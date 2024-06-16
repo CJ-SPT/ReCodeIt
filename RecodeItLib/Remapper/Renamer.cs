@@ -1,7 +1,7 @@
-﻿using ReCodeIt.Models;
-using ReCodeIt.Utils;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Collections.Generic;
+using ReCodeIt.Models;
+using ReCodeIt.Utils;
 
 namespace ReCodeIt.ReMapper;
 
@@ -16,6 +16,10 @@ internal static class Renamer
         RenameAllProperties(score, types);
 
         score.Definition.Name = score.ProposedNewName;
+    }
+
+    public static void RenameAll()
+    {
     }
 
     public static void RenameAllDirect(RemapModel remap, TypeDefinition type)
@@ -42,7 +46,7 @@ internal static class Renamer
 
                     if (field.Name == newFieldName) { continue; }
 
-                    Logger.Log($"Renaming field: `{field.Name}` on TypeRef `{type.Name}` to {newFieldName}", ConsoleColor.Green);
+                    Logger.Log($"Renaming field: `{field.Name}` on OriginalTypeRef `{type.Name}` to {newFieldName}", ConsoleColor.Green);
 
                     field.Name = newFieldName;
 
@@ -74,7 +78,7 @@ internal static class Renamer
                 {
                     var newName = propertyCount > 0 ? $"{score.ReMap.NewTypeName}_{propertyCount}" : score.ReMap.NewTypeName;
 
-                    Logger.Log($"Renaming Property: `{property.Name}` on TypeRef `{type}` to {newName}", ConsoleColor.Green);
+                    Logger.Log($"Renaming Property: `{property.Name}` on OriginalTypeRef `{type}` to {newName}", ConsoleColor.Green);
                     property.Name = newName;
                 }
             }

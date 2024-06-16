@@ -79,7 +79,7 @@ public class ReCodeItRemapper
     /// <summary>
     /// Find a match result
     /// </summary>
-    /// <param name="type">TypeRef to score</param>
+    /// <param name="type">OriginalTypeRef to score</param>
     /// <param name="remap">Remap to check against</param>
     /// <param name="parentTypeName"></param>
     /// <returns>EMatchResult</returns>
@@ -254,7 +254,7 @@ public class ReCodeItRemapper
 
         Reset();
         IsRunning = false;
-        OnComplete.Invoke(this, EventArgs.Empty);
+        OnComplete?.Invoke(this, EventArgs.Empty);
     }
 
     private void Reset()
