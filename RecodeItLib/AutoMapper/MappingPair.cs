@@ -39,6 +39,11 @@ public sealed class MappingPair(
     public bool HasBeenRenamed { get; set; } = false;
 
     /// <summary>
+    /// Did this match come from a method?
+    /// </summary>
+    public EMapPairSource IsMatchFrom { get; set; } = EMapPairSource.None;
+
+    /// <summary>
     /// This is the name we want to change the assembly class to
     /// </summary>
     public string Name { get; set; } = name;
@@ -47,4 +52,12 @@ public sealed class MappingPair(
     /// Original name of the property or field type
     /// </summary>
     public string OriginalPropOrFieldName { get; } = name;
+}
+
+public enum EMapPairSource
+{
+    None,
+    Field,
+    Property,
+    Method
 }

@@ -365,6 +365,7 @@ public partial class ReCodeItForm : Form
 
         MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
+        AutoMapperMinLengthUpDown.Value = DataProvider.Settings.AutoMapper.MinLengthToMatch;
     }
 
     #region SETTINGS_BUTTONS
@@ -486,6 +487,7 @@ public partial class ReCodeItForm : Form
 
         MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
+        AutoMapperSearchMethodsCheckBox.Checked = DataProvider.Settings.AutoMapper.SearchMethods;
 
         foreach (var type in DataProvider.Settings.AutoMapper.TypesToIgnore)
         {
@@ -500,6 +502,11 @@ public partial class ReCodeItForm : Form
         foreach (var fp in DataProvider.Settings.AutoMapper.PropertyFieldBlackList)
         {
             AutoMapperFPBox.Items.Add(fp);
+        }
+
+        foreach (var mp in DataProvider.Settings.AutoMapper.MethodParamaterBlackList)
+        {
+            AutoMapperMethodBox.Items.Add(mp);
         }
     }
 
@@ -520,9 +527,9 @@ public partial class ReCodeItForm : Form
         if (!AutoMapperTokensBox.Items.Contains(AutoMapperTokensTextField.Text))
         {
             AutoMapperTokensBox.Items.Add(AutoMapperTokensTextField.Text);
+            DataProvider.Settings.AutoMapper.TokensToMatch.Add(AutoMapperTokensTextField.Text);
 
             AutoMapperTokensTextField.Clear();
-            DataProvider.Settings.AutoMapper.TokensToMatch.Add(AutoMapperTokensTextField.Text);
             DataProvider.SaveAppSettings();
         }
     }
@@ -532,7 +539,7 @@ public partial class ReCodeItForm : Form
         if (AutoMapperTokensBox.SelectedItem != null)
         {
             AutoMapperTokensBox.Items.Remove(AutoMapperTokensBox.SelectedItem);
-            DataProvider.Settings.AutoMapper.TokensToMatch.RemoveAt(AutoMapperTokensBox.SelectedIndex);
+            DataProvider.Settings.AutoMapper.TokensToMatch.RemoveAt(AutoMapperTokensBox.SelectedIndex + 1);
             DataProvider.SaveAppSettings();
         }
     }
@@ -542,9 +549,9 @@ public partial class ReCodeItForm : Form
         if (!AutoMapperFPBox.Items.Contains(AutoMapperFPTextField.Text))
         {
             AutoMapperFPBox.Items.Add(AutoMapperFPTextField.Text);
+            DataProvider.Settings.AutoMapper.PropertyFieldBlackList.Add(AutoMapperFPTextField.Text);
 
             AutoMapperFPTextField.Clear();
-            DataProvider.Settings.AutoMapper.PropertyFieldBlackList.Add(AutoMapperFPTextField.Text);
             DataProvider.SaveAppSettings();
         }
     }
@@ -557,6 +564,34 @@ public partial class ReCodeItForm : Form
             DataProvider.Settings.AutoMapper.PropertyFieldBlackList.RemoveAt(AutoMapperFPBox.SelectedIndex);
             DataProvider.SaveAppSettings();
         }
+    }
+
+    private void AutoMapperMethodAddButton_Click(object sender, EventArgs e)
+    {
+        if (!AutoMapperMethodBox.Items.Contains(AutoMapperMethodTextBox.Text))
+        {
+            AutoMapperMethodBox.Items.Add(AutoMapperMethodTextBox.Text);
+            DataProvider.Settings.AutoMapper.MethodParamaterBlackList.Add(AutoMapperMethodTextBox.Text);
+
+            AutoMapperMethodTextBox.Clear();
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void AutoMapperMethodRemoveButton_Click(object sender, EventArgs e)
+    {
+        if (AutoMapperMethodBox.SelectedItem != null)
+        {
+            AutoMapperMethodBox.Items.Remove(AutoMapperMethodBox.SelectedItem);
+            DataProvider.Settings.AutoMapper.MethodParamaterBlackList.RemoveAt(AutoMapperMethodBox.SelectedIndex > 0 ? AutoMapperMethodBox.SelectedIndex : 0);
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void SearchMethodsCheckBox_CheckedChanged(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.SearchMethods = AutoMapperSearchMethodsCheckBox.Checked;
+        DataProvider.SaveAppSettings();
     }
 
     #endregion AUTOMAPPER

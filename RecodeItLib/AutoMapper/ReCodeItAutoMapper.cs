@@ -48,11 +48,20 @@ public class ReCodeItAutoMapper
 
         foreach (var type in types)
         {
+            // We dont want to do anything with compiler generated objects
+            if (CompilerGeneratedClasses.Contains(type.Name))
+            {
+                continue;
+            }
+
             MappingPairs.AddRange(FilterFieldNames(type));
             MappingPairs.AddRange(FilterPropertyNames(type));
-        }
 
-        Logger.Log(MappingPairs.Count());
+            if (Settings.SearchMethods)
+            {
+                MappingPairs.AddRange(GatherFromMethods(type));
+            }
+        }
 
         PrimaryTypeNameFilter();
         SanitizeProposedNames();
@@ -89,6 +98,68 @@ public class ReCodeItAutoMapper
         }
     }
 
+    #region METHODS
+
+    private List<MappingPair> GatherFromMethods(TypeDefinition type)
+    {
+        var methodsWithTypes = new List<MappingPair>();
+
+        // Handle nested types recursively
+        foreach (var nestedType in type.NestedTypes)
+        {
+            methodsWithTypes.AddRange(GatherFromMethods(nestedType));
+        }
+
+        var methods = type.Methods
+            // We only want methods with parameters
+            .Where(m => m.HasParameters)
+
+            // Only want parameter names of a certain length
+            .Where(m => m.Parameters.Any(p => p.Name.Length > Settings.MinLengthToMatch));
+
+        // Now go over over all filterd methods manually, because fuck this with linq
+        foreach (var method in methods)
+        {
+            var parmNames = method.Parameters.Select(p => p.Name);
+            var parmTypes = method.Parameters.Select(p => p.ParameterType.Name);
+
+            // Now over all parameters in the method
+            foreach (var parm in method.Parameters)
+            {
+                // We dont want blacklisted items
+                if (Settings.MethodParamaterBlackList.Contains(parm.ParameterType.Name.TrimAfterSpecialChar())
+                    || Settings.TypesToIgnore.Contains(parm.ParameterType.Name.TrimAfterSpecialChar()))
+                {
+                    continue;
+                }
+
+                if (parm.ParameterType.Resolve() == null) { continue; }
+
+                //Logger.Log($"Method Data Found");
+                //Logger.Log($"Parameter count: {method.Parameters.Count}");
+                //Logger.Log($"Paremeter Names: {string.Join(", ", parmNames)}");
+                //Logger.Log($"Paremeter Types: {string.Join(", ", parmTypes)}\n");
+
+                var mapPair = new MappingPair(
+                    parm.ParameterType.Resolve(),
+                    parm.Name,
+                    parm.ParameterType.Resolve().IsInterface,
+                    parm.ParameterType.Name.Contains("Struct"),
+                    true);
+
+                mapPair.IsMatchFrom = EMapPairSource.Method;
+
+                methodsWithTypes.Add(mapPair);
+            }
+        }
+
+        return methodsWithTypes;
+    }
+
+    #endregion METHODS
+
+    #region FIELDS_PROPERTIES
+
     /// <summary>
     /// Pair field declaring types with their names
     /// </summary>
@@ -97,12 +168,6 @@ public class ReCodeItAutoMapper
     private List<MappingPair> FilterFieldNames(TypeDefinition type)
     {
         var fieldsWithTypes = new List<MappingPair>();
-
-        if (CompilerGeneratedClasses.Contains(type.Name))
-        {
-            //Logger.Log($"Skipping over compiler generated object: {type.Name}");
-            return fieldsWithTypes;
-        }
 
         // Handle nested types recursively
         foreach (var nestedType in type.NestedTypes)
@@ -133,12 +198,16 @@ public class ReCodeItAutoMapper
             // Dont rename things we cant resolve
             if (typeDef is null) { continue; }
 
-            fieldsWithTypes.Add(new MappingPair(
+            var pair = new MappingPair(
                 typeDef,
                 field.Name,
                 field.FieldType.Name.Contains("Interface"),
                 field.FieldType.Name.Contains("Struct"),
-                field.IsPublic));
+                field.IsPublic);
+
+            pair.IsMatchFrom = EMapPairSource.Field;
+
+            fieldsWithTypes.Add(pair);
         }
 
         return fieldsWithTypes;
@@ -152,12 +221,6 @@ public class ReCodeItAutoMapper
     private IEnumerable<MappingPair> FilterPropertyNames(TypeDefinition type)
     {
         var propertiesWithTypes = new List<MappingPair>();
-
-        if (CompilerGeneratedClasses.Contains(type.Name))
-        {
-            //Logger.Log($"Skipping over compiler generated object: {type.Name}");
-            return propertiesWithTypes;
-        }
 
         // Handle nested types recursively
         foreach (var nestedType in type.NestedTypes)
@@ -188,16 +251,24 @@ public class ReCodeItAutoMapper
             // Dont rename things we cant resolve
             if (typeDef is null) { continue; }
 
-            propertiesWithTypes.Add(new MappingPair(
+            var mapPair = new MappingPair(
                 typeDef,
                 property.Name,
                 property.PropertyType.Name.Contains("Interface"),
                 property.PropertyType.Name.Contains("Struct"),
-                true));
+                true);
+
+            mapPair.IsMatchFrom = EMapPairSource.Property;
+
+            propertiesWithTypes.Add(mapPair);
         }
 
         return propertiesWithTypes;
     }
+
+    #endregion FIELDS_PROPERTIES
+
+    #region FILTER
 
     /// <summary>
     /// This giant linq statement handles all of the filtering once the initial gathering of fields
@@ -248,6 +319,9 @@ public class ReCodeItAutoMapper
         FinalGroupAndSelect();
     }
 
+    /// <summary>
+    /// This is where we make sure everything is original
+    /// </summary>
     private void FinalGroupAndSelect()
     {
         MappingPairs = MappingPairs
@@ -257,6 +331,10 @@ public class ReCodeItAutoMapper
                     .GroupBy(pair => pair.Name)
                         .Select(group => group.First()).ToList();
     }
+
+    #endregion FILTER
+
+    #region OUTPUT
 
     /// <summary>
     /// Sanitizes and prepares mapping pairs for remapping once filtering is complete.
@@ -311,6 +389,7 @@ public class ReCodeItAutoMapper
             Logger.Log($"Matched From Name: {pair.OriginalPropOrFieldName}");
             Logger.Log($"IsInterface: {pair.IsInterface}");
             Logger.Log($"IsStruct: {pair.IsStruct}");
+            Logger.Log($"Is match from: {pair.IsMatchFrom}");
             Logger.Log($"------------------------------------------------------------------------");
         }
 
@@ -338,6 +417,7 @@ public class ReCodeItAutoMapper
             {
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
                 Logger.Log($"Renaming: {pair.OriginalTypeDefinition.Name} to {pair.Name}", ConsoleColor.Green);
+                Logger.Log($"Is match from method: {pair.IsMatchFrom}", ConsoleColor.Green);
 
                 var fieldCount = RenameHelper.RenameAllFields(
                     pair.OriginalTypeDefinition.Name,
@@ -371,6 +451,7 @@ public class ReCodeItAutoMapper
                 Logger.Log($"Trying to match: {pair.IsInterface}", ConsoleColor.Red);
                 Logger.Log($"IsInterface: {pair.IsInterface}", ConsoleColor.Red);
                 Logger.Log($"IsStruct: {pair.IsStruct}", ConsoleColor.Red);
+                Logger.Log($"Is match from: {pair.IsMatchFrom}", ConsoleColor.Red);
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Red);
 
                 FailureCount++;
@@ -402,12 +483,21 @@ public class ReCodeItAutoMapper
     {
         var path = DataProvider.WriteAssemblyDefinition();
 
+        var fieldCountMatchResult = MappingPairs.Where(x => x.IsMatchFrom == EMapPairSource.Field).Count();
+        var propertyCountMatchResult = MappingPairs.Where(x => x.IsMatchFrom == EMapPairSource.Property).Count();
+        var methodCountMatchResult = MappingPairs.Where(x => x.IsMatchFrom == EMapPairSource.Method).Count();
+
         Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
         Logger.Log($"Found {MappingPairs.Count()} automatic remaps", ConsoleColor.Green);
+        Logger.Log($"Found {fieldCountMatchResult} automatic remaps from fields", ConsoleColor.Green);
+        Logger.Log($"Found {propertyCountMatchResult} automatic remaps from properties", ConsoleColor.Green);
+        Logger.Log($"Found {methodCountMatchResult} automatic remaps from methods", ConsoleColor.Green);
         Logger.Log($"Renamed {TotalFieldRenameCount} fields", ConsoleColor.Green);
         Logger.Log($"Renamed {TotalPropertyRenameCount} properties", ConsoleColor.Green);
-        Logger.Log($"Failed to rename: {FailureCount} mapping pairs", ConsoleColor.Green);
+        Logger.Log($"Failed to rename: {FailureCount} mapping pairs", (FailureCount == 0 ? ConsoleColor.Green : ConsoleColor.Red));
         Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
     }
+
+    #endregion OUTPUT
 }

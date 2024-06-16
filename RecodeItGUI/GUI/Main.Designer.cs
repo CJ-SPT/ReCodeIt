@@ -101,6 +101,19 @@ partial class ReCodeItForm
         IsSealedUpDown = new DomainUpDown();
         TabControlMain = new TabControl();
         AutoMapperTab = new TabPage();
+        AutoMapperMethodTextBox = new TextBox();
+        AutoMapperMethodRemoveButton = new Button();
+        AutoMapperMethodAddButton = new Button();
+        AutoMapperMethodBox = new ListBox();
+        AutoMapperSearchMethodsCheckBox = new CheckBox();
+        AutoMapperFPTextField = new TextBox();
+        AutoMapperFPRemoveButton = new Button();
+        AutoMapperFPAddButton = new Button();
+        AutoMapperFPBox = new ListBox();
+        AutoMapperTokensTextField = new TextBox();
+        AutoMapperTokensRemoveButton = new Button();
+        AutoMapperTokensAddButton = new Button();
+        AutoMapperTokensBox = new ListBox();
         label3 = new Label();
         AutoMapperMinLengthUpDown = new NumericUpDown();
         RunAutoRemapButton = new Button();
@@ -128,14 +141,6 @@ partial class ReCodeItForm
         AssemblyPathTextBox = new TextBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
-        AutoMapperTokensTextField = new TextBox();
-        AutoMapperTokensRemoveButton = new Button();
-        AutoMapperTokensAddButton = new Button();
-        AutoMapperTokensBox = new ListBox();
-        AutoMapperFPTextField = new TextBox();
-        AutoMapperFPRemoveButton = new Button();
-        AutoMapperFPAddButton = new Button();
-        AutoMapperFPBox = new ListBox();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -943,6 +948,11 @@ partial class ReCodeItForm
         // AutoMapperTab
         // 
         AutoMapperTab.BackColor = SystemColors.ControlDarkDark;
+        AutoMapperTab.Controls.Add(AutoMapperMethodTextBox);
+        AutoMapperTab.Controls.Add(AutoMapperMethodRemoveButton);
+        AutoMapperTab.Controls.Add(AutoMapperMethodAddButton);
+        AutoMapperTab.Controls.Add(AutoMapperMethodBox);
+        AutoMapperTab.Controls.Add(AutoMapperSearchMethodsCheckBox);
         AutoMapperTab.Controls.Add(AutoMapperFPTextField);
         AutoMapperTab.Controls.Add(AutoMapperFPRemoveButton);
         AutoMapperTab.Controls.Add(AutoMapperFPAddButton);
@@ -966,6 +976,134 @@ partial class ReCodeItForm
         AutoMapperTab.Size = new Size(1336, 953);
         AutoMapperTab.TabIndex = 3;
         AutoMapperTab.Text = "Auto Mapper";
+        // 
+        // AutoMapperMethodTextBox
+        // 
+        AutoMapperMethodTextBox.BackColor = SystemColors.ScrollBar;
+        AutoMapperMethodTextBox.Location = new Point(365, 496);
+        AutoMapperMethodTextBox.Name = "AutoMapperMethodTextBox";
+        AutoMapperMethodTextBox.PlaceholderText = "method parameter names to blacklist";
+        AutoMapperMethodTextBox.Size = new Size(353, 31);
+        AutoMapperMethodTextBox.TabIndex = 43;
+        // 
+        // AutoMapperMethodRemoveButton
+        // 
+        AutoMapperMethodRemoveButton.Location = new Point(606, 768);
+        AutoMapperMethodRemoveButton.Name = "AutoMapperMethodRemoveButton";
+        AutoMapperMethodRemoveButton.Size = new Size(112, 34);
+        AutoMapperMethodRemoveButton.TabIndex = 42;
+        AutoMapperMethodRemoveButton.Text = "Remove";
+        AutoMapperMethodRemoveButton.UseVisualStyleBackColor = true;
+        AutoMapperMethodRemoveButton.Click += AutoMapperMethodRemoveButton_Click;
+        // 
+        // AutoMapperMethodAddButton
+        // 
+        AutoMapperMethodAddButton.Location = new Point(365, 768);
+        AutoMapperMethodAddButton.Name = "AutoMapperMethodAddButton";
+        AutoMapperMethodAddButton.Size = new Size(112, 34);
+        AutoMapperMethodAddButton.TabIndex = 41;
+        AutoMapperMethodAddButton.Text = "Add";
+        AutoMapperMethodAddButton.UseVisualStyleBackColor = true;
+        AutoMapperMethodAddButton.Click += AutoMapperMethodAddButton_Click;
+        // 
+        // AutoMapperMethodBox
+        // 
+        AutoMapperMethodBox.BackColor = Color.Gray;
+        AutoMapperMethodBox.FormattingEnabled = true;
+        AutoMapperMethodBox.ItemHeight = 25;
+        AutoMapperMethodBox.Location = new Point(365, 533);
+        AutoMapperMethodBox.Name = "AutoMapperMethodBox";
+        AutoMapperMethodBox.Size = new Size(353, 229);
+        AutoMapperMethodBox.TabIndex = 40;
+        // 
+        // AutoMapperSearchMethodsCheckBox
+        // 
+        AutoMapperSearchMethodsCheckBox.AutoSize = true;
+        AutoMapperSearchMethodsCheckBox.Location = new Point(13, 132);
+        AutoMapperSearchMethodsCheckBox.Name = "AutoMapperSearchMethodsCheckBox";
+        AutoMapperSearchMethodsCheckBox.Size = new Size(291, 29);
+        AutoMapperSearchMethodsCheckBox.TabIndex = 39;
+        AutoMapperSearchMethodsCheckBox.Text = "Search Methods (Experiemental)";
+        AutoMapperSearchMethodsCheckBox.UseVisualStyleBackColor = true;
+        AutoMapperSearchMethodsCheckBox.CheckedChanged += SearchMethodsCheckBox_CheckedChanged;
+        // 
+        // AutoMapperFPTextField
+        // 
+        AutoMapperFPTextField.BackColor = SystemColors.ScrollBar;
+        AutoMapperFPTextField.Location = new Point(6, 496);
+        AutoMapperFPTextField.Name = "AutoMapperFPTextField";
+        AutoMapperFPTextField.PlaceholderText = "Field or property names to blacklist";
+        AutoMapperFPTextField.Size = new Size(353, 31);
+        AutoMapperFPTextField.TabIndex = 38;
+        // 
+        // AutoMapperFPRemoveButton
+        // 
+        AutoMapperFPRemoveButton.Location = new Point(247, 768);
+        AutoMapperFPRemoveButton.Name = "AutoMapperFPRemoveButton";
+        AutoMapperFPRemoveButton.Size = new Size(112, 34);
+        AutoMapperFPRemoveButton.TabIndex = 37;
+        AutoMapperFPRemoveButton.Text = "Remove";
+        AutoMapperFPRemoveButton.UseVisualStyleBackColor = true;
+        AutoMapperFPRemoveButton.Click += AutoMapperFPRemoveButton_Click;
+        // 
+        // AutoMapperFPAddButton
+        // 
+        AutoMapperFPAddButton.Location = new Point(6, 768);
+        AutoMapperFPAddButton.Name = "AutoMapperFPAddButton";
+        AutoMapperFPAddButton.Size = new Size(112, 34);
+        AutoMapperFPAddButton.TabIndex = 36;
+        AutoMapperFPAddButton.Text = "Add";
+        AutoMapperFPAddButton.UseVisualStyleBackColor = true;
+        AutoMapperFPAddButton.Click += AutoMapperFPAddButton_Click;
+        // 
+        // AutoMapperFPBox
+        // 
+        AutoMapperFPBox.BackColor = Color.Gray;
+        AutoMapperFPBox.FormattingEnabled = true;
+        AutoMapperFPBox.ItemHeight = 25;
+        AutoMapperFPBox.Location = new Point(6, 533);
+        AutoMapperFPBox.Name = "AutoMapperFPBox";
+        AutoMapperFPBox.Size = new Size(353, 229);
+        AutoMapperFPBox.TabIndex = 35;
+        // 
+        // AutoMapperTokensTextField
+        // 
+        AutoMapperTokensTextField.BackColor = SystemColors.ScrollBar;
+        AutoMapperTokensTextField.Location = new Point(365, 173);
+        AutoMapperTokensTextField.Name = "AutoMapperTokensTextField";
+        AutoMapperTokensTextField.PlaceholderText = "Class Tokens To Match During Renaming";
+        AutoMapperTokensTextField.Size = new Size(353, 31);
+        AutoMapperTokensTextField.TabIndex = 34;
+        // 
+        // AutoMapperTokensRemoveButton
+        // 
+        AutoMapperTokensRemoveButton.Location = new Point(606, 445);
+        AutoMapperTokensRemoveButton.Name = "AutoMapperTokensRemoveButton";
+        AutoMapperTokensRemoveButton.Size = new Size(112, 34);
+        AutoMapperTokensRemoveButton.TabIndex = 33;
+        AutoMapperTokensRemoveButton.Text = "Remove";
+        AutoMapperTokensRemoveButton.UseVisualStyleBackColor = true;
+        AutoMapperTokensRemoveButton.Click += AutoMapperTokensRemoveButton_Click;
+        // 
+        // AutoMapperTokensAddButton
+        // 
+        AutoMapperTokensAddButton.Location = new Point(365, 445);
+        AutoMapperTokensAddButton.Name = "AutoMapperTokensAddButton";
+        AutoMapperTokensAddButton.Size = new Size(112, 34);
+        AutoMapperTokensAddButton.TabIndex = 32;
+        AutoMapperTokensAddButton.Text = "Add";
+        AutoMapperTokensAddButton.UseVisualStyleBackColor = true;
+        AutoMapperTokensAddButton.Click += AutoMapperTokensAddButton_Click;
+        // 
+        // AutoMapperTokensBox
+        // 
+        AutoMapperTokensBox.BackColor = Color.Gray;
+        AutoMapperTokensBox.FormattingEnabled = true;
+        AutoMapperTokensBox.ItemHeight = 25;
+        AutoMapperTokensBox.Location = new Point(365, 210);
+        AutoMapperTokensBox.Name = "AutoMapperTokensBox";
+        AutoMapperTokensBox.Size = new Size(353, 229);
+        AutoMapperTokensBox.TabIndex = 31;
         // 
         // label3
         // 
@@ -1254,84 +1392,6 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
-        // AutoMapperTokensTextField
-        // 
-        AutoMapperTokensTextField.BackColor = SystemColors.ScrollBar;
-        AutoMapperTokensTextField.Location = new Point(365, 173);
-        AutoMapperTokensTextField.Name = "AutoMapperTokensTextField";
-        AutoMapperTokensTextField.PlaceholderText = "Class Tokens To Match During Renaming";
-        AutoMapperTokensTextField.Size = new Size(353, 31);
-        AutoMapperTokensTextField.TabIndex = 34;
-        // 
-        // AutoMapperTokensRemoveButton
-        // 
-        AutoMapperTokensRemoveButton.Location = new Point(606, 445);
-        AutoMapperTokensRemoveButton.Name = "AutoMapperTokensRemoveButton";
-        AutoMapperTokensRemoveButton.Size = new Size(112, 34);
-        AutoMapperTokensRemoveButton.TabIndex = 33;
-        AutoMapperTokensRemoveButton.Text = "Remove";
-        AutoMapperTokensRemoveButton.UseVisualStyleBackColor = true;
-        AutoMapperTokensRemoveButton.Click += AutoMapperTokensRemoveButton_Click;
-        // 
-        // AutoMapperTokensAddButton
-        // 
-        AutoMapperTokensAddButton.Location = new Point(365, 445);
-        AutoMapperTokensAddButton.Name = "AutoMapperTokensAddButton";
-        AutoMapperTokensAddButton.Size = new Size(112, 34);
-        AutoMapperTokensAddButton.TabIndex = 32;
-        AutoMapperTokensAddButton.Text = "Add";
-        AutoMapperTokensAddButton.UseVisualStyleBackColor = true;
-        AutoMapperTokensAddButton.Click += AutoMapperTokensAddButton_Click;
-        // 
-        // AutoMapperTokensBox
-        // 
-        AutoMapperTokensBox.BackColor = Color.Gray;
-        AutoMapperTokensBox.FormattingEnabled = true;
-        AutoMapperTokensBox.ItemHeight = 25;
-        AutoMapperTokensBox.Location = new Point(365, 210);
-        AutoMapperTokensBox.Name = "AutoMapperTokensBox";
-        AutoMapperTokensBox.Size = new Size(353, 229);
-        AutoMapperTokensBox.TabIndex = 31;
-        // 
-        // AutoMapperFPTextField
-        // 
-        AutoMapperFPTextField.BackColor = SystemColors.ScrollBar;
-        AutoMapperFPTextField.Location = new Point(6, 496);
-        AutoMapperFPTextField.Name = "AutoMapperFPTextField";
-        AutoMapperFPTextField.PlaceholderText = "Field or property names to blacklist";
-        AutoMapperFPTextField.Size = new Size(353, 31);
-        AutoMapperFPTextField.TabIndex = 38;
-        // 
-        // AutoMapperFPRemoveButton
-        // 
-        AutoMapperFPRemoveButton.Location = new Point(247, 768);
-        AutoMapperFPRemoveButton.Name = "AutoMapperFPRemoveButton";
-        AutoMapperFPRemoveButton.Size = new Size(112, 34);
-        AutoMapperFPRemoveButton.TabIndex = 37;
-        AutoMapperFPRemoveButton.Text = "Remove";
-        AutoMapperFPRemoveButton.UseVisualStyleBackColor = true;
-        AutoMapperFPRemoveButton.Click += AutoMapperFPRemoveButton_Click;
-        // 
-        // AutoMapperFPAddButton
-        // 
-        AutoMapperFPAddButton.Location = new Point(6, 768);
-        AutoMapperFPAddButton.Name = "AutoMapperFPAddButton";
-        AutoMapperFPAddButton.Size = new Size(112, 34);
-        AutoMapperFPAddButton.TabIndex = 36;
-        AutoMapperFPAddButton.Text = "Add";
-        AutoMapperFPAddButton.UseVisualStyleBackColor = true;
-        AutoMapperFPAddButton.Click += AutoMapperFPAddButton_Click;
-        // 
-        // AutoMapperFPBox
-        // 
-        AutoMapperFPBox.BackColor = Color.Gray;
-        AutoMapperFPBox.FormattingEnabled = true;
-        AutoMapperFPBox.ItemHeight = 25;
-        AutoMapperFPBox.Location = new Point(6, 533);
-        AutoMapperFPBox.Name = "AutoMapperFPBox";
-        AutoMapperFPBox.Size = new Size(353, 229);
-        AutoMapperFPBox.TabIndex = 35;
-        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1483,4 +1543,9 @@ partial class ReCodeItForm
     private Button AutoMapperFPRemoveButton;
     private Button AutoMapperFPAddButton;
     private ListBox AutoMapperFPBox;
+    private CheckBox AutoMapperSearchMethodsCheckBox;
+    private TextBox AutoMapperMethodTextBox;
+    private Button AutoMapperMethodRemoveButton;
+    private Button AutoMapperMethodAddButton;
+    private ListBox AutoMapperMethodBox;
 }

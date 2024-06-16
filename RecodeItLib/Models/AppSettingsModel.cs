@@ -35,9 +35,13 @@ public class AutoMapperSettings
 
     public int MinLengthToMatch { get; set; }
 
+    public bool SearchMethods { get; set; }
+
     public List<string> TypesToIgnore { get; set; }
 
     public List<string> TokensToMatch { get; set; }
 
     public List<string> PropertyFieldBlackList { get; set; }
+
+    public List<string> MethodParamaterBlackList { get; set; }
 }
