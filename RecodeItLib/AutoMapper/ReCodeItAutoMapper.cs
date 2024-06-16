@@ -397,7 +397,6 @@ public class ReCodeItAutoMapper
                 }
             }
             */
-            // If its not an interface, its a struct or class
 
             if (pair.IsInterface)
             {
