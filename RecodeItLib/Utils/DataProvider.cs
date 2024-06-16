@@ -174,4 +174,23 @@ public static class DataProvider
 
         Logger.Log($"Module `{fileName}` not found in assembly {fileName}");
     }
+
+    public static string WriteAssemblyDefinition(bool updateMapping = false)
+    {
+        var filename = Path.GetFileNameWithoutExtension(Settings.AppSettings.AssemblyPath);
+        var strippedPath = Path.GetDirectoryName(filename);
+
+        filename = $"{filename}-Remapped.dll";
+
+        var remappedPath = Path.Combine(strippedPath, filename);
+
+        AssemblyDefinition.Write(remappedPath);
+
+        if (updateMapping)
+        {
+            UpdateMapping();
+        }
+
+        return remappedPath;
+    }
 }

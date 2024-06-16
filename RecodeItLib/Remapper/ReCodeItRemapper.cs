@@ -236,20 +236,12 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
-        var filename = Path.GetFileNameWithoutExtension(DataProvider.Settings.AppSettings.AssemblyPath);
-        var strippedPath = Path.GetDirectoryName(filename);
-
-        filename = $"{filename}-Remapped.dll";
-
-        var remappedPath = Path.Combine(strippedPath, filename);
-
-        DataProvider.AssemblyDefinition.Write(remappedPath);
-        DataProvider.UpdateMapping();
+        var path = DataProvider.WriteAssemblyDefinition(true);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Complete: Assembly written to `{remappedPath}`", ConsoleColor.Green);
+        Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
         Logger.Log("Original type names updated on mapping file.", ConsoleColor.Green);
-        Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F0} seconds", ConsoleColor.Green);
+        Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
 
         Reset();

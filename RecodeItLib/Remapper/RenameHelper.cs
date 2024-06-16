@@ -2,11 +2,14 @@
 using Mono.Collections.Generic;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
+using ReCodeItLib.Utils;
 
 namespace ReCodeIt.ReMapper;
 
 internal static class RenameHelper
 {
+    private static List<string> TokensToMatch => DataProvider.Settings.AutoMapper.TokensToMatch;
+
     /// <summary>
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
@@ -52,13 +55,19 @@ internal static class RenameHelper
     {
         foreach (var type in typesToCheck)
         {
+            var fields = type.Fields
+                .Where(field => field.Name.IsFieldOrPropNameInList(TokensToMatch));
+
+            if (!fields.Any()) { continue; }
+
             int fieldCount = 0;
-            foreach (var field in type.Fields)
+            foreach (var field in fields)
             {
                 if (field.FieldType.Name == oldTypeName)
                 {
                     var newFieldName = GetNewFieldName(newTypeName, field.IsPrivate, fieldCount);
 
+                    // Dont need to do extra work
                     if (field.Name == newFieldName) { continue; }
 
                     Logger.Log($"Renaming original field type name: `{field.FieldType.Name}` with name `{field.Name}` to `{newFieldName}`", ConsoleColor.Green);
@@ -94,16 +103,23 @@ internal static class RenameHelper
     {
         foreach (var type in typesToCheck)
         {
-            int propertyCount = 0;
+            var properties = type.Properties
+                .Where(prop => prop.Name.IsFieldOrPropNameInList(TokensToMatch));
 
-            foreach (var property in type.Properties)
+            if (!properties.Any()) { continue; }
+
+            int propertyCount = 0;
+            foreach (var property in properties)
             {
                 if (property.PropertyType.Name == oldTypeName)
                 {
-                    var newName = GetNewPropertyName(newTypeName, propertyCount);
+                    var newPropertyName = GetNewPropertyName(newTypeName, propertyCount);
 
-                    Logger.Log($"Renaming original property type name: `{property.PropertyType.Name}` with name `{property.Name}` to `{newName}`", ConsoleColor.Green);
-                    property.Name = newName;
+                    // Dont need to do extra work
+                    if (property.Name == newPropertyName) { continue; }
+
+                    Logger.Log($"Renaming original property type name: `{property.PropertyType.Name}` with name `{property.Name}` to `{newPropertyName}`", ConsoleColor.Green);
+                    property.Name = newPropertyName;
                     propertyCount++;
                     overAllCount++;
                 }

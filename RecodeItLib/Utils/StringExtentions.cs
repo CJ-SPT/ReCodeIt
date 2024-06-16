@@ -38,4 +38,23 @@ internal static class StringExtentions
 
         return str;
     }
+
+    /// <summary>
+    /// Does the property or field name exist in a given list, this applies prefixes and handles
+    /// capitalization.
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="list"></param>
+    /// <returns>True if it in the list</returns>
+    public static bool IsFieldOrPropNameInList(this string str, List<string> list)
+    {
+        if (str.Trim().ElementAt(0) == '_')
+        {
+            str = str.Replace("_", "");
+        }
+
+        var result = list.Any(item => str.StartsWith(item, StringComparison.CurrentCultureIgnoreCase));
+
+        return result;
+    }
 }

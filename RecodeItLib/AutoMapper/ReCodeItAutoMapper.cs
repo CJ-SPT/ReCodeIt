@@ -355,12 +355,7 @@ public class ReCodeItAutoMapper
             }
         }
 
-        Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Yellow);
-        Logger.Log($"Found {MappingPairs.Count()} automatic remaps", ConsoleColor.Yellow);
-        Logger.Log($"Renamed {TotalFieldRenameCount} fields", ConsoleColor.Yellow);
-        Logger.Log($"Renamed {TotalPropertyRenameCount} properties", ConsoleColor.Yellow);
-        Logger.Log($"Failed to rename: {FailureCount} mapping pairs", ConsoleColor.Yellow);
-        Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Yellow);
+
     }
 
     /// <summary>
@@ -384,6 +379,15 @@ public class ReCodeItAutoMapper
 
     private void WriteChanges()
     {
+        var path = DataProvider.WriteAssemblyDefinition();
+
+        Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Green);
+        Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
+        Logger.Log($"Found {MappingPairs.Count()} automatic remaps", ConsoleColor.Green);
+        Logger.Log($"Renamed {TotalFieldRenameCount} fields", ConsoleColor.Green);
+        Logger.Log($"Renamed {TotalPropertyRenameCount} properties", ConsoleColor.Green);
+        Logger.Log($"Failed to rename: {FailureCount} mapping pairs", ConsoleColor.Green);
+        Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
     }
 
     /// <summary>
