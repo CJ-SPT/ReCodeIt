@@ -238,6 +238,8 @@ public class ReCodeItAutoMapper
             Logger.Log($"IsStruct: {pair.IsStruct}");
             Logger.Log($"------------------------------------------------------------------------");
         }
+
+        Logger.Log($"Automatically remapped {MappingPairs.Count} objects");
     }
 
     private void WriteChanges()

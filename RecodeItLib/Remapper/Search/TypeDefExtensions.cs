@@ -177,7 +177,6 @@ internal static class TypeDefExtensions
         {
             return EMatchResult.Disabled;
         }
-        var attrs = type.CustomAttributes;
 
         if (type.HasCustomAttributes == parms.HasAttribute)
         {
