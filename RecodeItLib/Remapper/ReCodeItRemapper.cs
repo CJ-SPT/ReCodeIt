@@ -156,7 +156,7 @@ public class ReCodeItRemapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);
 
-        Renamer.RenameAllDirect(remap, type);
+        RenameHelper.RenameAllDirect(remap, type);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
@@ -226,7 +226,7 @@ public class ReCodeItRemapper
         highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
 
         // Rename type and all associated type members
-        Renamer.RenameAll(highestScore);
+        RenameHelper.RenameAll(highestScore);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
