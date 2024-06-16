@@ -314,21 +314,21 @@ public partial class ReCodeItForm : Form
 
     private void AutoMapperExcludeAddButton_Click(object sender, EventArgs e)
     {
-        if (!AutoMapperExcludeBox.Items.Contains(AutoMapperExcludeTextField.Text))
+        if (!AutoMapperTypesExcludeBox.Items.Contains(AutoMapperTypesToIgnoreTextField.Text))
         {
-            DataProvider.Settings.AutoMapper.TypesToIgnore.Add(AutoMapperExcludeTextField.Text);
-            AutoMapperExcludeBox.Items.Add(AutoMapperExcludeTextField.Text);
-            AutoMapperExcludeTextField.Clear();
+            DataProvider.Settings.AutoMapper.TypesToIgnore.Add(AutoMapperTypesToIgnoreTextField.Text);
+            AutoMapperTypesExcludeBox.Items.Add(AutoMapperTypesToIgnoreTextField.Text);
+            AutoMapperTypesToIgnoreTextField.Clear();
             DataProvider.SaveAppSettings();
         }
     }
 
     private void AutoMapperExcludeRemoveButton_Click(object sender, EventArgs e)
     {
-        if (AutoMapperExcludeBox.SelectedItem != null)
+        if (AutoMapperTypesExcludeBox.SelectedItem != null)
         {
-            DataProvider.Settings.AutoMapper.TypesToIgnore.RemoveAt(AutoMapperExcludeBox.SelectedIndex);
-            AutoMapperExcludeBox.Items.Remove(AutoMapperExcludeBox.SelectedItem);
+            DataProvider.Settings.AutoMapper.TypesToIgnore.RemoveAt(AutoMapperTypesExcludeBox.SelectedIndex);
+            AutoMapperTypesExcludeBox.Items.Remove(AutoMapperTypesExcludeBox.SelectedItem);
             DataProvider.SaveAppSettings();
         }
     }
@@ -357,10 +357,10 @@ public partial class ReCodeItForm : Form
         PublicizeCheckbox.Checked = DataProvider.Settings.AppSettings.Publicize;
         UnsealCheckbox.Checked = DataProvider.Settings.AppSettings.Unseal;
 
-        AutoMapperExcludeBox.Items.Clear();
+        AutoMapperTypesExcludeBox.Items.Clear();
         foreach (var method in DataProvider.Settings.AutoMapper.TypesToIgnore)
         {
-            AutoMapperExcludeBox.Items.Add(method);
+            AutoMapperTypesExcludeBox.Items.Add(method);
         }
 
         MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
@@ -480,15 +480,27 @@ public partial class ReCodeItForm : Form
 
     public void RefreshAutoMapperPage()
     {
-        AutoMapperExcludeBox.Items.Clear();
-
-        foreach (var method in DataProvider.Settings.AutoMapper.TypesToIgnore)
-        {
-            AutoMapperExcludeBox.Items.Add(method);
-        }
+        AutoMapperTypesExcludeBox.Items.Clear();
+        AutoMapperTokensBox.Items.Clear();
+        AutoMapperFPBox.Items.Clear();
 
         MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
+
+        foreach (var type in DataProvider.Settings.AutoMapper.TypesToIgnore)
+        {
+            AutoMapperTypesExcludeBox.Items.Add(type);
+        }
+
+        foreach (var token in DataProvider.Settings.AutoMapper.TokensToMatch)
+        {
+            AutoMapperTokensBox.Items.Add(token);
+        }
+
+        foreach (var fp in DataProvider.Settings.AutoMapper.PropertyFieldBlackList)
+        {
+            AutoMapperFPBox.Items.Add(fp);
+        }
     }
 
     private void AutoMapperRequiredMatchesUpDown_ValueChanged_1(object sender, EventArgs e)
@@ -501,6 +513,50 @@ public partial class ReCodeItForm : Form
     {
         DataProvider.Settings.AutoMapper.MinLengthToMatch = (int)AutoMapperMinLengthUpDown.Value;
         DataProvider.SaveAppSettings();
+    }
+
+    private void AutoMapperTokensAddButton_Click(object sender, EventArgs e)
+    {
+        if (!AutoMapperTokensBox.Items.Contains(AutoMapperTokensTextField.Text))
+        {
+            AutoMapperTokensBox.Items.Add(AutoMapperTokensTextField.Text);
+
+            AutoMapperTokensTextField.Clear();
+            DataProvider.Settings.AutoMapper.TokensToMatch.Add(AutoMapperTokensTextField.Text);
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void AutoMapperTokensRemoveButton_Click(object sender, EventArgs e)
+    {
+        if (AutoMapperTokensBox.SelectedItem != null)
+        {
+            AutoMapperTokensBox.Items.Remove(AutoMapperTokensBox.SelectedItem);
+            DataProvider.Settings.AutoMapper.TokensToMatch.RemoveAt(AutoMapperTokensBox.SelectedIndex);
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void AutoMapperFPAddButton_Click(object sender, EventArgs e)
+    {
+        if (!AutoMapperFPBox.Items.Contains(AutoMapperFPTextField.Text))
+        {
+            AutoMapperFPBox.Items.Add(AutoMapperFPTextField.Text);
+
+            AutoMapperFPTextField.Clear();
+            DataProvider.Settings.AutoMapper.PropertyFieldBlackList.Add(AutoMapperFPTextField.Text);
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void AutoMapperFPRemoveButton_Click(object sender, EventArgs e)
+    {
+        if (AutoMapperFPBox.SelectedItem != null)
+        {
+            AutoMapperFPBox.Items.Remove(AutoMapperFPBox.SelectedItem);
+            DataProvider.Settings.AutoMapper.PropertyFieldBlackList.RemoveAt(AutoMapperFPBox.SelectedIndex);
+            DataProvider.SaveAppSettings();
+        }
     }
 
     #endregion AUTOMAPPER

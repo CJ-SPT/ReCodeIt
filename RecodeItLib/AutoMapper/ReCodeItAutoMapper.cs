@@ -33,6 +33,8 @@ public class ReCodeItAutoMapper
         MappingPairs = [];
         CompilerGeneratedClasses = [];
 
+        DataProvider.LoadAssemblyDefinition();
+
         Error = false;
         FailureCount = 0;
         TotalFieldRenameCount = 0;
