@@ -361,6 +361,7 @@ public partial class ReCodeItForm : Form
         AssemblyPathTextBox.Text = DataProvider.Settings.AppSettings.AssemblyPath;
         OutputPathTextBox.Text = DataProvider.Settings.AppSettings.OutputPath;
         MappingPathTextBox.Text = DataProvider.Settings.AppSettings.MappingPath;
+        AssemblyPathTextBox.Text = DataProvider.Settings.AppSettings.NameMangledPath;
 
         DebugLoggingCheckbox.Checked = DataProvider.Settings.AppSettings.Debug;
         SilentModeCheckbox.Checked = DataProvider.Settings.AppSettings.SilentMode;
@@ -426,6 +427,23 @@ public partial class ReCodeItForm : Form
         {
             DataProvider.LoadMappingFile(fDialog.FileName);
             MappingPathTextBox.Text = fDialog.FileName;
+        }
+    }
+
+    private void PickNameMangledPathButton_Click(object sender, EventArgs e)
+    {
+        OpenFileDialog fDialog = new()
+        {
+            Title = "Select a DLL file",
+            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
+            Multiselect = false
+        };
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            DataProvider.Settings.AppSettings.NameMangledPath = fDialog.FileName;
+            DataProvider.LoadAssemblyDefinition(true);
+            AssemblyPathTextBox.Text = fDialog.FileName;
         }
     }
 

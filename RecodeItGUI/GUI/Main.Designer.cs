@@ -124,10 +124,6 @@ partial class ReCodeItForm
         AutoMapperExcludeTypesAddButton = new Button();
         AutoMapperTypesExcludeBox = new ListBox();
         SettingsTab = new TabPage();
-        groupBox3 = new GroupBox();
-        label1 = new Label();
-        MaxMatchCountUpDown = new NumericUpDown();
-        groupBox4 = new GroupBox();
         groupBox2 = new GroupBox();
         MappingChooseButton = new Button();
         UnsealCheckbox = new CheckBox();
@@ -141,6 +137,11 @@ partial class ReCodeItForm
         AssemblyPathTextBox = new TextBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
+        tabPage5 = new TabPage();
+        PickNameMangledPathButton = new Button();
+        NameMangledAssemblyTextBox = new TextBox();
+        label1 = new Label();
+        MaxMatchCountUpDown = new NumericUpDown();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -158,9 +159,8 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)AutoMapperMinLengthUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
         SettingsTab.SuspendLayout();
-        groupBox3.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).BeginInit();
         groupBox2.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).BeginInit();
         SuspendLayout();
         // 
         // TabPageRemapper
@@ -185,6 +185,8 @@ partial class ReCodeItForm
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(label1);
+        groupBox1.Controls.Add(MaxMatchCountUpDown);
         groupBox1.Controls.Add(EditRemapButton);
         groupBox1.Controls.Add(ConstuctorCountUpDown);
         groupBox1.Controls.Add(ConstructorCountEnabled);
@@ -938,6 +940,7 @@ partial class ReCodeItForm
         // 
         TabControlMain.Controls.Add(TabPageRemapper);
         TabControlMain.Controls.Add(AutoMapperTab);
+        TabControlMain.Controls.Add(tabPage5);
         TabControlMain.Controls.Add(SettingsTab);
         TabControlMain.Location = new Point(-5, 1);
         TabControlMain.Name = "TabControlMain";
@@ -1191,8 +1194,6 @@ partial class ReCodeItForm
         // SettingsTab
         // 
         SettingsTab.BackColor = SystemColors.ControlDarkDark;
-        SettingsTab.Controls.Add(groupBox3);
-        SettingsTab.Controls.Add(groupBox4);
         SettingsTab.Controls.Add(groupBox2);
         SettingsTab.Location = new Point(4, 34);
         SettingsTab.Name = "SettingsTab";
@@ -1201,47 +1202,10 @@ partial class ReCodeItForm
         SettingsTab.TabIndex = 2;
         SettingsTab.Text = "Settings";
         // 
-        // groupBox3
-        // 
-        groupBox3.Controls.Add(label1);
-        groupBox3.Controls.Add(MaxMatchCountUpDown);
-        groupBox3.Location = new Point(464, 6);
-        groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(259, 285);
-        groupBox3.TabIndex = 1;
-        groupBox3.TabStop = false;
-        groupBox3.Text = "ReCodeItRemapper Settings";
-        // 
-        // label1
-        // 
-        label1.AutoSize = true;
-        label1.Location = new Point(69, 37);
-        label1.Name = "label1";
-        label1.Size = new Size(152, 25);
-        label1.TabIndex = 5;
-        label1.Text = "Max Match Count";
-        // 
-        // MaxMatchCountUpDown
-        // 
-        MaxMatchCountUpDown.Location = new Point(6, 35);
-        MaxMatchCountUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-        MaxMatchCountUpDown.Name = "MaxMatchCountUpDown";
-        MaxMatchCountUpDown.Size = new Size(57, 31);
-        MaxMatchCountUpDown.TabIndex = 0;
-        MaxMatchCountUpDown.Value = new decimal(new int[] { 1, 0, 0, 0 });
-        MaxMatchCountUpDown.ValueChanged += MaxMatchCountUpDown_ValueChanged;
-        // 
-        // groupBox4
-        // 
-        groupBox4.Location = new Point(729, 6);
-        groupBox4.Name = "groupBox4";
-        groupBox4.Size = new Size(557, 285);
-        groupBox4.TabIndex = 1;
-        groupBox4.TabStop = false;
-        groupBox4.Text = "Auto Mapper Settings";
-        // 
         // groupBox2
         // 
+        groupBox2.Controls.Add(PickNameMangledPathButton);
+        groupBox2.Controls.Add(NameMangledAssemblyTextBox);
         groupBox2.Controls.Add(MappingChooseButton);
         groupBox2.Controls.Add(UnsealCheckbox);
         groupBox2.Controls.Add(RenamePropertiesCheckbox);
@@ -1256,14 +1220,14 @@ partial class ReCodeItForm
         groupBox2.Controls.Add(DebugLoggingCheckbox);
         groupBox2.Location = new Point(13, 6);
         groupBox2.Name = "groupBox2";
-        groupBox2.Size = new Size(445, 285);
+        groupBox2.Size = new Size(445, 350);
         groupBox2.TabIndex = 0;
         groupBox2.TabStop = false;
         groupBox2.Text = "App Settings";
         // 
         // MappingChooseButton
         // 
-        MappingChooseButton.Location = new Point(308, 171);
+        MappingChooseButton.Location = new Point(308, 208);
         MappingChooseButton.Name = "MappingChooseButton";
         MappingChooseButton.Size = new Size(112, 34);
         MappingChooseButton.TabIndex = 8;
@@ -1276,7 +1240,7 @@ partial class ReCodeItForm
         UnsealCheckbox.AutoSize = true;
         UnsealCheckbox.Checked = true;
         UnsealCheckbox.CheckState = CheckState.Checked;
-        UnsealCheckbox.Location = new Point(196, 246);
+        UnsealCheckbox.Location = new Point(196, 315);
         UnsealCheckbox.Name = "UnsealCheckbox";
         UnsealCheckbox.Size = new Size(90, 29);
         UnsealCheckbox.TabIndex = 2;
@@ -1289,7 +1253,7 @@ partial class ReCodeItForm
         RenamePropertiesCheckbox.AutoSize = true;
         RenamePropertiesCheckbox.Checked = true;
         RenamePropertiesCheckbox.CheckState = CheckState.Checked;
-        RenamePropertiesCheckbox.Location = new Point(6, 246);
+        RenamePropertiesCheckbox.Location = new Point(6, 315);
         RenamePropertiesCheckbox.Name = "RenamePropertiesCheckbox";
         RenamePropertiesCheckbox.Size = new Size(186, 29);
         RenamePropertiesCheckbox.TabIndex = 4;
@@ -1302,7 +1266,7 @@ partial class ReCodeItForm
         PublicizeCheckbox.AutoSize = true;
         PublicizeCheckbox.Checked = true;
         PublicizeCheckbox.CheckState = CheckState.Checked;
-        PublicizeCheckbox.Location = new Point(196, 211);
+        PublicizeCheckbox.Location = new Point(196, 280);
         PublicizeCheckbox.Name = "PublicizeCheckbox";
         PublicizeCheckbox.Size = new Size(106, 29);
         PublicizeCheckbox.TabIndex = 1;
@@ -1312,7 +1276,7 @@ partial class ReCodeItForm
         // 
         // OutputDirectoryButton
         // 
-        OutputDirectoryButton.Location = new Point(308, 134);
+        OutputDirectoryButton.Location = new Point(308, 171);
         OutputDirectoryButton.Name = "OutputDirectoryButton";
         OutputDirectoryButton.Size = new Size(112, 34);
         OutputDirectoryButton.TabIndex = 7;
@@ -1325,7 +1289,7 @@ partial class ReCodeItForm
         RenameFieldsCheckbox.AutoSize = true;
         RenameFieldsCheckbox.Checked = true;
         RenameFieldsCheckbox.CheckState = CheckState.Checked;
-        RenameFieldsCheckbox.Location = new Point(6, 211);
+        RenameFieldsCheckbox.Location = new Point(6, 280);
         RenameFieldsCheckbox.Name = "RenameFieldsCheckbox";
         RenameFieldsCheckbox.Size = new Size(151, 29);
         RenameFieldsCheckbox.TabIndex = 3;
@@ -1345,7 +1309,7 @@ partial class ReCodeItForm
         // 
         // MappingPathTextBox
         // 
-        MappingPathTextBox.Location = new Point(6, 174);
+        MappingPathTextBox.Location = new Point(6, 211);
         MappingPathTextBox.Name = "MappingPathTextBox";
         MappingPathTextBox.PlaceholderText = "Mapping.json path";
         MappingPathTextBox.ReadOnly = true;
@@ -1354,7 +1318,7 @@ partial class ReCodeItForm
         // 
         // OutputPathTextBox
         // 
-        OutputPathTextBox.Location = new Point(6, 137);
+        OutputPathTextBox.Location = new Point(6, 174);
         OutputPathTextBox.Name = "OutputPathTextBox";
         OutputPathTextBox.PlaceholderText = "Output Directory";
         OutputPathTextBox.ReadOnly = true;
@@ -1392,6 +1356,53 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
+        // tabPage5
+        // 
+        tabPage5.BackColor = SystemColors.ControlDarkDark;
+        tabPage5.Location = new Point(4, 34);
+        tabPage5.Name = "tabPage5";
+        tabPage5.Padding = new Padding(3);
+        tabPage5.Size = new Size(1336, 953);
+        tabPage5.TabIndex = 4;
+        tabPage5.Text = "Name DeMangler";
+        // 
+        // PickNameMangledPathButton
+        // 
+        PickNameMangledPathButton.Location = new Point(308, 134);
+        PickNameMangledPathButton.Name = "PickNameMangledPathButton";
+        PickNameMangledPathButton.Size = new Size(112, 34);
+        PickNameMangledPathButton.TabIndex = 10;
+        PickNameMangledPathButton.Text = "Choose";
+        PickNameMangledPathButton.UseVisualStyleBackColor = true;
+        PickNameMangledPathButton.Click += PickNameMangledPathButton_Click;
+        // 
+        // NameMangledAssemblyTextBox
+        // 
+        NameMangledAssemblyTextBox.Location = new Point(6, 137);
+        NameMangledAssemblyTextBox.Name = "NameMangledAssemblyTextBox";
+        NameMangledAssemblyTextBox.PlaceholderText = "Name Mangled Assembly path (including file name)";
+        NameMangledAssemblyTextBox.ReadOnly = true;
+        NameMangledAssemblyTextBox.Size = new Size(296, 31);
+        NameMangledAssemblyTextBox.TabIndex = 9;
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(287, 368);
+        label1.Name = "label1";
+        label1.Size = new Size(152, 25);
+        label1.TabIndex = 23;
+        label1.Text = "Max Match Count";
+        // 
+        // MaxMatchCountUpDown
+        // 
+        MaxMatchCountUpDown.Location = new Point(224, 366);
+        MaxMatchCountUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+        MaxMatchCountUpDown.Name = "MaxMatchCountUpDown";
+        MaxMatchCountUpDown.Size = new Size(57, 31);
+        MaxMatchCountUpDown.TabIndex = 22;
+        MaxMatchCountUpDown.Value = new decimal(new int[] { 1, 0, 0, 0 });
+        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1425,11 +1436,9 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)AutoMapperMinLengthUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
         SettingsTab.ResumeLayout(false);
-        groupBox3.ResumeLayout(false);
-        groupBox3.PerformLayout();
-        ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).EndInit();
         groupBox2.ResumeLayout(false);
         groupBox2.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)MaxMatchCountUpDown).EndInit();
         ResumeLayout(false);
     }
 
@@ -1507,8 +1516,6 @@ partial class ReCodeItForm
     private NumericUpDown MethodCountUpDown;
     private CheckBox MethodCountEnabled;
     private TabPage SettingsTab;
-    private GroupBox groupBox3;
-    private GroupBox groupBox4;
     private GroupBox groupBox2;
     private CheckBox SilentModeCheckbox;
     private CheckBox DebugLoggingCheckbox;
@@ -1522,8 +1529,6 @@ partial class ReCodeItForm
     private CheckBox RenameFieldsCheckbox;
     private CheckBox UnsealCheckbox;
     private CheckBox PublicizeCheckbox;
-    private NumericUpDown MaxMatchCountUpDown;
-    private Label label1;
     private Button EditRemapButton;
     private TabPage AutoMapperTab;
     private TextBox AutoMapperTypesToIgnoreTextField;
@@ -1548,4 +1553,9 @@ partial class ReCodeItForm
     private Button AutoMapperMethodRemoveButton;
     private Button AutoMapperMethodAddButton;
     private ListBox AutoMapperMethodBox;
+    private TabPage tabPage5;
+    private Button PickNameMangledPathButton;
+    private TextBox NameMangledAssemblyTextBox;
+    private Label label1;
+    private NumericUpDown MaxMatchCountUpDown;
 }

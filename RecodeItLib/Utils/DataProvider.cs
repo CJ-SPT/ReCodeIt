@@ -18,7 +18,11 @@ public static class DataProvider
 
     public static AssemblyDefinition AssemblyDefinition { get; private set; }
 
+    public static AssemblyDefinition NameMangledAssemblyDefinition { get; private set; }
+
     public static ModuleDefinition ModuleDefinition { get; private set; }
+
+    public static ModuleDefinition NameMangledModuleDefinition { get; private set; }
 
     public static void LoadAppSettings()
     {
@@ -144,32 +148,49 @@ public static class DataProvider
         Logger.Log($"Mapping file saved to {Settings.AppSettings.MappingPath}");
     }
 
-    public static void LoadAssemblyDefinition()
+    public static void LoadAssemblyDefinition(bool nameMangled = false)
     {
         AssemblyDefinition = null;
         ModuleDefinition = null;
 
         DefaultAssemblyResolver resolver = new();
-        resolver.AddSearchDirectory(Path.GetDirectoryName(Settings.AppSettings.AssemblyPath)); // Replace with the correct path : (6/14) I have no idea what I met by that
+
+        var path = nameMangled == false ? Settings.AppSettings.AssemblyPath : Settings.AppSettings.NameMangledPath;
+
+        resolver.AddSearchDirectory(Path.GetDirectoryName(path)); // Replace with the correct path : (6/14) I have no idea what I met by that
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
 
-        AssemblyDefinition = AssemblyDefinition.ReadAssembly(Settings.AppSettings.AssemblyPath, parameters);
+        var assemblyDefinition = AssemblyDefinition.ReadAssembly(
+            path,
+            parameters);
 
-        if (AssemblyDefinition is null)
+        if (assemblyDefinition is null)
         {
             throw new NullReferenceException("AssemblyDefinition was null...");
         }
 
         var fileName = Path.GetFileName(Settings.AppSettings.AssemblyPath);
 
-        foreach (var module in AssemblyDefinition.Modules.ToArray())
+        foreach (var module in assemblyDefinition.Modules.ToArray())
         {
             if (module.Name == fileName)
             {
                 Logger.Log($"Module definition {module.Name} found'");
+
+                if (nameMangled)
+                {
+                    NameMangledAssemblyDefinition = assemblyDefinition;
+                    NameMangledModuleDefinition = module;
+                    return;
+                }
+
+                AssemblyDefinition = assemblyDefinition;
                 ModuleDefinition = module;
-                return;
             }
+        }
+
+        if (nameMangled)
+        {
         }
 
         Logger.Log($"Module `{fileName}` not found in assembly {fileName}");

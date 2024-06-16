@@ -16,6 +16,7 @@ public class AppSettings
     public bool Debug { get; set; }
     public bool SilentMode { get; set; }
     public string AssemblyPath { get; set; }
+    public string NameMangledPath { get; set; }
     public string OutputPath { get; set; }
     public string MappingPath { get; set; }
     public bool RenameFields { get; set; }
