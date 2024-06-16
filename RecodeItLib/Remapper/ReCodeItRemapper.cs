@@ -22,6 +22,8 @@ public class ReCodeItRemapper
     /// </summary>
     public void InitializeRemap()
     {
+        DataProvider.LoadAssemblyDefinition();
+
         IsRunning = true;
         DisplayBasicModuleInformation();
 

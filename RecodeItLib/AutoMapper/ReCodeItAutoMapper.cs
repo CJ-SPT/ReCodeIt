@@ -13,6 +13,10 @@ public class ReCodeItAutoMapper
 
     private List<string> CompilerGeneratedClasses = [];
 
+    private List<TypeDefinition> AllTypes { get; set; } = [];
+
+    private List<string> AlreadyChangedNames { get; set; } = [];
+
     private static AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
 
     private static bool Error { get; set; } = false;
@@ -32,6 +36,8 @@ public class ReCodeItAutoMapper
         // Clear any previous pairs
         MappingPairs = [];
         CompilerGeneratedClasses = [];
+        AllTypes = [];
+        AlreadyChangedNames = [];
 
         DataProvider.LoadAssemblyDefinition();
 
@@ -42,9 +48,12 @@ public class ReCodeItAutoMapper
 
         FindCompilerGeneratedObjects(DataProvider.ModuleDefinition.Types);
 
-        Logger.Log($"Found {CompilerGeneratedClasses.Count} Compiler generated objects");
-
         var types = DataProvider.ModuleDefinition.Types;
+
+        GetAllTypes(types);
+
+        Logger.Log($"Found {CompilerGeneratedClasses.Count - AllTypes.Count} potential remappable types");
+        Logger.Log($"Found {CompilerGeneratedClasses.Count} compiler generated objects");
 
         foreach (var type in types)
         {
@@ -67,9 +76,20 @@ public class ReCodeItAutoMapper
         SanitizeProposedNames();
         StartRenameProcess();
 
-        if (Error) { return; }
-
         WriteChanges();
+    }
+
+    private void GetAllTypes(Collection<TypeDefinition> types)
+    {
+        AllTypes.AddRange(types);
+
+        foreach (var type in types)
+        {
+            if (type.HasNestedTypes)
+            {
+                GetAllTypes(type.NestedTypes);
+            }
+        }
     }
 
     /// <summary>
@@ -147,7 +167,7 @@ public class ReCodeItAutoMapper
                     parm.ParameterType.Name.Contains("Struct"),
                     true);
 
-                mapPair.IsMatchFrom = EMapPairSource.Method;
+                mapPair.AutoMappingResult = AutoMappingResult.Match_From_Method;
 
                 methodsWithTypes.Add(mapPair);
             }
@@ -205,7 +225,7 @@ public class ReCodeItAutoMapper
                 field.FieldType.Name.Contains("Struct"),
                 field.IsPublic);
 
-            pair.IsMatchFrom = EMapPairSource.Field;
+            pair.AutoMappingResult = AutoMappingResult.Match_From_Field;
 
             fieldsWithTypes.Add(pair);
         }
@@ -258,7 +278,7 @@ public class ReCodeItAutoMapper
                 property.PropertyType.Name.Contains("Struct"),
                 true);
 
-            mapPair.IsMatchFrom = EMapPairSource.Property;
+            mapPair.AutoMappingResult = AutoMappingResult.Match_From_Property;
 
             propertiesWithTypes.Add(mapPair);
         }
@@ -314,7 +334,11 @@ public class ReCodeItAutoMapper
         MappingPairs = MappingPairs
             .GroupBy(pair => pair.OriginalPropOrFieldName.TrimAfterSpecialChar())
             .Where(group => group.Count() > Settings.RequiredMatches)
-            .SelectMany(group => group).ToList();
+            .SelectMany(group => group)
+            .ToList()
+            // We dont want names that already exist to be considered
+            .Where(pair => AllTypes
+                .Any(token => !pair.OriginalTypeDefinition.FullName.Contains(token.FullName))).ToList();
 
         FinalGroupAndSelect();
     }
@@ -373,7 +397,7 @@ public class ReCodeItAutoMapper
             }
             */
             // If its not an interface, its a struct or class
-            switch (pair.IsStruct)
+            switch (pair.IsStruct && !pair.IsInterface)
             {
                 case true:
                     pair.Name = string.Concat(pair.Name, "Struct");
@@ -389,7 +413,7 @@ public class ReCodeItAutoMapper
             Logger.Log($"Matched From Name: {pair.OriginalPropOrFieldName}");
             Logger.Log($"IsInterface: {pair.IsInterface}");
             Logger.Log($"IsStruct: {pair.IsStruct}");
-            Logger.Log($"Is match from: {pair.IsMatchFrom}");
+            Logger.Log($"Is match from: {pair.AutoMappingResult}");
             Logger.Log($"------------------------------------------------------------------------");
         }
 
@@ -413,11 +437,11 @@ public class ReCodeItAutoMapper
         // Rename Types to matched types
         foreach (var pair in MappingPairs)
         {
-            if (pair.NewTypeRef != null)
+            if (pair.NewTypeRef != null && !AlreadyChangedNames.Contains(pair.Name))
             {
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
                 Logger.Log($"Renaming: {pair.OriginalTypeDefinition.Name} to {pair.Name}", ConsoleColor.Green);
-                Logger.Log($"Is match from method: {pair.IsMatchFrom}", ConsoleColor.Green);
+                Logger.Log($"Is match from method: {pair.AutoMappingResult}", ConsoleColor.Green);
 
                 var fieldCount = RenameHelper.RenameAllFields(
                     pair.OriginalTypeDefinition.Name,
@@ -436,8 +460,24 @@ public class ReCodeItAutoMapper
                 Logger.Log($"Renamed: {propCount} properties", ConsoleColor.Green);
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);
 
+                AlreadyChangedNames.Add(pair.Name);
                 pair.NewTypeRef.Name = pair.Name;
                 pair.HasBeenRenamed = true;
+                continue;
+            }
+
+            if (pair.HasBeenRenamed) { continue; }
+
+            // Set some error codes
+
+            if (AlreadyChangedNames.Contains(pair.Name))
+            {
+                pair.AutoMappingResult = AutoMappingResult.Fail_From_Already_Contained_Name;
+            }
+
+            if (pair.NewTypeRef == null)
+            {
+                pair.AutoMappingResult = AutoMappingResult.Fail_From_New_Type_Ref_Null;
             }
         }
 
@@ -448,10 +488,9 @@ public class ReCodeItAutoMapper
             {
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Red);
                 Logger.Log($"Renaming: {pair.OriginalTypeDefinition.Name} to {pair.Name} has failed", ConsoleColor.Red);
-                Logger.Log($"Trying to match: {pair.IsInterface}", ConsoleColor.Red);
+                Logger.Log($"Result Code: {pair.AutoMappingResult}", ConsoleColor.Red);
                 Logger.Log($"IsInterface: {pair.IsInterface}", ConsoleColor.Red);
                 Logger.Log($"IsStruct: {pair.IsStruct}", ConsoleColor.Red);
-                Logger.Log($"Is match from: {pair.IsMatchFrom}", ConsoleColor.Red);
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Red);
 
                 FailureCount++;
@@ -483,9 +522,9 @@ public class ReCodeItAutoMapper
     {
         var path = DataProvider.WriteAssemblyDefinition();
 
-        var fieldCountMatchResult = MappingPairs.Where(x => x.IsMatchFrom == EMapPairSource.Field).Count();
-        var propertyCountMatchResult = MappingPairs.Where(x => x.IsMatchFrom == EMapPairSource.Property).Count();
-        var methodCountMatchResult = MappingPairs.Where(x => x.IsMatchFrom == EMapPairSource.Method).Count();
+        var fieldCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
+        var propertyCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
+        var methodCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Method).Count();
 
         Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);

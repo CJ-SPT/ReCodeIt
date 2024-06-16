@@ -135,6 +135,12 @@ public partial class ReCodeItForm : Form
     {
         if (ReCodeItRemapper.IsRunning) { return; }
 
+        if (string.IsNullOrEmpty(DataProvider.Settings.AppSettings.AssemblyPath))
+        {
+            MessageBox.Show("Please go to the settings tab and load an assembly and select and output location", "Assembly not loaded");
+            return;
+        }
+
         Console.Clear();
 
         Remapper.InitializeRemap();
@@ -335,6 +341,12 @@ public partial class ReCodeItForm : Form
 
     private void RunAutoRemapButton_Click(object sender, EventArgs e)
     {
+        if (string.IsNullOrEmpty(DataProvider.Settings.AppSettings.AssemblyPath))
+        {
+            MessageBox.Show("Please go to the settings tab and load an assembly and select and output location", "Assembly not loaded");
+            return;
+        }
+
         AutoMapper.InitializeAutoMapping();
     }
 
