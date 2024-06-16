@@ -216,7 +216,6 @@ public class ReCodeItAutoMapper
 
             if (pair.IsInterface)
             {
-                Logger.Log($"INTERFACE");
                 pair.Name = string.Concat("I", pair.Name.AsSpan(0));
             }
 
