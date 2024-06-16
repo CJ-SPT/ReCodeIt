@@ -50,7 +50,9 @@ public class ReCodeItAutoMapper
             MappingPairs.AddRange(FilterPropertyNames(type));
         }
 
-        FilterTypeNames();
+        Logger.Log(MappingPairs.Count());
+
+        PrimaryTypeNameFilter();
         SanitizeProposedNames();
         StartRenameProcess();
 
@@ -145,7 +147,7 @@ public class ReCodeItAutoMapper
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    private List<MappingPair> FilterPropertyNames(TypeDefinition type)
+    private IEnumerable<MappingPair> FilterPropertyNames(TypeDefinition type)
     {
         var propertiesWithTypes = new List<MappingPair>();
 
@@ -199,7 +201,7 @@ public class ReCodeItAutoMapper
     /// This giant linq statement handles all of the filtering once the initial gathering of fields
     /// and properties is complete
     /// </summary>
-    private void FilterTypeNames()
+    private void PrimaryTypeNameFilter()
     {
         // Filter types to the ones we're looking for
         var mappingPairs = MappingPairs
@@ -223,16 +225,35 @@ public class ReCodeItAutoMapper
 
             // Filter out backing fields
             /// This is slow, but oh well
-            .Where(pair => !pair.Name.ToCharArray().Contains('<'))
+            .Where(pair => !pair.Name.ToCharArray().Contains('<')).ToList();
 
+        MappingPairs = mappingPairs;
+        SecondaryTypeNameFilter();
+    }
+
+    /// <summary>
+    /// This is where we filter down based on more specific parameters
+    /// </summary>
+    /// <param name="mappingPairs"></param>
+    private void SecondaryTypeNameFilter()
+    {
+        // Filter property/field names by required number of matches
+        MappingPairs = MappingPairs
+            .GroupBy(pair => pair.OriginalPropOrFieldName.TrimAfterSpecialChar())
+            .Where(group => group.Count() > Settings.RequiredMatches)
+            .SelectMany(group => group).ToList();
+
+        FinalGroupAndSelect();
+    }
+
+    private void FinalGroupAndSelect()
+    {
+        MappingPairs = MappingPairs
             // We only want types once, so make it unique
             .GroupBy(pair => pair.OriginalTypeDefinition.FullName)
                 .Select(group => group.First())
                     .GroupBy(pair => pair.Name)
-                        .Select(group => group.First())
-                            .ToList();
-
-        MappingPairs = [.. mappingPairs];
+                        .Select(group => group.First()).ToList();
     }
 
     /// <summary>
@@ -291,7 +312,7 @@ public class ReCodeItAutoMapper
             Logger.Log($"------------------------------------------------------------------------");
         }
 
-        Logger.Log($"Automatically remapped {MappingPairs.Count} objects");
+        Logger.Log($"Automatically remapped {MappingPairs.Count()} objects");
     }
 
     /// <summary>
@@ -354,8 +375,6 @@ public class ReCodeItAutoMapper
                 Error = true;
             }
         }
-
-
     }
 
     /// <summary>

@@ -20,6 +20,7 @@ public partial class ReCodeItForm : Form
         InitializeComponent();
         PopulateDomainUpDowns();
         RefreshSettingsPage();
+        RefreshAutoMapperPage();
         RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
 
         Remapper.OnComplete += ReloadTreeView;
@@ -474,6 +475,35 @@ public partial class ReCodeItForm : Form
     #endregion UPDOWNS
 
     #endregion SETTINGS_TAB
+
+    #region AUTOMAPPER
+
+    public void RefreshAutoMapperPage()
+    {
+        AutoMapperExcludeBox.Items.Clear();
+
+        foreach (var method in DataProvider.Settings.AutoMapper.TypesToIgnore)
+        {
+            AutoMapperExcludeBox.Items.Add(method);
+        }
+
+        MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
+        AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
+    }
+
+    private void AutoMapperRequiredMatchesUpDown_ValueChanged_1(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.RequiredMatches = (int)AutoMapperRequiredMatchesUpDown.Value;
+        DataProvider.SaveAppSettings();
+    }
+
+    private void AutoMapperMinLengthUpDown_ValueChanged(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.MinLengthToMatch = (int)AutoMapperMinLengthUpDown.Value;
+        DataProvider.SaveAppSettings();
+    }
+
+    #endregion AUTOMAPPER
 
     // Reset All UI elements to default
     private void ResetAll()

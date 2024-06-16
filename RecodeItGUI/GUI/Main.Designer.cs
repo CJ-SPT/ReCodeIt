@@ -101,6 +101,9 @@ partial class ReCodeItForm
         IsSealedUpDown = new DomainUpDown();
         TabControlMain = new TabControl();
         AutoMapperTab = new TabPage();
+        label3 = new Label();
+        AutoMapperMinLengthUpDown = new NumericUpDown();
+        RunAutoRemapButton = new Button();
         label2 = new Label();
         AutoMapperRequiredMatchesUpDown = new NumericUpDown();
         treeView1 = new TreeView();
@@ -126,7 +129,6 @@ partial class ReCodeItForm
         AssemblyPathTextBox = new TextBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
-        RunAutoRemapButton = new Button();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -141,6 +143,7 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)NestedTypeCountUpDown).BeginInit();
         TabControlMain.SuspendLayout();
         AutoMapperTab.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)AutoMapperMinLengthUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
         SettingsTab.SuspendLayout();
         groupBox3.SuspendLayout();
@@ -724,7 +727,7 @@ partial class ReCodeItForm
         NestedTypeCountEnabled.AutoSize = true;
         NestedTypeCountEnabled.Location = new Point(287, 326);
         NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
-        NestedTypeCountEnabled.Size = new Size(189, 29);
+        NestedTypeCountEnabled.Size = new Size(276, 29);
         NestedTypeCountEnabled.TabIndex = 12;
         NestedTypeCountEnabled.Text = "Nested OriginalTypeRef Count";
         NestedTypeCountEnabled.UseVisualStyleBackColor = true;
@@ -933,6 +936,8 @@ partial class ReCodeItForm
         // AutoMapperTab
         // 
         AutoMapperTab.BackColor = SystemColors.ControlDarkDark;
+        AutoMapperTab.Controls.Add(label3);
+        AutoMapperTab.Controls.Add(AutoMapperMinLengthUpDown);
         AutoMapperTab.Controls.Add(RunAutoRemapButton);
         AutoMapperTab.Controls.Add(label2);
         AutoMapperTab.Controls.Add(AutoMapperRequiredMatchesUpDown);
@@ -947,6 +952,33 @@ partial class ReCodeItForm
         AutoMapperTab.Size = new Size(1336, 953);
         AutoMapperTab.TabIndex = 3;
         AutoMapperTab.Text = "Auto Mapper";
+        // 
+        // label3
+        // 
+        label3.AutoSize = true;
+        label3.Location = new Point(76, 97);
+        label3.Name = "label3";
+        label3.Size = new Size(277, 25);
+        label3.TabIndex = 30;
+        label3.Text = "Min Length of field or prop name";
+        // 
+        // AutoMapperMinLengthUpDown
+        // 
+        AutoMapperMinLengthUpDown.Location = new Point(13, 95);
+        AutoMapperMinLengthUpDown.Name = "AutoMapperMinLengthUpDown";
+        AutoMapperMinLengthUpDown.Size = new Size(57, 31);
+        AutoMapperMinLengthUpDown.TabIndex = 29;
+        AutoMapperMinLengthUpDown.ValueChanged += AutoMapperMinLengthUpDown_ValueChanged;
+        // 
+        // RunAutoRemapButton
+        // 
+        RunAutoRemapButton.Location = new Point(6, 3);
+        RunAutoRemapButton.Name = "RunAutoRemapButton";
+        RunAutoRemapButton.Size = new Size(168, 34);
+        RunAutoRemapButton.TabIndex = 28;
+        RunAutoRemapButton.Text = "Run Auto Remap";
+        RunAutoRemapButton.UseVisualStyleBackColor = true;
+        RunAutoRemapButton.Click += RunAutoRemapButton_Click;
         // 
         // label2
         // 
@@ -963,6 +995,7 @@ partial class ReCodeItForm
         AutoMapperRequiredMatchesUpDown.Name = "AutoMapperRequiredMatchesUpDown";
         AutoMapperRequiredMatchesUpDown.Size = new Size(57, 31);
         AutoMapperRequiredMatchesUpDown.TabIndex = 26;
+        AutoMapperRequiredMatchesUpDown.ValueChanged += AutoMapperRequiredMatchesUpDown_ValueChanged_1;
         // 
         // treeView1
         // 
@@ -1214,16 +1247,6 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
-        // RunAutoRemapButton
-        // 
-        RunAutoRemapButton.Location = new Point(6, 3);
-        RunAutoRemapButton.Name = "RunAutoRemapButton";
-        RunAutoRemapButton.Size = new Size(168, 34);
-        RunAutoRemapButton.TabIndex = 28;
-        RunAutoRemapButton.Text = "Run Auto Remap";
-        RunAutoRemapButton.UseVisualStyleBackColor = true;
-        RunAutoRemapButton.Click += RunAutoRemapButton_Click;
-        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1254,6 +1277,7 @@ partial class ReCodeItForm
         TabControlMain.ResumeLayout(false);
         AutoMapperTab.ResumeLayout(false);
         AutoMapperTab.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)AutoMapperMinLengthUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
         SettingsTab.ResumeLayout(false);
         groupBox3.ResumeLayout(false);
@@ -1365,4 +1389,6 @@ partial class ReCodeItForm
     private Label label2;
     private NumericUpDown AutoMapperRequiredMatchesUpDown;
     private Button RunAutoRemapButton;
+    private Label label3;
+    private NumericUpDown AutoMapperMinLengthUpDown;
 }
