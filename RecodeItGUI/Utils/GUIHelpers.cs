@@ -122,7 +122,7 @@ internal static class GUIHelpers
 
         if (model.SearchParams.NestedTypeCount > 0)
         {
-            remapTreeItem.Nodes.Add(new TreeNode($"Nested Type Count: {model.SearchParams.NestedTypeCount}"));
+            remapTreeItem.Nodes.Add(new TreeNode($"Nested TypeRef Count: {model.SearchParams.NestedTypeCount}"));
         }
 
         remapTreeItem.Nodes.Add(originalTypeName);

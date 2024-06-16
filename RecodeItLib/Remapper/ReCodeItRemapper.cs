@@ -79,7 +79,7 @@ public class ReCodeItRemapper
     /// <summary>
     /// Find a match result
     /// </summary>
-    /// <param name="type">Type to score</param>
+    /// <param name="type">TypeRef to score</param>
     /// <param name="remap">Remap to check against</param>
     /// <param name="parentTypeName"></param>
     /// <returns>EMatchResult</returns>

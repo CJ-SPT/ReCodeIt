@@ -11,7 +11,7 @@ public class ReCodeItAutoMapper
 
     private List<string> CompilerGeneratedClasses = [];
 
-    private AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
+    private static AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
 
     public void InitializeAutoMapping()
     {
@@ -35,6 +35,8 @@ public class ReCodeItAutoMapper
         }
 
         FilterTypeNames();
+        SanitizeProposedNames();
+        WriteChanges();
     }
 
     private void FindCompilerGeneratedObjects(Mono.Collections.Generic.Collection<TypeDefinition> types)
@@ -93,9 +95,13 @@ public class ReCodeItAutoMapper
         // Include fields from the current type
         foreach (var field in fields)
         {
-            //Logger.Log($"Collecting Field: Type: {field.FieldType.Name.TrimAfterSpecialChar()} Field Name: {field.Name}");
+            //Logger.Log($"Collecting Field: TypeRef: {field.FieldType.Name.TrimAfterSpecialChar()} Field Name: {field.Name}");
 
-            fieldsWithTypes.Add(new MappingPair(field.FieldType, field.Name));
+            fieldsWithTypes.Add(new MappingPair(
+                field.FieldType,
+                field.Name,
+                field.FieldType.Name.Contains("Interface"),
+                field.FieldType.Name.Contains("Struct")));
         }
 
         return fieldsWithTypes;
@@ -135,17 +141,23 @@ public class ReCodeItAutoMapper
         // Include fields from the current type
         foreach (var property in properties)
         {
-            //Logger.Log($"Collecting Property: Type: {property.PropertyType.Name.TrimAfterSpecialChar()} Field Name: {property.Name}");
+            //Logger.Log($"Collecting Property: TypeRef: {property.PropertyType.Name.TrimAfterSpecialChar()} Field Name: {property.Name}");
 
-            propertiesWithTypes.Add(new MappingPair(property.PropertyType, property.Name));
+            ;
+
+            propertiesWithTypes.Add(new MappingPair(
+                property.PropertyType,
+                property.Name,
+                property.PropertyType.Name.Contains("Interface"),
+                property.PropertyType.Name.Contains("Struct")));
         }
 
         return propertiesWithTypes;
     }
 
     /// <summary>
-    /// Filters down match pairs to match deobfuscating names 'ClassXXXX' to field or property names
-    /// that are not of the same value, also applies a length filter.
+    /// This giant linq statement handles all of the filtering once the initial gathering of fields
+    /// and properties is complete
     /// </summary>
     private void FilterTypeNames()
     {
@@ -154,10 +166,11 @@ public class ReCodeItAutoMapper
             // Filter based on length, short lengths dont make good class names
             .Where(pair => pair.Name.Length >= Settings.MinLengthToMatch)
 
-            // Filter out anything that doesnt start with our specified tokens (Where pair.Type.Name
-            // is the property Type name `Class1202` and token is start identifer we are looking for `GClass`
+            // Filter out anything that doesnt start with our specified tokens (Where
+            // pair.TypeRef.Name is the property TypeRef name `Class1202` and token is start
+            // identifer we are looking for `GClass`
             .Where(pair => Settings.TokensToMatch
-                .Any(token => pair.Type.Name.StartsWith(token)))
+                .Any(token => pair.TypeRef.Name.StartsWith(token)))
 
             // Filter out anything that has the same name as the type, we cant remap those
             .Where(pair => !Settings.TokensToMatch
@@ -168,23 +181,78 @@ public class ReCodeItAutoMapper
             .Where(pair => !Settings.PropertyFieldBlackList
                 .Any(token => pair.Name.ToLower().StartsWith(token.ToLower())))
 
+            // Filter out backing fields
+            /// This is slow, but oh well
+            .Where(pair => !pair.Name.ToCharArray().Contains('<'))
+
             // We only want types once, so make it unique
-            .GroupBy(pair => pair.Type.FullName)
+            .GroupBy(pair => pair.TypeRef.FullName)
                 .Select(group => group.First())
-                .ToList();
+                    .GroupBy(pair => pair.Name)
+                        .Select(group => group.First())
+                            .ToList();
 
-        foreach (var pair in mappingPairs)
-        {
-            Logger.Log($"Type: {pair.Type.FullName} identifier: {pair.Name}");
-        }
-
-        MappingPairs = mappingPairs.ToList();
-        Logger.Log($"Match Count {mappingPairs.Count()}");
+        MappingPairs = [.. mappingPairs];
     }
 
-    private sealed class MappingPair(TypeReference type, string name)
+    private void SanitizeProposedNames()
     {
-        public TypeReference Type { get; set; } = type;
+        foreach (var pair in MappingPairs)
+        {
+            char first = pair.Name.ToCharArray().ElementAt(0);
+
+            if (first.Equals('_'))
+            {
+                pair.Name = string.Concat("", pair.Name.AsSpan(1));
+            }
+
+            // Re-run incase prefix removed
+            first = pair.Name.ToCharArray().ElementAt(0);
+
+            if (char.IsLower(first))
+            {
+                pair.Name = string.Concat(char.ToUpper(first).ToString(), pair.Name.AsSpan(1));
+            }
+
+            if (pair.IsInterface)
+            {
+                Logger.Log($"INTERFACE");
+                pair.Name = string.Concat("I", pair.Name.AsSpan(0));
+            }
+
+            // If its not an interface, its a struct or class
+            switch (pair.IsStruct)
+            {
+                case true:
+                    pair.Name = string.Concat(pair.Name, "Struct");
+                    break;
+
+                case false:
+                    pair.Name = string.Concat(pair.Name, "Class");
+                    break;
+            }
+
+            Logger.Log($"------------------------------------------------------------------------");
+            Logger.Log($"Original Name: {pair.OriginalName} : Sanitized Name: {pair.Name}");
+            Logger.Log($"Matched From Name: {pair.OriginalPropOrFieldName}");
+            Logger.Log($"IsInterface: {pair.IsInterface}");
+            Logger.Log($"IsStruct: {pair.IsStruct}");
+            Logger.Log($"------------------------------------------------------------------------");
+        }
+    }
+
+    private void WriteChanges()
+    {
+    }
+
+    private sealed class MappingPair(TypeReference type, string name, bool isInterface = false, bool isStruct = false)
+    {
+        public TypeReference TypeRef { get; set; } = type;
+        public string OriginalName { get; set; } = type.FullName;
+        public bool IsInterface { get; set; } = isInterface;
+        public bool IsStruct { get; set; } = isStruct;
         public string Name { get; set; } = name;
+
+        public string OriginalPropOrFieldName { get; } = name;
     }
 }

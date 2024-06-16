@@ -42,7 +42,7 @@ internal static class Renamer
 
                     if (field.Name == newFieldName) { continue; }
 
-                    Logger.Log($"Renaming field: `{field.Name}` on Type `{type.Name}` to {newFieldName}", ConsoleColor.Green);
+                    Logger.Log($"Renaming field: `{field.Name}` on TypeRef `{type.Name}` to {newFieldName}", ConsoleColor.Green);
 
                     field.Name = newFieldName;
 
@@ -74,7 +74,7 @@ internal static class Renamer
                 {
                     var newName = propertyCount > 0 ? $"{score.ReMap.NewTypeName}_{propertyCount}" : score.ReMap.NewTypeName;
 
-                    Logger.Log($"Renaming Property: `{property.Name}` on Type `{type}` to {newName}", ConsoleColor.Green);
+                    Logger.Log($"Renaming Property: `{property.Name}` on TypeRef `{type}` to {newName}", ConsoleColor.Green);
                     property.Name = newName;
                 }
             }

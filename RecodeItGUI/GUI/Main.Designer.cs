@@ -685,7 +685,7 @@ partial class ReCodeItForm
         NewTypeName.BackColor = SystemColors.ScrollBar;
         NewTypeName.Location = new Point(10, 30);
         NewTypeName.Name = "NewTypeName";
-        NewTypeName.PlaceholderText = "New Type Name";
+        NewTypeName.PlaceholderText = "New TypeRef Name";
         NewTypeName.Size = new Size(208, 31);
         NewTypeName.TabIndex = 0;
         // 
@@ -726,7 +726,7 @@ partial class ReCodeItForm
         NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
         NestedTypeCountEnabled.Size = new Size(189, 29);
         NestedTypeCountEnabled.TabIndex = 12;
-        NestedTypeCountEnabled.Text = "Nested Type Count";
+        NestedTypeCountEnabled.Text = "Nested TypeRef Count";
         NestedTypeCountEnabled.UseVisualStyleBackColor = true;
         // 
         // PropertyCountUpDown
@@ -781,7 +781,7 @@ partial class ReCodeItForm
         NestedTypeParentName.BackColor = SystemColors.ScrollBar;
         NestedTypeParentName.Location = new Point(224, 106);
         NestedTypeParentName.Name = "NestedTypeParentName";
-        NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
+        NestedTypeParentName.PlaceholderText = "Nested TypeRef Parent Name";
         NestedTypeParentName.Size = new Size(208, 31);
         NestedTypeParentName.TabIndex = 0;
         // 
@@ -817,7 +817,7 @@ partial class ReCodeItForm
         OriginalTypeName.BackColor = SystemColors.ScrollBar;
         OriginalTypeName.Location = new Point(224, 30);
         OriginalTypeName.Name = "OriginalTypeName";
-        OriginalTypeName.PlaceholderText = "Original Type Name";
+        OriginalTypeName.PlaceholderText = "Original TypeRef Name";
         OriginalTypeName.Size = new Size(208, 31);
         OriginalTypeName.TabIndex = 1;
         // 

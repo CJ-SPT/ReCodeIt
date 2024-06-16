@@ -49,7 +49,8 @@
             "Conditions",
             "Counter",
             "Instance",
-            "Command"
+            "Command",
+            "_template"
         ]
     }
 }
