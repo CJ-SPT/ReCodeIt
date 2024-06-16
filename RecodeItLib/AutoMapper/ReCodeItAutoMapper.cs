@@ -385,6 +385,7 @@ public class ReCodeItAutoMapper
             if (pair.IsInterface)
             {
                 pair.Name = string.Concat("I", pair.Name.AsSpan(0));
+                pair.Name = pair.Name.Replace("Class", "");
             }
             /*
             // Try and remove any trailing 's' that exist
@@ -397,15 +398,19 @@ public class ReCodeItAutoMapper
             }
             */
             // If its not an interface, its a struct or class
-            switch (pair.IsStruct && !pair.IsInterface)
-            {
-                case true:
-                    pair.Name = string.Concat(pair.Name, "Struct");
-                    break;
 
-                case false:
-                    pair.Name = string.Concat(pair.Name, "Class");
-                    break;
+            if (pair.IsInterface)
+            {
+                // Replace class if it exists
+                pair.Name = pair.Name.Replace("Class", "");
+            }
+            else if (pair.IsStruct)
+            {
+                pair.Name = string.Concat(pair.Name, "Struct");
+            }
+            else
+            {
+                pair.Name = string.Concat(pair.Name, "Class");
             }
 
             Logger.Log($"------------------------------------------------------------------------");
