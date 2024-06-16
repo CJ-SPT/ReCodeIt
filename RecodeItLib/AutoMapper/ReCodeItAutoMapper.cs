@@ -13,6 +13,9 @@ public class ReCodeItAutoMapper
 
     private static AutoMapperSettings Settings => DataProvider.Settings.AutoMapper;
 
+    /// <summary>
+    /// Start the automapping process
+    /// </summary>
     public void InitializeAutoMapping()
     {
         Logger.ClearLog();
@@ -39,6 +42,10 @@ public class ReCodeItAutoMapper
         WriteChanges();
     }
 
+    /// <summary>
+    /// Finds any compiler generated code so we can ignore it, its mostly LINQ garbage
+    /// </summary>
+    /// <param name="types"></param>
     private void FindCompilerGeneratedObjects(Mono.Collections.Generic.Collection<TypeDefinition> types)
     {
         foreach (var typeDefinition in types)
@@ -101,7 +108,8 @@ public class ReCodeItAutoMapper
                 field.FieldType,
                 field.Name,
                 field.FieldType.Name.Contains("Interface"),
-                field.FieldType.Name.Contains("Struct")));
+                field.FieldType.Name.Contains("Struct"),
+                field.FieldType.IsGenericInstance || field.FieldType.IsArray));
         }
 
         return fieldsWithTypes;
@@ -195,6 +203,9 @@ public class ReCodeItAutoMapper
         MappingPairs = [.. mappingPairs];
     }
 
+    /// <summary>
+    /// Sanitizes and prepares mapping pairs for remapping once filtering is complete.
+    /// </summary>
     private void SanitizeProposedNames()
     {
         foreach (var pair in MappingPairs)
@@ -219,6 +230,15 @@ public class ReCodeItAutoMapper
                 pair.Name = string.Concat("I", pair.Name.AsSpan(0));
             }
 
+            // Try and remove any trailing 's' that exist
+            if (pair.WasCollection)
+            {
+                if (pair.Name.ToLower().EndsWith('s'))
+                {
+                    pair.Name = pair.Name.Substring(0, pair.Name.Length - 1);
+                }
+            }
+
             // If its not an interface, its a struct or class
             switch (pair.IsStruct)
             {
@@ -234,6 +254,7 @@ public class ReCodeItAutoMapper
             Logger.Log($"------------------------------------------------------------------------");
             Logger.Log($"Original Name: {pair.OriginalName} : Sanitized Name: {pair.Name}");
             Logger.Log($"Matched From Name: {pair.OriginalPropOrFieldName}");
+            Logger.Log($"Matched From Collection: {pair.WasCollection}");
             Logger.Log($"IsInterface: {pair.IsInterface}");
             Logger.Log($"IsStruct: {pair.IsStruct}");
             Logger.Log($"------------------------------------------------------------------------");
@@ -246,14 +267,26 @@ public class ReCodeItAutoMapper
     {
     }
 
-    private sealed class MappingPair(TypeReference type, string name, bool isInterface = false, bool isStruct = false)
+    /// <summary>
+    /// Represents a match of a field name to obfuscated class
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="name"></param>
+    /// <param name="isInterface"></param>
+    /// <param name="isStruct"></param>
+    private sealed class MappingPair(
+        TypeReference type,
+        string name,
+        bool isInterface = false,
+        bool isStruct = false,
+        bool wasCollection = false)
     {
         public TypeReference TypeRef { get; set; } = type;
         public string OriginalName { get; set; } = type.FullName;
         public bool IsInterface { get; set; } = isInterface;
         public bool IsStruct { get; set; } = isStruct;
+        public bool WasCollection { get; set; } = wasCollection;
         public string Name { get; set; } = name;
-
         public string OriginalPropOrFieldName { get; } = name;
     }
 }
