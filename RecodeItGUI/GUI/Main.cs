@@ -164,17 +164,12 @@ public partial class ReCodeItForm : Form
 
     private void LoadMappingFileButton_Click(object sender, EventArgs e)
     {
-        var fDialog = new OpenFileDialog
-        {
-            Title = "Select a mapping file",
-            Filter = "JSON Files (*.json)|*.json|JSONC Files (*.jsonc)|*.jsonc|All Files (*.*)|*.*",
-            Multiselect = false
-        };
+        var result = GUIHelpers.OpenFileDialog("Select a mapping file",
+                "JSON Files (*.json)|*.json|JSONC Files (*.jsonc)|*.jsonc|All Files (*.*)|*.*");
 
-        if (fDialog.ShowDialog() == DialogResult.OK)
-        {
-            DataProvider.LoadMappingFile(fDialog.FileName);
-        }
+        if (result == string.Empty) { return; }
+
+        DataProvider.LoadMappingFile(result);
 
         RemapTreeView.Nodes.Clear();
 
@@ -186,31 +181,24 @@ public partial class ReCodeItForm : Form
 
     private void PickAssemblyPathButton_Click_1(object sender, EventArgs e)
     {
-        OpenFileDialog fDialog = new()
-        {
-            Title = "Select a DLL file",
-            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
-            Multiselect = false
-        };
+        var result = GUIHelpers.OpenFileDialog("Select a DLL file",
+                "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
 
-        if (fDialog.ShowDialog() == DialogResult.OK)
+        if (result != string.Empty)
         {
-            DataProvider.Settings.Remapper.AssemblyPath = fDialog.FileName;
-            TargetAssemblyPath.Text = fDialog.FileName;
+            DataProvider.Settings.Remapper.AssemblyPath = result;
+            TargetAssemblyPath.Text = result;
         }
     }
 
     private void OutputDirectoryButton_Click_1(object sender, EventArgs e)
     {
-        using FolderBrowserDialog fDialog = new();
+        var result = GUIHelpers.OpenFolderDialog("Select an output directory");
 
-        fDialog.Description = "Select a directory";
-        fDialog.ShowNewFolderButton = true;
-
-        if (fDialog.ShowDialog() == DialogResult.OK)
+        if (result != string.Empty)
         {
-            DataProvider.Settings.Remapper.OutputPath = fDialog.SelectedPath;
-            RemapperOutputDirectoryPath.Text = fDialog.SelectedPath;
+            DataProvider.Settings.Remapper.OutputPath = result;
+            RemapperOutputDirectoryPath.Text = result;
         }
     }
 
@@ -517,32 +505,25 @@ public partial class ReCodeItForm : Form
 
     private void AutoMapperChooseTargetPathButton_Click(object sender, EventArgs e)
     {
-        OpenFileDialog fDialog = new()
-        {
-            Title = "Select a DLL file",
-            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
-            Multiselect = false
-        };
+        var result = GUIHelpers.OpenFileDialog("Select a DLL file",
+            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
 
-        if (fDialog.ShowDialog() == DialogResult.OK)
+        if (result != string.Empty)
         {
-            DataProvider.Settings.AutoMapper.AssemblyPath = fDialog.FileName;
-            TargetAssemblyPath.Text = fDialog.FileName;
+            DataProvider.Settings.AutoMapper.AssemblyPath = result;
+            TargetAssemblyPath.Text = result;
             DataProvider.SaveAppSettings();
         }
     }
 
     private void AutoMapperChooseOutpathButton_Click(object sender, EventArgs e)
     {
-        using FolderBrowserDialog fDialog = new();
+        var result = GUIHelpers.OpenFolderDialog("Select an output directory");
 
-        fDialog.Description = "Select a directory";
-        fDialog.ShowNewFolderButton = true;
-
-        if (fDialog.ShowDialog() == DialogResult.OK)
+        if (result != string.Empty)
         {
-            DataProvider.Settings.AutoMapper.OutputPath = fDialog.SelectedPath;
-            RemapperOutputDirectoryPath.Text = fDialog.SelectedPath;
+            DataProvider.Settings.AutoMapper.OutputPath = result;
+            RemapperOutputDirectoryPath.Text = result;
             DataProvider.SaveAppSettings();
         }
     }

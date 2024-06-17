@@ -238,4 +238,47 @@ internal static class GUIHelpers
 
         return tmp;
     }
+
+    /// <summary>
+    /// Opens and returns a path from a file dialogue
+    /// </summary>
+    /// <param name="title"></param>
+    /// <param name="filter"></param>
+    /// <returns>Path if selected, or empty string</returns>
+    public static string OpenFileDialog(string title, string filter)
+    {
+        OpenFileDialog fDialog = new()
+        {
+            Title = title,
+            Filter = filter,
+            Multiselect = false
+        };
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            return fDialog.FileName;
+        }
+
+        return string.Empty;
+    }
+
+    /// <summary>
+    /// Opens and returns a path from a folder dialogue
+    /// </summary>
+    /// <param name="description"></param>
+    /// <returns></returns>
+    public static string OpenFolderDialog(string description)
+    {
+        using FolderBrowserDialog fDialog = new();
+
+        fDialog.Description = description;
+        fDialog.ShowNewFolderButton = true;
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            return fDialog.SelectedPath;
+        }
+
+        return string.Empty;
+    }
 }
