@@ -38,6 +38,8 @@ public class AutoMapperSettings
     public int RequiredMatches { get; set; }
     public int MinLengthToMatch { get; set; }
     public bool SearchMethods { get; set; }
+    public bool RenameFields { get; set; }
+    public bool RenameProperties { get; set; }
     public bool Publicize { get; set; }
     public bool Unseal { get; set; }
 

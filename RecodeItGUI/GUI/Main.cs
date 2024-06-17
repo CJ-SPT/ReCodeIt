@@ -196,7 +196,6 @@ public partial class ReCodeItForm : Form
         if (fDialog.ShowDialog() == DialogResult.OK)
         {
             DataProvider.Settings.Remapper.AssemblyPath = fDialog.FileName;
-            DataProvider.LoadAssemblyDefinition(fDialog.FileName);
             TargetAssemblyPath.Text = fDialog.FileName;
         }
     }
@@ -405,15 +404,6 @@ public partial class ReCodeItForm : Form
         RenamePropertiesCheckbox.Checked = DataProvider.Settings.Remapper.RenameProperties;
         RemapperPublicicize.Checked = DataProvider.Settings.Remapper.Publicize;
         RemapperUnseal.Checked = DataProvider.Settings.Remapper.Unseal;
-
-        AutoMapperTypesExcludeBox.Items.Clear();
-        foreach (var method in DataProvider.Settings.AutoMapper.TypesToIgnore)
-        {
-            AutoMapperTypesExcludeBox.Items.Add(method);
-        }
-
-        AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
-        AutoMapperMinLengthUpDown.Value = DataProvider.Settings.AutoMapper.MinLengthToMatch;
     }
 
     #region SETTINGS_BUTTONS
@@ -497,7 +487,12 @@ public partial class ReCodeItForm : Form
         AutoMapperFPBox.Items.Clear();
 
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
+        AutoMapperMinLengthUpDown.Value = DataProvider.Settings.AutoMapper.MinLengthToMatch;
         AutoMapperSearchMethodsCheckBox.Checked = DataProvider.Settings.AutoMapper.SearchMethods;
+        AutoMapperRenameFields.Checked = DataProvider.Settings.AutoMapper.RenameFields;
+        AutoMapperRenameProps.Checked = DataProvider.Settings.AutoMapper.RenameProperties;
+        AutoMapperPublicize.Checked = DataProvider.Settings.AutoMapper.Publicize;
+        AutoMapperUnseal.Checked = DataProvider.Settings.AutoMapper.Unseal;
 
         foreach (var type in DataProvider.Settings.AutoMapper.TypesToIgnore)
         {
@@ -517,6 +512,38 @@ public partial class ReCodeItForm : Form
         foreach (var mp in DataProvider.Settings.AutoMapper.MethodParamaterBlackList)
         {
             AutoMapperMethodBox.Items.Add(mp);
+        }
+    }
+
+    private void AutoMapperChooseTargetPathButton_Click(object sender, EventArgs e)
+    {
+        OpenFileDialog fDialog = new()
+        {
+            Title = "Select a DLL file",
+            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
+            Multiselect = false
+        };
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            DataProvider.Settings.AutoMapper.AssemblyPath = fDialog.FileName;
+            TargetAssemblyPath.Text = fDialog.FileName;
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void AutoMapperChooseOutpathButton_Click(object sender, EventArgs e)
+    {
+        using FolderBrowserDialog fDialog = new();
+
+        fDialog.Description = "Select a directory";
+        fDialog.ShowNewFolderButton = true;
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            DataProvider.Settings.AutoMapper.OutputPath = fDialog.SelectedPath;
+            RemapperOutputDirectoryPath.Text = fDialog.SelectedPath;
+            DataProvider.SaveAppSettings();
         }
     }
 
@@ -601,6 +628,30 @@ public partial class ReCodeItForm : Form
     private void SearchMethodsCheckBox_CheckedChanged(object sender, EventArgs e)
     {
         DataProvider.Settings.AutoMapper.SearchMethods = AutoMapperSearchMethodsCheckBox.Checked;
+        DataProvider.SaveAppSettings();
+    }
+
+    private void AutoMapperRenameFields_CheckedChanged(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.RenameFields = AutoMapperRenameFields.Checked;
+        DataProvider.SaveAppSettings();
+    }
+
+    private void AutoMapperRenameProps_CheckedChanged(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.RenameProperties = AutoMapperRenameProps.Checked;
+        DataProvider.SaveAppSettings();
+    }
+
+    private void AutoMapperPublicize_CheckedChanged(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.Publicize = AutoMapperPublicize.Checked;
+        DataProvider.SaveAppSettings();
+    }
+
+    private void AutoMapperUnseal_CheckedChanged(object sender, EventArgs e)
+    {
+        DataProvider.Settings.AutoMapper.Unseal = AutoMapperUnseal.Checked;
         DataProvider.SaveAppSettings();
     }
 
@@ -752,6 +803,16 @@ public partial class ReCodeItForm : Form
         HasAttributeUpDown.BuildStringList("HasAttribute");
         IsDerivedUpDown.BuildStringList("IsDerived");
         HasGenericParametersUpDown.BuildStringList("HasGenericParams");
+    }
+
+    private void AutoMapperTab_Click(object sender, EventArgs e)
+    {
+        RefreshAutoMapperPage();
+    }
+
+    private void SettingsTab_Click(object sender, EventArgs e)
+    {
+        RefreshSettingsPage();
     }
 
     /// <summary>

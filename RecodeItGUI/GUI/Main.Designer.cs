@@ -109,6 +109,14 @@ partial class ReCodeItForm
         IsSealedUpDown = new DomainUpDown();
         TabControlMain = new TabControl();
         AutoMapperTab = new TabPage();
+        AutoMapperUnseal = new CheckBox();
+        AutoMapperPublicize = new CheckBox();
+        AutoMapperRenameProps = new CheckBox();
+        AutoMapperRenameFields = new CheckBox();
+        AutoMapperOuputPath = new TextBox();
+        AutoMapperTargetPath = new TextBox();
+        AutoMapperChooseOutpathButton = new Button();
+        AutoMapperChooseTargetPathButton = new Button();
         AutoMapperMethodTextBox = new TextBox();
         AutoMapperMethodRemoveButton = new Button();
         AutoMapperMethodAddButton = new Button();
@@ -283,6 +291,7 @@ partial class ReCodeItForm
         RemapperOutputDirectoryPath.Location = new Point(10, 106);
         RemapperOutputDirectoryPath.Name = "RemapperOutputDirectoryPath";
         RemapperOutputDirectoryPath.PlaceholderText = "Output Directory";
+        RemapperOutputDirectoryPath.ReadOnly = true;
         RemapperOutputDirectoryPath.Size = new Size(297, 31);
         RemapperOutputDirectoryPath.TabIndex = 34;
         // 
@@ -292,6 +301,7 @@ partial class ReCodeItForm
         TargetAssemblyPath.Location = new Point(10, 69);
         TargetAssemblyPath.Name = "TargetAssemblyPath";
         TargetAssemblyPath.PlaceholderText = "Target Assembly";
+        TargetAssemblyPath.ReadOnly = true;
         TargetAssemblyPath.Size = new Size(297, 31);
         TargetAssemblyPath.TabIndex = 33;
         // 
@@ -1054,6 +1064,14 @@ partial class ReCodeItForm
         // AutoMapperTab
         // 
         AutoMapperTab.BackColor = SystemColors.ControlDarkDark;
+        AutoMapperTab.Controls.Add(AutoMapperUnseal);
+        AutoMapperTab.Controls.Add(AutoMapperPublicize);
+        AutoMapperTab.Controls.Add(AutoMapperRenameProps);
+        AutoMapperTab.Controls.Add(AutoMapperRenameFields);
+        AutoMapperTab.Controls.Add(AutoMapperOuputPath);
+        AutoMapperTab.Controls.Add(AutoMapperTargetPath);
+        AutoMapperTab.Controls.Add(AutoMapperChooseOutpathButton);
+        AutoMapperTab.Controls.Add(AutoMapperChooseTargetPathButton);
         AutoMapperTab.Controls.Add(AutoMapperMethodTextBox);
         AutoMapperTab.Controls.Add(AutoMapperMethodRemoveButton);
         AutoMapperTab.Controls.Add(AutoMapperMethodAddButton);
@@ -1082,6 +1100,99 @@ partial class ReCodeItForm
         AutoMapperTab.Size = new Size(1336, 953);
         AutoMapperTab.TabIndex = 3;
         AutoMapperTab.Text = "Auto Mapper";
+        AutoMapperTab.Click += AutoMapperTab_Click;
+        // 
+        // AutoMapperUnseal
+        // 
+        AutoMapperUnseal.AutoSize = true;
+        AutoMapperUnseal.Checked = true;
+        AutoMapperUnseal.CheckState = CheckState.Checked;
+        AutoMapperUnseal.Location = new Point(537, 136);
+        AutoMapperUnseal.Name = "AutoMapperUnseal";
+        AutoMapperUnseal.Size = new Size(90, 29);
+        AutoMapperUnseal.TabIndex = 51;
+        AutoMapperUnseal.Text = "Unseal";
+        AutoMapperUnseal.UseVisualStyleBackColor = true;
+        AutoMapperUnseal.CheckedChanged += AutoMapperUnseal_CheckedChanged;
+        // 
+        // AutoMapperPublicize
+        // 
+        AutoMapperPublicize.AutoSize = true;
+        AutoMapperPublicize.Checked = true;
+        AutoMapperPublicize.CheckState = CheckState.Checked;
+        AutoMapperPublicize.Location = new Point(537, 101);
+        AutoMapperPublicize.Name = "AutoMapperPublicize";
+        AutoMapperPublicize.Size = new Size(106, 29);
+        AutoMapperPublicize.TabIndex = 50;
+        AutoMapperPublicize.Text = "Publicize";
+        AutoMapperPublicize.UseVisualStyleBackColor = true;
+        AutoMapperPublicize.CheckedChanged += AutoMapperPublicize_CheckedChanged;
+        // 
+        // AutoMapperRenameProps
+        // 
+        AutoMapperRenameProps.AutoSize = true;
+        AutoMapperRenameProps.Checked = true;
+        AutoMapperRenameProps.CheckState = CheckState.Checked;
+        AutoMapperRenameProps.Location = new Point(537, 66);
+        AutoMapperRenameProps.Name = "AutoMapperRenameProps";
+        AutoMapperRenameProps.Size = new Size(186, 29);
+        AutoMapperRenameProps.TabIndex = 49;
+        AutoMapperRenameProps.Text = "Rename Properties";
+        AutoMapperRenameProps.UseVisualStyleBackColor = true;
+        AutoMapperRenameProps.CheckedChanged += AutoMapperRenameProps_CheckedChanged;
+        // 
+        // AutoMapperRenameFields
+        // 
+        AutoMapperRenameFields.AutoSize = true;
+        AutoMapperRenameFields.Checked = true;
+        AutoMapperRenameFields.CheckState = CheckState.Checked;
+        AutoMapperRenameFields.Location = new Point(537, 31);
+        AutoMapperRenameFields.Name = "AutoMapperRenameFields";
+        AutoMapperRenameFields.Size = new Size(151, 29);
+        AutoMapperRenameFields.TabIndex = 48;
+        AutoMapperRenameFields.Text = "Rename Fields";
+        AutoMapperRenameFields.UseVisualStyleBackColor = true;
+        AutoMapperRenameFields.CheckedChanged += AutoMapperRenameFields_CheckedChanged;
+        // 
+        // AutoMapperOuputPath
+        // 
+        AutoMapperOuputPath.BackColor = SystemColors.ScrollBar;
+        AutoMapperOuputPath.Location = new Point(6, 43);
+        AutoMapperOuputPath.Name = "AutoMapperOuputPath";
+        AutoMapperOuputPath.PlaceholderText = "Output Directory";
+        AutoMapperOuputPath.ReadOnly = true;
+        AutoMapperOuputPath.Size = new Size(297, 31);
+        AutoMapperOuputPath.TabIndex = 47;
+        // 
+        // AutoMapperTargetPath
+        // 
+        AutoMapperTargetPath.BackColor = SystemColors.ScrollBar;
+        AutoMapperTargetPath.Location = new Point(6, 6);
+        AutoMapperTargetPath.Name = "AutoMapperTargetPath";
+        AutoMapperTargetPath.PlaceholderText = "Target Assembly";
+        AutoMapperTargetPath.ReadOnly = true;
+        AutoMapperTargetPath.Size = new Size(297, 31);
+        AutoMapperTargetPath.TabIndex = 46;
+        // 
+        // AutoMapperChooseOutpathButton
+        // 
+        AutoMapperChooseOutpathButton.Location = new Point(308, 41);
+        AutoMapperChooseOutpathButton.Name = "AutoMapperChooseOutpathButton";
+        AutoMapperChooseOutpathButton.Size = new Size(112, 34);
+        AutoMapperChooseOutpathButton.TabIndex = 45;
+        AutoMapperChooseOutpathButton.Text = "Choose";
+        AutoMapperChooseOutpathButton.UseVisualStyleBackColor = true;
+        AutoMapperChooseOutpathButton.Click += AutoMapperChooseOutpathButton_Click;
+        // 
+        // AutoMapperChooseTargetPathButton
+        // 
+        AutoMapperChooseTargetPathButton.Location = new Point(308, 3);
+        AutoMapperChooseTargetPathButton.Name = "AutoMapperChooseTargetPathButton";
+        AutoMapperChooseTargetPathButton.Size = new Size(112, 34);
+        AutoMapperChooseTargetPathButton.TabIndex = 44;
+        AutoMapperChooseTargetPathButton.Text = "Choose";
+        AutoMapperChooseTargetPathButton.UseVisualStyleBackColor = true;
+        AutoMapperChooseTargetPathButton.Click += AutoMapperChooseTargetPathButton_Click;
         // 
         // AutoMapperMethodTextBox
         // 
@@ -1125,7 +1236,7 @@ partial class ReCodeItForm
         // AutoMapperSearchMethodsCheckBox
         // 
         AutoMapperSearchMethodsCheckBox.AutoSize = true;
-        AutoMapperSearchMethodsCheckBox.Location = new Point(13, 132);
+        AutoMapperSearchMethodsCheckBox.Location = new Point(536, 2);
         AutoMapperSearchMethodsCheckBox.Name = "AutoMapperSearchMethodsCheckBox";
         AutoMapperSearchMethodsCheckBox.Size = new Size(291, 29);
         AutoMapperSearchMethodsCheckBox.TabIndex = 39;
@@ -1214,7 +1325,7 @@ partial class ReCodeItForm
         // label3
         // 
         label3.AutoSize = true;
-        label3.Location = new Point(76, 97);
+        label3.Location = new Point(243, 119);
         label3.Name = "label3";
         label3.Size = new Size(277, 25);
         label3.TabIndex = 30;
@@ -1222,7 +1333,7 @@ partial class ReCodeItForm
         // 
         // AutoMapperMinLengthUpDown
         // 
-        AutoMapperMinLengthUpDown.Location = new Point(13, 95);
+        AutoMapperMinLengthUpDown.Location = new Point(180, 117);
         AutoMapperMinLengthUpDown.Name = "AutoMapperMinLengthUpDown";
         AutoMapperMinLengthUpDown.Size = new Size(57, 31);
         AutoMapperMinLengthUpDown.TabIndex = 29;
@@ -1230,7 +1341,7 @@ partial class ReCodeItForm
         // 
         // RunAutoRemapButton
         // 
-        RunAutoRemapButton.Location = new Point(6, 3);
+        RunAutoRemapButton.Location = new Point(6, 80);
         RunAutoRemapButton.Name = "RunAutoRemapButton";
         RunAutoRemapButton.Size = new Size(168, 34);
         RunAutoRemapButton.TabIndex = 28;
@@ -1241,7 +1352,7 @@ partial class ReCodeItForm
         // label2
         // 
         label2.AutoSize = true;
-        label2.Location = new Point(76, 60);
+        label2.Location = new Point(243, 86);
         label2.Name = "label2";
         label2.Size = new Size(153, 25);
         label2.TabIndex = 27;
@@ -1249,7 +1360,7 @@ partial class ReCodeItForm
         // 
         // AutoMapperRequiredMatchesUpDown
         // 
-        AutoMapperRequiredMatchesUpDown.Location = new Point(13, 58);
+        AutoMapperRequiredMatchesUpDown.Location = new Point(180, 80);
         AutoMapperRequiredMatchesUpDown.Name = "AutoMapperRequiredMatchesUpDown";
         AutoMapperRequiredMatchesUpDown.Size = new Size(57, 31);
         AutoMapperRequiredMatchesUpDown.TabIndex = 26;
@@ -1450,6 +1561,7 @@ partial class ReCodeItForm
         SettingsTab.Size = new Size(1336, 953);
         SettingsTab.TabIndex = 2;
         SettingsTab.Text = "Settings";
+        SettingsTab.Click += SettingsTab_Click;
         // 
         // groupBox2
         // 
@@ -1658,4 +1770,12 @@ partial class ReCodeItForm
     private CheckBox RemapperPublicicize;
     private TextBox RemapperOutputDirectoryPath;
     private TextBox TargetAssemblyPath;
+    private TextBox AutoMapperOuputPath;
+    private TextBox AutoMapperTargetPath;
+    private Button AutoMapperChooseOutpathButton;
+    private Button AutoMapperChooseTargetPathButton;
+    private CheckBox AutoMapperUnseal;
+    private CheckBox AutoMapperPublicize;
+    private CheckBox AutoMapperRenameProps;
+    private CheckBox AutoMapperRenameFields;
 }
