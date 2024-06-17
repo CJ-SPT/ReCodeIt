@@ -1,7 +1,7 @@
-﻿using ReCodeIt.Enums;
-using ReCodeIt.Models;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Mono.Cecil.Rocks;
+using ReCodeIt.Enums;
+using ReCodeIt.Models;
 
 namespace ReCodeIt.ReMapper.Search;
 
@@ -14,7 +14,7 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type contains any supplied methods</returns>
-    public static EMatchResult IncludeMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Include(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return EMatchResult.Disabled;
 
@@ -38,7 +38,7 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type has no methods</returns>
-    public static EMatchResult ExcludeMethods(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Exclude(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.ExcludeMethods is null || parms.ExcludeMethods.Count == 0) return EMatchResult.Disabled;
 
@@ -62,7 +62,7 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult MatchMethodCount(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Count(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.MethodCount is null) return EMatchResult.Disabled;
 

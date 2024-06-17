@@ -1,13 +1,13 @@
-﻿using ReCodeIt.Enums;
-using ReCodeIt.Models;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using MoreLinq;
+using ReCodeIt.Enums;
+using ReCodeIt.Models;
 
 namespace ReCodeIt.ReMapper.Search;
 
 internal class NestedTypes
 {
-    public static EMatchResult IncludeNestedTypes(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Include(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.IncludeNestedTypes is null || parms.IncludeNestedTypes.Count == 0) return EMatchResult.Disabled;
 
@@ -23,7 +23,7 @@ internal class NestedTypes
             : EMatchResult.NoMatch;
     }
 
-    public static EMatchResult ExcludeNestedTypes(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Exclude(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.ExcludeNestedTypes is null || parms.ExcludeNestedTypes.Count == 0) return EMatchResult.Disabled;
 
@@ -40,7 +40,7 @@ internal class NestedTypes
             : EMatchResult.Match;
     }
 
-    public static EMatchResult MatchNestedTypeCount(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Count(TypeDefinition type, SearchParams parms, ScoringModel score)
     {
         if (parms.NestedTypeCount is null) return EMatchResult.Disabled;
 

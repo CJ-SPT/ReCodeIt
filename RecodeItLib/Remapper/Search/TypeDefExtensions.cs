@@ -208,9 +208,9 @@ internal static class TypeDefExtensions
     {
         var matches = new List<EMatchResult>
         {
-            Methods.IncludeMethods(type, parms, score),
-            Methods.ExcludeMethods(type, parms, score),
-            Methods.MatchMethodCount(type, parms, score)
+            Methods.Include(type, parms, score),
+            Methods.Exclude(type, parms, score),
+            Methods.Count(type, parms, score)
         };
 
         // return match if any condition matched
@@ -221,9 +221,9 @@ internal static class TypeDefExtensions
     {
         var matches = new List<EMatchResult>
         {
-            Fields.IncludeFields(type, parms, score),
-            Fields.ExcludeFields(type, parms, score),
-            Fields.MatchFieldCount(type, parms, score)
+            Fields.Include(type, parms, score),
+            Fields.Exclude(type, parms, score),
+            Fields.Count(type, parms, score)
         };
 
         // return match if any condition matched
@@ -234,9 +234,9 @@ internal static class TypeDefExtensions
     {
         var matches = new List<EMatchResult>
         {
-            Properties.IncludeProperties(type, parms, score),
-            Properties.ExcludeProperties(type, parms, score),
-            Properties.MatchPropertyCount(type, parms, score)
+            Properties.Include(type, parms, score),
+            Properties.Exclude(type, parms, score),
+            Properties.Count(type, parms, score)
         };
 
         // return match if any condition matched
@@ -247,9 +247,9 @@ internal static class TypeDefExtensions
     {
         var matches = new List<EMatchResult>
         {
-            NestedTypes.IncludeNestedTypes(type, parms, score),
-            NestedTypes.ExcludeNestedTypes(type, parms, score),
-            NestedTypes.MatchNestedTypeCount(type, parms, score)
+            NestedTypes.Include(type, parms, score),
+            NestedTypes.Exclude(type, parms, score),
+            NestedTypes.Count(type, parms, score)
         };
 
         // return match if any condition matched
