@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReCodeItGUI", "RecodeItGUI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReCodeItLib", "RecodeItLib\ReCodeItLib.csproj", "{FDA58DB6-E114-4FE0-AAF1-C3DEE44AEF99}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReCodeItGUI_WPF", "ReCodeItGUI_WPF\ReCodeItGUI_WPF.csproj", "{86142D6E-DE7E-48A7-9905-55D3ECE377AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FDA58DB6-E114-4FE0-AAF1-C3DEE44AEF99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA58DB6-E114-4FE0-AAF1-C3DEE44AEF99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDA58DB6-E114-4FE0-AAF1-C3DEE44AEF99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86142D6E-DE7E-48A7-9905-55D3ECE377AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86142D6E-DE7E-48A7-9905-55D3ECE377AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86142D6E-DE7E-48A7-9905-55D3ECE377AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86142D6E-DE7E-48A7-9905-55D3ECE377AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
