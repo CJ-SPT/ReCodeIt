@@ -67,9 +67,9 @@
     },
     "CrossPatching": {
         "OriginalAssemblyPath": "",                                     // The path to the original assembly to use as a reference, for unity games its 'Assembly-CSharp.dll' from the games Data/Managed Folder
-        "TargetProjectAssemblyBuildPath": "",                           // The build path of your project, specifically the absolute path of your projects assembly.
         "ReferencePath": "",                                            // Where should the new reference dll be placed? (This is the remapped one you reference in your project)
         "MappingPath": "./Data/Mappings.jsonc",                         // Path to the mapping file
+        "TargetProjectAssemblyBuildPath": "",                           // The build path of your project, specifically the absolute path of your projects output assembly.
         "OutputPath": ""                                                // Where should the final cross patched dll be placed? (This is the one you test/distribute with)
     }
 }
