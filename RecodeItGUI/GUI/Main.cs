@@ -788,4 +788,9 @@ public partial class ReCodeItForm : Form
             RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
         }
     }
+
+    private void ForceRenameCheckbox_CheckedChanged(object sender, EventArgs e)
+    {
+
+    }
 }
