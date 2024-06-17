@@ -400,10 +400,10 @@ public partial class ReCodeItForm : Form
         // Remapper page
         TargetAssemblyPath.Text = DataProvider.Settings.Remapper.AssemblyPath;
         RemapperOutputDirectoryPath.Text = DataProvider.Settings.Remapper.OutputPath;
-        RenameFieldsCheckbox.Checked = DataProvider.Settings.Remapper.RenameFields;
-        RenamePropertiesCheckbox.Checked = DataProvider.Settings.Remapper.RenameProperties;
-        RemapperPublicicize.Checked = DataProvider.Settings.Remapper.Publicize;
-        RemapperUnseal.Checked = DataProvider.Settings.Remapper.Unseal;
+        RenameFieldsCheckbox.Checked = DataProvider.Settings.Remapper.MappingSettings.RenameFields;
+        RenamePropertiesCheckbox.Checked = DataProvider.Settings.Remapper.MappingSettings.RenameProperties;
+        RemapperPublicicize.Checked = DataProvider.Settings.Remapper.MappingSettings.Publicize;
+        RemapperUnseal.Checked = DataProvider.Settings.Remapper.MappingSettings.Unseal;
     }
 
     #region SETTINGS_BUTTONS
@@ -454,13 +454,13 @@ public partial class ReCodeItForm : Form
 
     private void PublicizeCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.Remapper.Publicize = PublicizeCheckbox.Checked;
+        DataProvider.Settings.Remapper.MappingSettings.Publicize = PublicizeCheckbox.Checked;
         DataProvider.SaveAppSettings();
     }
 
     private void UnsealCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.Remapper.Unseal = UnsealCheckbox.Checked;
+        DataProvider.Settings.Remapper.MappingSettings.Unseal = UnsealCheckbox.Checked;
         DataProvider.SaveAppSettings();
     }
 
@@ -489,10 +489,10 @@ public partial class ReCodeItForm : Form
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
         AutoMapperMinLengthUpDown.Value = DataProvider.Settings.AutoMapper.MinLengthToMatch;
         AutoMapperSearchMethodsCheckBox.Checked = DataProvider.Settings.AutoMapper.SearchMethods;
-        AutoMapperRenameFields.Checked = DataProvider.Settings.AutoMapper.RenameFields;
-        AutoMapperRenameProps.Checked = DataProvider.Settings.AutoMapper.RenameProperties;
-        AutoMapperPublicize.Checked = DataProvider.Settings.AutoMapper.Publicize;
-        AutoMapperUnseal.Checked = DataProvider.Settings.AutoMapper.Unseal;
+        AutoMapperRenameFields.Checked = DataProvider.Settings.AutoMapper.MappingSettings.RenameFields;
+        AutoMapperRenameProps.Checked = DataProvider.Settings.AutoMapper.MappingSettings.RenameProperties;
+        AutoMapperPublicize.Checked = DataProvider.Settings.AutoMapper.MappingSettings.Publicize;
+        AutoMapperUnseal.Checked = DataProvider.Settings.AutoMapper.MappingSettings.Unseal;
 
         foreach (var type in DataProvider.Settings.AutoMapper.TypesToIgnore)
         {
@@ -633,25 +633,25 @@ public partial class ReCodeItForm : Form
 
     private void AutoMapperRenameFields_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AutoMapper.RenameFields = AutoMapperRenameFields.Checked;
+        DataProvider.Settings.AutoMapper.MappingSettings.RenameFields = AutoMapperRenameFields.Checked;
         DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperRenameProps_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AutoMapper.RenameProperties = AutoMapperRenameProps.Checked;
+        DataProvider.Settings.AutoMapper.MappingSettings.RenameProperties = AutoMapperRenameProps.Checked;
         DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperPublicize_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AutoMapper.Publicize = AutoMapperPublicize.Checked;
+        DataProvider.Settings.AutoMapper.MappingSettings.Publicize = AutoMapperPublicize.Checked;
         DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperUnseal_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AutoMapper.Unseal = AutoMapperUnseal.Checked;
+        DataProvider.Settings.AutoMapper.MappingSettings.Unseal = AutoMapperUnseal.Checked;
         DataProvider.SaveAppSettings();
     }
 

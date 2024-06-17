@@ -7,10 +7,12 @@
         "AssemblyPath": "./Data/Managed/Assembly-CSharp.dll",           // Path to the assembly we want to remap
         "OutputPath": "./Data/Assembly-CSharp-Remapped.dll",            // Path including the filename and extension we want to write the changes to
         "MappingPath": "./Data/Mappings.jsonc",                         // Path to the mapping file     
-        "RenameFields": true,                                           // Names of fields of the matched type will be renamed to the type name with approproiate convention
-        "RenameProperties": true,                                       // Names of properties of the matched type will be renamed to the type name with approproiate convention
-        "Publicize": true,                                              // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
-        "Unseal": true                                                  // Unseal all types : NOTE: Not run until after the remap has completed
+        "MappingSettings": {
+            "RenameFields": true,                                       // Names of fields of the matched type will be renamed to the type name with approproiate convention
+            "RenameProperties": true,                                   // Names of properties of the matched type will be renamed to the type name with approproiate convention
+            "Publicize": true,                                          // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
+            "Unseal": true                                              // Unseal all types : NOTE: Not run until after the remap has completed
+        }
     },
     "AutoMapper": {
         "AssemblyPath": "./Data/Managed/Assembly-CSharp.dll",           // Path to the assembly we want to remap
@@ -18,10 +20,12 @@
         "RequiredMatches": 5,                                           // Minimum number of times a member must have this name in the assembly before considering it for remapping
         "MinLengthToMatch": 7,                                          // Minimum length of the field/property name in code before it will be considered for a rename
         "SearchMethods": true,                                          // Will attempt to map types from method meta data and parameters
-        "RenameFields": true,                                           // Names of fields of the matched type will be renamed to the type name with approproiate convention
-        "RenameProperties": true,                                       // Names of properties of the matched type will be renamed to the type name with approproiate convention
-        "Publicize": true,                                              // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
-        "Unseal": true,                                                 // Unseal all types : NOTE: Not run until after the remap has completed
+        "MappingSettings": {
+            "RenameFields": true,                                       // Names of fields of the matched type will be renamed to the type name with approproiate convention
+            "RenameProperties": true,                                   // Names of properties of the matched type will be renamed to the type name with approproiate convention
+            "Publicize": true,                                          // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
+            "Unseal": true                                              // Unseal all types : NOTE: Not run until after the remap has completed
+        },
         "TypesToIgnore": [                                              // Any member name you want to ignore while iterating through the assembly
             "Boolean",
             "List",
@@ -60,5 +64,12 @@
         ],
         "MethodParamaterBlackList": [                                   // method parameter names to ignore in the automap, these are case sanitized so case does not matter
         ]
+    },
+    "CrossPatching": {
+        "OriginalAssemblyPath": "",                                     // The path to the original assembly to use as a reference, for unity games its 'Assembly-CSharp.dll' from the games Data/Managed Folder
+        "TargetProjectAssemblyBuildPath": "",                           // The build path of your project, specifically the absolute path of your projects assembly.
+        "ReferencePath": "",                                            // Where should the new reference dll be placed? (This is the remapped one you reference in your project)
+        "MappingPath": "./Data/Mappings.jsonc",                         // Path to the mapping file
+        "OutputPath": ""                                                // Where should the final cross patched dll be placed? (This is the one you test/distribute with)
     }
 }

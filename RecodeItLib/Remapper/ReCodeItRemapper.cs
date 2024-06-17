@@ -41,12 +41,12 @@ public class ReCodeItRemapper
         ChooseBestMatches();
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
-        if (!Settings.Publicize)
+        if (!Settings.MappingSettings.Publicize)
         {
             Publicizer.Publicize();
         }
 
-        if (!Settings.Unseal)
+        if (!Settings.MappingSettings.Unseal)
         {
             Publicizer.Unseal();
         }
@@ -63,8 +63,8 @@ public class ReCodeItRemapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
         Logger.Log($"Starting remap...", ConsoleColor.Yellow);
         Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
-        Logger.Log($"Publicize: {Settings.Publicize}", ConsoleColor.Yellow);
-        Logger.Log($"Unseal: {Settings.Unseal}", ConsoleColor.Yellow);
+        Logger.Log($"Publicize: {Settings.MappingSettings.Publicize}", ConsoleColor.Yellow);
+        Logger.Log($"Unseal: {Settings.MappingSettings.Unseal}", ConsoleColor.Yellow);
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
