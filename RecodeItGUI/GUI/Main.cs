@@ -18,6 +18,7 @@ public partial class ReCodeItForm : Form
     public ReCodeItForm()
     {
         InitializeComponent();
+        DataProvider.LoadMappingFile(DataProvider.Settings.Remapper.MappingPath);
         PopulateDomainUpDowns();
         RefreshSettingsPage();
         RefreshAutoMapperPage();
@@ -26,6 +27,8 @@ public partial class ReCodeItForm : Form
         Remapper.OnComplete += ReloadTreeView;
         ReloadTreeView(this, EventArgs.Empty);
     }
+
+    #region MANUAL_REMAPPER
 
     #region BUTTONS
 
@@ -50,7 +53,7 @@ public partial class ReCodeItForm : Form
             FailureReason = EFailureReason.None,
             NewTypeName = NewTypeName.Text,
             OriginalTypeName = OriginalTypeName.Text == string.Empty ? null : OriginalTypeName.Text,
-            UseForceRename = ForceRenameCheckbox.Checked,
+            UseForceRename = RemapperUseForceRename.Checked,
             SearchParams = new SearchParams
             {
                 IsPublic = IsPublicUpDown.GetEnabled(),
@@ -135,9 +138,9 @@ public partial class ReCodeItForm : Form
     {
         if (ReCodeItRemapper.IsRunning) { return; }
 
-        if (string.IsNullOrEmpty(DataProvider.Settings.AppSettings.AssemblyPath))
+        if (string.IsNullOrEmpty(DataProvider.Settings.Remapper.AssemblyPath))
         {
-            MessageBox.Show("Please go to the settings tab and load an assembly and select and output location", "Assembly not loaded");
+            MessageBox.Show("Please select an assembly path", "Assembly not loaded");
             return;
         }
 
@@ -155,7 +158,7 @@ public partial class ReCodeItForm : Form
             MessageBoxIcon.Exclamation,
             MessageBoxDefaultButton.Button2) == DialogResult.Yes)
         {
-            DataProvider.SaveMapping();
+            DataProvider.SaveMapping(DataProvider.Settings.Remapper.MappingPath);
         }
     }
 
@@ -178,6 +181,37 @@ public partial class ReCodeItForm : Form
         foreach (var remap in DataProvider.Remaps)
         {
             RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
+        }
+    }
+
+    private void PickAssemblyPathButton_Click_1(object sender, EventArgs e)
+    {
+        OpenFileDialog fDialog = new()
+        {
+            Title = "Select a DLL file",
+            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
+            Multiselect = false
+        };
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            DataProvider.Settings.Remapper.AssemblyPath = fDialog.FileName;
+            DataProvider.LoadAssemblyDefinition(fDialog.FileName);
+            TargetAssemblyPath.Text = fDialog.FileName;
+        }
+    }
+
+    private void OutputDirectoryButton_Click_1(object sender, EventArgs e)
+    {
+        using FolderBrowserDialog fDialog = new();
+
+        fDialog.Description = "Select a directory";
+        fDialog.ShowNewFolderButton = true;
+
+        if (fDialog.ShowDialog() == DialogResult.OK)
+        {
+            DataProvider.Settings.Remapper.OutputPath = fDialog.SelectedPath;
+            RemapperOutputDirectoryPath.Text = fDialog.SelectedPath;
         }
     }
 
@@ -341,7 +375,7 @@ public partial class ReCodeItForm : Form
 
     private void RunAutoRemapButton_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(DataProvider.Settings.AppSettings.AssemblyPath))
+        if (string.IsNullOrEmpty(DataProvider.Settings.AutoMapper.AssemblyPath))
         {
             MessageBox.Show("Please go to the settings tab and load an assembly and select and output location", "Assembly not loaded");
             return;
@@ -354,21 +388,23 @@ public partial class ReCodeItForm : Form
 
     #endregion BUTTONS
 
+    #endregion MANUAL_REMAPPER
+
     #region SETTINGS_TAB
 
     public void RefreshSettingsPage()
     {
-        AssemblyPathTextBox.Text = DataProvider.Settings.AppSettings.AssemblyPath;
-        OutputPathTextBox.Text = DataProvider.Settings.AppSettings.OutputPath;
-        MappingPathTextBox.Text = DataProvider.Settings.AppSettings.MappingPath;
-        AssemblyPathTextBox.Text = DataProvider.Settings.AppSettings.NameMangledPath;
-
+        // Settings page
         DebugLoggingCheckbox.Checked = DataProvider.Settings.AppSettings.Debug;
         SilentModeCheckbox.Checked = DataProvider.Settings.AppSettings.SilentMode;
-        RenameFieldsCheckbox.Checked = DataProvider.Settings.AppSettings.RenameFields;
-        RenamePropertiesCheckbox.Checked = DataProvider.Settings.AppSettings.RenameProperties;
-        PublicizeCheckbox.Checked = DataProvider.Settings.AppSettings.Publicize;
-        UnsealCheckbox.Checked = DataProvider.Settings.AppSettings.Unseal;
+
+        // Remapper page
+        TargetAssemblyPath.Text = DataProvider.Settings.Remapper.AssemblyPath;
+        RemapperOutputDirectoryPath.Text = DataProvider.Settings.Remapper.OutputPath;
+        RenameFieldsCheckbox.Checked = DataProvider.Settings.Remapper.RenameFields;
+        RenamePropertiesCheckbox.Checked = DataProvider.Settings.Remapper.RenameProperties;
+        RemapperPublicicize.Checked = DataProvider.Settings.Remapper.Publicize;
+        RemapperUnseal.Checked = DataProvider.Settings.Remapper.Unseal;
 
         AutoMapperTypesExcludeBox.Items.Clear();
         foreach (var method in DataProvider.Settings.AutoMapper.TypesToIgnore)
@@ -376,43 +412,11 @@ public partial class ReCodeItForm : Form
             AutoMapperTypesExcludeBox.Items.Add(method);
         }
 
-        MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
         AutoMapperMinLengthUpDown.Value = DataProvider.Settings.AutoMapper.MinLengthToMatch;
     }
 
     #region SETTINGS_BUTTONS
-
-    private void PickAssemblyPathButton_Click(object sender, EventArgs e)
-    {
-        OpenFileDialog fDialog = new()
-        {
-            Title = "Select a DLL file",
-            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
-            Multiselect = false
-        };
-
-        if (fDialog.ShowDialog() == DialogResult.OK)
-        {
-            DataProvider.Settings.AppSettings.AssemblyPath = fDialog.FileName;
-            DataProvider.LoadAssemblyDefinition();
-            AssemblyPathTextBox.Text = fDialog.FileName;
-        }
-    }
-
-    private void OutputDirectoryButton_Click(object sender, EventArgs e)
-    {
-        using FolderBrowserDialog fDialog = new();
-
-        fDialog.Description = "Select a directory";
-        fDialog.ShowNewFolderButton = true;
-
-        if (fDialog.ShowDialog() == DialogResult.OK)
-        {
-            DataProvider.Settings.AppSettings.OutputPath = fDialog.SelectedPath;
-            OutputPathTextBox.Text = fDialog.SelectedPath;
-        }
-    }
 
     private void MappingChooseButton_Click(object sender, EventArgs e)
     {
@@ -427,23 +431,6 @@ public partial class ReCodeItForm : Form
         {
             DataProvider.LoadMappingFile(fDialog.FileName);
             MappingPathTextBox.Text = fDialog.FileName;
-        }
-    }
-
-    private void PickNameMangledPathButton_Click(object sender, EventArgs e)
-    {
-        OpenFileDialog fDialog = new()
-        {
-            Title = "Select a DLL file",
-            Filter = "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*",
-            Multiselect = false
-        };
-
-        if (fDialog.ShowDialog() == DialogResult.OK)
-        {
-            DataProvider.Settings.AppSettings.NameMangledPath = fDialog.FileName;
-            DataProvider.LoadAssemblyDefinition(true);
-            AssemblyPathTextBox.Text = fDialog.FileName;
         }
     }
 
@@ -477,25 +464,19 @@ public partial class ReCodeItForm : Form
 
     private void PublicizeCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.Publicize = PublicizeCheckbox.Checked;
+        DataProvider.Settings.Remapper.Publicize = PublicizeCheckbox.Checked;
         DataProvider.SaveAppSettings();
     }
 
     private void UnsealCheckbox_CheckedChanged(object sender, EventArgs e)
     {
-        DataProvider.Settings.AppSettings.Unseal = UnsealCheckbox.Checked;
+        DataProvider.Settings.Remapper.Unseal = UnsealCheckbox.Checked;
         DataProvider.SaveAppSettings();
     }
 
     #endregion CHECKBOXES
 
     #region UPDOWNS
-
-    private void MaxMatchCountUpDown_ValueChanged(object sender, EventArgs e)
-    {
-        DataProvider.Settings.Remapper.MaxMatchCount = (int)MaxMatchCountUpDown.Value;
-        DataProvider.SaveAppSettings();
-    }
 
     private void AutoMapperRequiredMatchesUpDown_ValueChanged(object sender, EventArgs e)
     {
@@ -515,7 +496,6 @@ public partial class ReCodeItForm : Form
         AutoMapperTokensBox.Items.Clear();
         AutoMapperFPBox.Items.Clear();
 
-        MaxMatchCountUpDown.Value = DataProvider.Settings.Remapper.MaxMatchCount;
         AutoMapperRequiredMatchesUpDown.Value = DataProvider.Settings.AutoMapper.RequiredMatches;
         AutoMapperSearchMethodsCheckBox.Checked = DataProvider.Settings.AutoMapper.SearchMethods;
 
@@ -657,7 +637,7 @@ public partial class ReCodeItForm : Form
 
         // Check boxes
 
-        ForceRenameCheckbox.Checked = false;
+        RemapperUseForceRename.Checked = false;
         ConstructorCountEnabled.Checked = false;
         MethodCountEnabled.Checked = false;
         FieldCountEnabled.Checked = false;
@@ -691,7 +671,7 @@ public partial class ReCodeItForm : Form
 
         NewTypeName.Text = remap.NewTypeName;
         OriginalTypeName.Text = remap.OriginalTypeName;
-        ForceRenameCheckbox.Checked = remap.UseForceRename;
+        RemapperUseForceRename.Checked = remap.UseForceRename;
 
         BaseClassIncludeTextFIeld.Text = remap.SearchParams.MatchBaseClass;
         BaseClassExcludeTextField.Text = remap.SearchParams.IgnoreBaseClass;
@@ -787,10 +767,5 @@ public partial class ReCodeItForm : Form
         {
             RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
         }
-    }
-
-    private void ForceRenameCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-
     }
 }

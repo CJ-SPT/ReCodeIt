@@ -39,7 +39,7 @@ public class ReCodeItAutoMapper
         AllTypes = [];
         AlreadyChangedNames = [];
 
-        DataProvider.LoadAssemblyDefinition();
+        DataProvider.LoadAssemblyDefinition(Settings.AssemblyPath);
 
         Error = false;
         FailureCount = 0;
@@ -524,7 +524,7 @@ public class ReCodeItAutoMapper
 
     private void WriteChanges()
     {
-        var path = DataProvider.WriteAssemblyDefinition();
+        var path = DataProvider.WriteAssemblyDefinition(Settings.OutputPath);
 
         var fieldCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
         var propertyCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();

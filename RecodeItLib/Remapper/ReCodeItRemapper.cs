@@ -17,12 +17,14 @@ public class ReCodeItRemapper
 
     private static readonly Stopwatch Stopwatch = new();
 
+    private RemapperSettings Settings => DataProvider.Settings.Remapper;
+
     /// <summary>
     /// Start the remapping process
     /// </summary>
     public void InitializeRemap()
     {
-        DataProvider.LoadAssemblyDefinition();
+        DataProvider.LoadAssemblyDefinition(Settings.AssemblyPath);
 
         IsRunning = true;
         DisplayBasicModuleInformation();
@@ -39,12 +41,12 @@ public class ReCodeItRemapper
         ChooseBestMatches();
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
-        if (!DataProvider.Settings.AppSettings.Publicize)
+        if (!Settings.Publicize)
         {
             Publicizer.Publicize();
         }
 
-        if (!DataProvider.Settings.AppSettings.Unseal)
+        if (!Settings.Unseal)
         {
             Publicizer.Unseal();
         }
@@ -61,8 +63,8 @@ public class ReCodeItRemapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
         Logger.Log($"Starting remap...", ConsoleColor.Yellow);
         Logger.Log($"Module contains {DataProvider.ModuleDefinition.Types.Count} Types", ConsoleColor.Yellow);
-        Logger.Log($"Publicize: {DataProvider.Settings.AppSettings.Publicize}", ConsoleColor.Yellow);
-        Logger.Log($"Unseal: {DataProvider.Settings.AppSettings.Unseal}", ConsoleColor.Yellow);
+        Logger.Log($"Publicize: {Settings.Publicize}", ConsoleColor.Yellow);
+        Logger.Log($"Unseal: {Settings.Unseal}", ConsoleColor.Yellow);
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
@@ -203,8 +205,7 @@ public class ReCodeItRemapper
         if (scores.Count == 0) { return; }
 
         var filteredScores = scores
-            .OrderByDescending(score => score.Score)
-            .Take(DataProvider.Settings.Remapper.MaxMatchCount);
+            .OrderByDescending(score => score.Score);
 
         var highestScore = filteredScores.FirstOrDefault();
 
@@ -238,7 +239,7 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
-        var path = DataProvider.WriteAssemblyDefinition(true);
+        var path = DataProvider.WriteAssemblyDefinition(Settings.OutputPath);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
@@ -257,7 +258,7 @@ public class ReCodeItRemapper
         Logger.Log("Reloading assembly definitions", ConsoleColor.Yellow);
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
 
-        DataProvider.LoadAssemblyDefinition();
+        DataProvider.LoadAssemblyDefinition(Settings.AssemblyPath);
         DataProvider.ScoringModels = [];
 
         Stopwatch.Reset();

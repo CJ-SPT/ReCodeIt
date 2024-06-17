@@ -64,18 +64,14 @@ public static class DataProvider
         File.WriteAllText(settingsPath, jsonText);
     }
 
-    public static void LoadMappingFile(string path = "")
+    public static void LoadMappingFile(string path)
     {
-        if (!File.Exists(Settings.AppSettings.MappingPath))
+        if (!File.Exists(path))
         {
-            throw new InvalidOperationException($"path `{Settings.AppSettings.MappingPath}` does not exist...");
+            Logger.Log($"Error loading mapping.json from `{path}`, First time running? Please select a mapping path");
         }
 
-        var fpath = path == string.Empty
-            ? Settings.AppSettings.MappingPath
-            : path;
-
-        var jsonText = File.ReadAllText(fpath);
+        var jsonText = File.ReadAllText(path);
 
         Remaps = [];
         ScoringModels = [];
@@ -95,10 +91,10 @@ public static class DataProvider
             }
         }
 
-        Logger.Log($"Mapping file loaded from '{Settings.AppSettings.MappingPath}'");
+        Logger.Log($"Mapping file loaded from '{path}' containing {Remaps.Count} remaps");
     }
 
-    public static void SaveMapping()
+    public static void SaveMapping(string path)
     {
         JsonSerializerSettings settings = new()
         {
@@ -108,14 +104,14 @@ public static class DataProvider
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
-        File.WriteAllText(Settings.AppSettings.MappingPath, jsonText);
+        File.WriteAllText(path, jsonText);
     }
 
-    public static void UpdateMapping()
+    public static void UpdateMapping(string path)
     {
-        if (!File.Exists(Settings.AppSettings.MappingPath))
+        if (!File.Exists(path))
         {
-            throw new FileNotFoundException($"path `{Settings.AppSettings.MappingPath}` does not exist...");
+            throw new FileNotFoundException($"path `{path}` does not exist...");
         }
 
         JsonSerializerSettings settings = new()
@@ -143,19 +139,17 @@ public static class DataProvider
 
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
-        File.WriteAllText(Settings.AppSettings.MappingPath, jsonText);
+        File.WriteAllText(path, jsonText);
 
-        Logger.Log($"Mapping file saved to {Settings.AppSettings.MappingPath}");
+        Logger.Log($"Mapping file saved to {path}");
     }
 
-    public static void LoadAssemblyDefinition(bool nameMangled = false)
+    public static void LoadAssemblyDefinition(string path)
     {
         AssemblyDefinition = null;
         ModuleDefinition = null;
 
         DefaultAssemblyResolver resolver = new();
-
-        var path = nameMangled == false ? Settings.AppSettings.AssemblyPath : Settings.AppSettings.NameMangledPath;
 
         resolver.AddSearchDirectory(Path.GetDirectoryName(path)); // Replace with the correct path : (6/14) I have no idea what I met by that
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
@@ -169,36 +163,26 @@ public static class DataProvider
             throw new NullReferenceException("AssemblyDefinition was null...");
         }
 
-        var fileName = Path.GetFileName(Settings.AppSettings.AssemblyPath);
+        var fileName = Path.GetFileName(path);
 
         foreach (var module in assemblyDefinition.Modules.ToArray())
         {
             if (module.Name == fileName)
             {
-                Logger.Log($"Module definition {module.Name} found'");
-
-                if (nameMangled)
-                {
-                    NameMangledAssemblyDefinition = assemblyDefinition;
-                    NameMangledModuleDefinition = module;
-                    return;
-                }
+                Logger.Log($"Module definition {module.Name} found");
 
                 AssemblyDefinition = assemblyDefinition;
                 ModuleDefinition = module;
+                return;
             }
         }
 
-        if (nameMangled)
-        {
-        }
-
-        Logger.Log($"Module `{fileName}` not found in assembly {fileName}");
+        Logger.Log($"Module {fileName} not found in assembly {fileName}");
     }
 
-    public static string WriteAssemblyDefinition(bool updateMapping = false)
+    public static string WriteAssemblyDefinition(string path)
     {
-        var filename = Path.GetFileNameWithoutExtension(Settings.AppSettings.AssemblyPath);
+        var filename = Path.GetFileNameWithoutExtension(path);
         var strippedPath = Path.GetDirectoryName(filename);
 
         filename = $"{filename}-Remapped.dll";
@@ -206,11 +190,6 @@ public static class DataProvider
         var remappedPath = Path.Combine(strippedPath, filename);
 
         AssemblyDefinition.Write(remappedPath);
-
-        if (updateMapping)
-        {
-            UpdateMapping();
-        }
 
         return remappedPath;
     }
