@@ -266,7 +266,7 @@ internal static class GUIHelpers
     /// Opens and returns a path from a folder dialogue
     /// </summary>
     /// <param name="description"></param>
-    /// <returns></returns>
+    /// <returns>Path if selected, or empty string</returns>
     public static string OpenFolderDialog(string description)
     {
         using FolderBrowserDialog fDialog = new();
