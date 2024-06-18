@@ -3,9 +3,9 @@ using Mono.Collections.Generic;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
-using ReCodeItLib.Utils;
+using ReCodeIt.Utils;
 
-namespace ReCodeItLib.AutoMapper;
+namespace ReCodeIt.AutoMapper;
 
 public class ReCodeItAutoMapper
 {

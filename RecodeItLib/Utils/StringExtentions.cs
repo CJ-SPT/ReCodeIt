@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ReCodeItLib.Utils;
+namespace ReCodeIt.Utils;
 
 internal static class StringExtentions
 {

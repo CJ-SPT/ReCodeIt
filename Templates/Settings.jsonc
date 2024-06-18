@@ -65,10 +65,10 @@
         "MethodParamaterBlackList": [                                   // method parameter names to ignore in the automap, these are case sanitized so case does not matter
         ]
     },
-    "CrossPatching": {
+    "CrossCompiler": {
         "OriginalAssemblyPath": "G:\\3.8.0 - Dev\\EscapeFromTarkov_Data\\Managed\\Assembly-CSharp.dll",                                // INPUT:               The path to the original assembly to use as a reference, for unity games its 'Assembly-CSharp.dll' from the games Data/Managed Folder
         "RemappedOutput": "G:\\development\\SPT-MODS\\StashSearch\\dependencies\\Assembly-CSharp.dll",                                 // OUTPUT:              The output path of the remapped assembly
-        "ReversePatchInputPath": "G:\\development\\SPT-MODS\\StashSearch\\StashSearch\\bin\\Debug\\net472\\StashSearch.dll",           // INPUT:               The input path of the assembly referenced by the remapped dll
-        "ReversePatchOutputPath": "G:\\3.8.0 - Dev\\BepInEx\\Plugins\\StashSearch\\StashSearch.dll"                                    // OUTPUT/TEST/PROD:    Where should the de-patched dll be placed? (This is the one you test/distribute with)
+        "VisualStudioSolutionDirectory": "G:\\development\\SPT-MODS\\StashSearch",                                                     // INPUT:               This is your solution directory of the project
+        "BuildDirectory": "G:\\development\\SPT-MODS\\StashSearch\\Build"                                                              // OUTPUT/TEST/PROD:    This is the final build location of your dll
     }
 }

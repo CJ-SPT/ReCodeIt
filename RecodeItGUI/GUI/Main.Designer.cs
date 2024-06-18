@@ -31,6 +31,7 @@ partial class ReCodeItForm
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        LoadedMappingFilePath = new TextBox();
         RemapperUseForceRename = new CheckBox();
         RemapperUnseal = new CheckBox();
         RemapperPublicicize = new CheckBox();
@@ -38,13 +39,11 @@ partial class ReCodeItForm
         TargetAssemblyPath = new TextBox();
         RenamePropertiesCheckbox = new CheckBox();
         OutputDirectoryButton = new Button();
-        EditRemapButton = new Button();
         PickAssemblyPathButton = new Button();
         ConstuctorCountUpDown = new NumericUpDown();
         RenameFieldsCheckbox = new CheckBox();
         ConstructorCountEnabled = new CheckBox();
         LoadMappingFileButton = new Button();
-        SaveMappingFileButton = new Button();
         RunRemapButton = new Button();
         Inclusions = new TabControl();
         tabPage1 = new TabPage();
@@ -142,20 +141,23 @@ partial class ReCodeItForm
         tabPage5 = new TabPage();
         groupBox4 = new GroupBox();
         CrossPatchRunButton = new Button();
-        CrossMapperProjectBuildPath = new TextBox();
-        CrossPatchingProjectBuildDirButton = new Button();
-        CrossMapperProjTargetAssembly = new TextBox();
-        CrossMappingOutputChooseButton = new Button();
         groupBox3 = new GroupBox();
+        CrossCompilerNewProjectButton = new Button();
         CrossPatchRemapOutputButton = new Button();
         CrossMapperReferencePath = new TextBox();
-        CrossPatchRemapButton = new Button();
         CrossMapperOriginalAssembly = new TextBox();
+        CrossMapperProjectBuildPath = new TextBox();
+        CrossPatchingProjectBuildDirButton = new Button();
         CrossPatchingOrigAssemblyButton = new Button();
+        CrossMapperProjTargetAssembly = new TextBox();
+        CrossMappingOutputChooseButton = new Button();
+        CrossPatchRemapButton = new Button();
         SettingsTab = new TabPage();
         groupBox2 = new GroupBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
+        CrossCompilerProjectComboBox = new ComboBox();
+        label1 = new Label();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -201,6 +203,7 @@ partial class ReCodeItForm
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(LoadedMappingFilePath);
         groupBox1.Controls.Add(RemapperUseForceRename);
         groupBox1.Controls.Add(RemapperUnseal);
         groupBox1.Controls.Add(RemapperPublicicize);
@@ -208,13 +211,11 @@ partial class ReCodeItForm
         groupBox1.Controls.Add(TargetAssemblyPath);
         groupBox1.Controls.Add(RenamePropertiesCheckbox);
         groupBox1.Controls.Add(OutputDirectoryButton);
-        groupBox1.Controls.Add(EditRemapButton);
         groupBox1.Controls.Add(PickAssemblyPathButton);
         groupBox1.Controls.Add(ConstuctorCountUpDown);
         groupBox1.Controls.Add(RenameFieldsCheckbox);
         groupBox1.Controls.Add(ConstructorCountEnabled);
         groupBox1.Controls.Add(LoadMappingFileButton);
-        groupBox1.Controls.Add(SaveMappingFileButton);
         groupBox1.Controls.Add(RunRemapButton);
         groupBox1.Controls.Add(Inclusions);
         groupBox1.Controls.Add(NewTypeName);
@@ -248,12 +249,22 @@ partial class ReCodeItForm
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
         // 
+        // LoadedMappingFilePath
+        // 
+        LoadedMappingFilePath.BackColor = SystemColors.ScrollBar;
+        LoadedMappingFilePath.Location = new Point(448, 514);
+        LoadedMappingFilePath.Name = "LoadedMappingFilePath";
+        LoadedMappingFilePath.PlaceholderText = "Loaded Mapping File";
+        LoadedMappingFilePath.ReadOnly = true;
+        LoadedMappingFilePath.Size = new Size(297, 31);
+        LoadedMappingFilePath.TabIndex = 38;
+        // 
         // RemapperUseForceRename
         // 
         RemapperUseForceRename.AutoSize = true;
         RemapperUseForceRename.Checked = true;
         RemapperUseForceRename.CheckState = CheckState.Checked;
-        RemapperUseForceRename.Location = new Point(580, 194);
+        RemapperUseForceRename.Location = new Point(577, 190);
         RemapperUseForceRename.Name = "RemapperUseForceRename";
         RemapperUseForceRename.Size = new Size(149, 29);
         RemapperUseForceRename.TabIndex = 37;
@@ -265,7 +276,7 @@ partial class ReCodeItForm
         RemapperUnseal.AutoSize = true;
         RemapperUnseal.Checked = true;
         RemapperUnseal.CheckState = CheckState.Checked;
-        RemapperUnseal.Location = new Point(580, 334);
+        RemapperUnseal.Location = new Point(577, 330);
         RemapperUnseal.Name = "RemapperUnseal";
         RemapperUnseal.Size = new Size(90, 29);
         RemapperUnseal.TabIndex = 36;
@@ -277,7 +288,7 @@ partial class ReCodeItForm
         RemapperPublicicize.AutoSize = true;
         RemapperPublicicize.Checked = true;
         RemapperPublicicize.CheckState = CheckState.Checked;
-        RemapperPublicicize.Location = new Point(580, 299);
+        RemapperPublicicize.Location = new Point(577, 295);
         RemapperPublicicize.Name = "RemapperPublicicize";
         RemapperPublicicize.Size = new Size(106, 29);
         RemapperPublicicize.TabIndex = 35;
@@ -287,7 +298,7 @@ partial class ReCodeItForm
         // RemapperOutputDirectoryPath
         // 
         RemapperOutputDirectoryPath.BackColor = SystemColors.ScrollBar;
-        RemapperOutputDirectoryPath.Location = new Point(10, 106);
+        RemapperOutputDirectoryPath.Location = new Point(10, 70);
         RemapperOutputDirectoryPath.Name = "RemapperOutputDirectoryPath";
         RemapperOutputDirectoryPath.PlaceholderText = "Output Directory";
         RemapperOutputDirectoryPath.ReadOnly = true;
@@ -297,7 +308,7 @@ partial class ReCodeItForm
         // TargetAssemblyPath
         // 
         TargetAssemblyPath.BackColor = SystemColors.ScrollBar;
-        TargetAssemblyPath.Location = new Point(10, 69);
+        TargetAssemblyPath.Location = new Point(10, 33);
         TargetAssemblyPath.Name = "TargetAssemblyPath";
         TargetAssemblyPath.PlaceholderText = "Target Assembly";
         TargetAssemblyPath.ReadOnly = true;
@@ -309,7 +320,7 @@ partial class ReCodeItForm
         RenamePropertiesCheckbox.AutoSize = true;
         RenamePropertiesCheckbox.Checked = true;
         RenamePropertiesCheckbox.CheckState = CheckState.Checked;
-        RenamePropertiesCheckbox.Location = new Point(580, 264);
+        RenamePropertiesCheckbox.Location = new Point(577, 260);
         RenamePropertiesCheckbox.Name = "RenamePropertiesCheckbox";
         RenamePropertiesCheckbox.Size = new Size(186, 29);
         RenamePropertiesCheckbox.TabIndex = 28;
@@ -318,7 +329,7 @@ partial class ReCodeItForm
         // 
         // OutputDirectoryButton
         // 
-        OutputDirectoryButton.Location = new Point(312, 104);
+        OutputDirectoryButton.Location = new Point(312, 68);
         OutputDirectoryButton.Name = "OutputDirectoryButton";
         OutputDirectoryButton.Size = new Size(112, 34);
         OutputDirectoryButton.TabIndex = 32;
@@ -326,20 +337,9 @@ partial class ReCodeItForm
         OutputDirectoryButton.UseVisualStyleBackColor = true;
         OutputDirectoryButton.Click += OutputDirectoryButton_Click_1;
         // 
-        // EditRemapButton
-        // 
-        EditRemapButton.BackColor = SystemColors.ButtonShadow;
-        EditRemapButton.Location = new Point(580, 114);
-        EditRemapButton.Name = "EditRemapButton";
-        EditRemapButton.Size = new Size(168, 34);
-        EditRemapButton.TabIndex = 21;
-        EditRemapButton.Text = "Edit Remap";
-        EditRemapButton.UseVisualStyleBackColor = false;
-        EditRemapButton.Click += EditRemapButton_Click;
-        // 
         // PickAssemblyPathButton
         // 
-        PickAssemblyPathButton.Location = new Point(313, 66);
+        PickAssemblyPathButton.Location = new Point(313, 30);
         PickAssemblyPathButton.Name = "PickAssemblyPathButton";
         PickAssemblyPathButton.Size = new Size(112, 34);
         PickAssemblyPathButton.TabIndex = 31;
@@ -350,7 +350,7 @@ partial class ReCodeItForm
         // ConstuctorCountUpDown
         // 
         ConstuctorCountUpDown.BackColor = SystemColors.ScrollBar;
-        ConstuctorCountUpDown.Location = new Point(224, 295);
+        ConstuctorCountUpDown.Location = new Point(224, 259);
         ConstuctorCountUpDown.Name = "ConstuctorCountUpDown";
         ConstuctorCountUpDown.Size = new Size(55, 31);
         ConstuctorCountUpDown.TabIndex = 19;
@@ -360,7 +360,7 @@ partial class ReCodeItForm
         RenameFieldsCheckbox.AutoSize = true;
         RenameFieldsCheckbox.Checked = true;
         RenameFieldsCheckbox.CheckState = CheckState.Checked;
-        RenameFieldsCheckbox.Location = new Point(580, 229);
+        RenameFieldsCheckbox.Location = new Point(577, 225);
         RenameFieldsCheckbox.Name = "RenameFieldsCheckbox";
         RenameFieldsCheckbox.Size = new Size(151, 29);
         RenameFieldsCheckbox.TabIndex = 26;
@@ -370,7 +370,7 @@ partial class ReCodeItForm
         // ConstructorCountEnabled
         // 
         ConstructorCountEnabled.AutoSize = true;
-        ConstructorCountEnabled.Location = new Point(287, 301);
+        ConstructorCountEnabled.Location = new Point(287, 265);
         ConstructorCountEnabled.Name = "ConstructorCountEnabled";
         ConstructorCountEnabled.Size = new Size(238, 29);
         ConstructorCountEnabled.TabIndex = 20;
@@ -380,7 +380,7 @@ partial class ReCodeItForm
         // LoadMappingFileButton
         // 
         LoadMappingFileButton.BackColor = SystemColors.ButtonShadow;
-        LoadMappingFileButton.Location = new Point(180, 28);
+        LoadMappingFileButton.Location = new Point(577, 30);
         LoadMappingFileButton.Name = "LoadMappingFileButton";
         LoadMappingFileButton.Size = new Size(168, 34);
         LoadMappingFileButton.TabIndex = 18;
@@ -388,21 +388,10 @@ partial class ReCodeItForm
         LoadMappingFileButton.UseVisualStyleBackColor = false;
         LoadMappingFileButton.Click += LoadMappingFileButton_Click;
         // 
-        // SaveMappingFileButton
-        // 
-        SaveMappingFileButton.BackColor = SystemColors.ButtonShadow;
-        SaveMappingFileButton.Location = new Point(6, 28);
-        SaveMappingFileButton.Name = "SaveMappingFileButton";
-        SaveMappingFileButton.Size = new Size(168, 34);
-        SaveMappingFileButton.TabIndex = 17;
-        SaveMappingFileButton.Text = "Save Mapping File";
-        SaveMappingFileButton.UseVisualStyleBackColor = false;
-        SaveMappingFileButton.Click += SaveMappingFileButton_Click;
-        // 
         // RunRemapButton
         // 
         RunRemapButton.BackColor = SystemColors.ButtonShadow;
-        RunRemapButton.Location = new Point(580, 154);
+        RunRemapButton.Location = new Point(577, 150);
         RunRemapButton.Name = "RunRemapButton";
         RunRemapButton.Size = new Size(168, 34);
         RunRemapButton.TabIndex = 16;
@@ -822,7 +811,7 @@ partial class ReCodeItForm
         // NewTypeName
         // 
         NewTypeName.BackColor = SystemColors.ScrollBar;
-        NewTypeName.Location = new Point(10, 147);
+        NewTypeName.Location = new Point(10, 111);
         NewTypeName.Name = "NewTypeName";
         NewTypeName.PlaceholderText = "New Name";
         NewTypeName.Size = new Size(208, 31);
@@ -831,7 +820,7 @@ partial class ReCodeItForm
         // PropertyCountEnabled
         // 
         PropertyCountEnabled.AutoSize = true;
-        PropertyCountEnabled.Location = new Point(287, 408);
+        PropertyCountEnabled.Location = new Point(287, 372);
         PropertyCountEnabled.Name = "PropertyCountEnabled";
         PropertyCountEnabled.Size = new Size(159, 29);
         PropertyCountEnabled.TabIndex = 11;
@@ -841,7 +830,7 @@ partial class ReCodeItForm
         // IsInterfaceUpDown
         // 
         IsInterfaceUpDown.BackColor = SystemColors.ScrollBar;
-        IsInterfaceUpDown.Location = new Point(10, 300);
+        IsInterfaceUpDown.Location = new Point(10, 264);
         IsInterfaceUpDown.Name = "IsInterfaceUpDown";
         IsInterfaceUpDown.Size = new Size(208, 31);
         IsInterfaceUpDown.Sorted = true;
@@ -851,7 +840,7 @@ partial class ReCodeItForm
         // NestedTypeCountEnabled
         // 
         NestedTypeCountEnabled.AutoSize = true;
-        NestedTypeCountEnabled.Location = new Point(287, 443);
+        NestedTypeCountEnabled.Location = new Point(287, 407);
         NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
         NestedTypeCountEnabled.Size = new Size(276, 29);
         NestedTypeCountEnabled.TabIndex = 12;
@@ -861,7 +850,7 @@ partial class ReCodeItForm
         // PropertyCountUpDown
         // 
         PropertyCountUpDown.BackColor = SystemColors.ScrollBar;
-        PropertyCountUpDown.Location = new Point(224, 408);
+        PropertyCountUpDown.Location = new Point(224, 372);
         PropertyCountUpDown.Name = "PropertyCountUpDown";
         PropertyCountUpDown.Size = new Size(55, 31);
         PropertyCountUpDown.TabIndex = 5;
@@ -869,7 +858,7 @@ partial class ReCodeItForm
         // RemoveRemapButton
         // 
         RemoveRemapButton.BackColor = SystemColors.ButtonShadow;
-        RemoveRemapButton.Location = new Point(580, 74);
+        RemoveRemapButton.Location = new Point(577, 111);
         RemoveRemapButton.Name = "RemoveRemapButton";
         RemoveRemapButton.Size = new Size(168, 34);
         RemoveRemapButton.TabIndex = 2;
@@ -880,7 +869,7 @@ partial class ReCodeItForm
         // FieldCountUpDown
         // 
         FieldCountUpDown.BackColor = SystemColors.ScrollBar;
-        FieldCountUpDown.Location = new Point(224, 370);
+        FieldCountUpDown.Location = new Point(224, 334);
         FieldCountUpDown.Name = "FieldCountUpDown";
         FieldCountUpDown.Size = new Size(55, 31);
         FieldCountUpDown.TabIndex = 3;
@@ -888,7 +877,7 @@ partial class ReCodeItForm
         // IsPublicUpDown
         // 
         IsPublicUpDown.BackColor = SystemColors.ScrollBar;
-        IsPublicUpDown.Location = new Point(10, 224);
+        IsPublicUpDown.Location = new Point(10, 188);
         IsPublicUpDown.Name = "IsPublicUpDown";
         IsPublicUpDown.Size = new Size(208, 31);
         IsPublicUpDown.Sorted = true;
@@ -898,7 +887,7 @@ partial class ReCodeItForm
         // FieldCountEnabled
         // 
         FieldCountEnabled.AutoSize = true;
-        FieldCountEnabled.Location = new Point(287, 373);
+        FieldCountEnabled.Location = new Point(287, 337);
         FieldCountEnabled.Name = "FieldCountEnabled";
         FieldCountEnabled.Size = new Size(128, 29);
         FieldCountEnabled.TabIndex = 13;
@@ -908,7 +897,7 @@ partial class ReCodeItForm
         // NestedTypeParentName
         // 
         NestedTypeParentName.BackColor = SystemColors.ScrollBar;
-        NestedTypeParentName.Location = new Point(224, 262);
+        NestedTypeParentName.Location = new Point(224, 226);
         NestedTypeParentName.Name = "NestedTypeParentName";
         NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
         NestedTypeParentName.Size = new Size(208, 31);
@@ -917,7 +906,7 @@ partial class ReCodeItForm
         // MethodCountUpDown
         // 
         MethodCountUpDown.BackColor = SystemColors.ScrollBar;
-        MethodCountUpDown.Location = new Point(224, 332);
+        MethodCountUpDown.Location = new Point(224, 296);
         MethodCountUpDown.Name = "MethodCountUpDown";
         MethodCountUpDown.Size = new Size(55, 31);
         MethodCountUpDown.TabIndex = 6;
@@ -925,7 +914,7 @@ partial class ReCodeItForm
         // IsAbstractUpDown
         // 
         IsAbstractUpDown.BackColor = SystemColors.ScrollBar;
-        IsAbstractUpDown.Location = new Point(10, 261);
+        IsAbstractUpDown.Location = new Point(10, 225);
         IsAbstractUpDown.Name = "IsAbstractUpDown";
         IsAbstractUpDown.Size = new Size(208, 31);
         IsAbstractUpDown.Sorted = true;
@@ -935,7 +924,7 @@ partial class ReCodeItForm
         // BaseClassIncludeTextFIeld
         // 
         BaseClassIncludeTextFIeld.BackColor = SystemColors.ScrollBar;
-        BaseClassIncludeTextFIeld.Location = new Point(224, 184);
+        BaseClassIncludeTextFIeld.Location = new Point(224, 148);
         BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
         BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
         BaseClassIncludeTextFIeld.Size = new Size(208, 31);
@@ -944,7 +933,7 @@ partial class ReCodeItForm
         // OriginalTypeName
         // 
         OriginalTypeName.BackColor = SystemColors.ScrollBar;
-        OriginalTypeName.Location = new Point(224, 147);
+        OriginalTypeName.Location = new Point(224, 111);
         OriginalTypeName.Name = "OriginalTypeName";
         OriginalTypeName.PlaceholderText = "Original Name";
         OriginalTypeName.Size = new Size(208, 31);
@@ -953,7 +942,7 @@ partial class ReCodeItForm
         // HasGenericParametersUpDown
         // 
         HasGenericParametersUpDown.BackColor = SystemColors.ScrollBar;
-        HasGenericParametersUpDown.Location = new Point(10, 483);
+        HasGenericParametersUpDown.Location = new Point(10, 447);
         HasGenericParametersUpDown.Name = "HasGenericParametersUpDown";
         HasGenericParametersUpDown.Size = new Size(208, 31);
         HasGenericParametersUpDown.Sorted = true;
@@ -963,7 +952,7 @@ partial class ReCodeItForm
         // IsEnumUpDown
         // 
         IsEnumUpDown.BackColor = SystemColors.ScrollBar;
-        IsEnumUpDown.Location = new Point(10, 372);
+        IsEnumUpDown.Location = new Point(10, 336);
         IsEnumUpDown.Name = "IsEnumUpDown";
         IsEnumUpDown.Size = new Size(208, 31);
         IsEnumUpDown.Sorted = true;
@@ -973,7 +962,7 @@ partial class ReCodeItForm
         // NestedTypeCountUpDown
         // 
         NestedTypeCountUpDown.BackColor = SystemColors.ScrollBar;
-        NestedTypeCountUpDown.Location = new Point(224, 446);
+        NestedTypeCountUpDown.Location = new Point(224, 410);
         NestedTypeCountUpDown.Name = "NestedTypeCountUpDown";
         NestedTypeCountUpDown.Size = new Size(55, 31);
         NestedTypeCountUpDown.TabIndex = 4;
@@ -981,18 +970,18 @@ partial class ReCodeItForm
         // SaveRemapButton
         // 
         SaveRemapButton.BackColor = SystemColors.ButtonShadow;
-        SaveRemapButton.Location = new Point(580, 33);
+        SaveRemapButton.Location = new Point(577, 70);
         SaveRemapButton.Name = "SaveRemapButton";
         SaveRemapButton.Size = new Size(168, 34);
         SaveRemapButton.TabIndex = 4;
-        SaveRemapButton.Text = "Save Remap";
+        SaveRemapButton.Text = "Add Remap";
         SaveRemapButton.UseVisualStyleBackColor = false;
         SaveRemapButton.Click += AddRemapButton_Click;
         // 
         // IsDerivedUpDown
         // 
         IsDerivedUpDown.BackColor = SystemColors.ScrollBar;
-        IsDerivedUpDown.Location = new Point(10, 446);
+        IsDerivedUpDown.Location = new Point(10, 410);
         IsDerivedUpDown.Name = "IsDerivedUpDown";
         IsDerivedUpDown.Size = new Size(208, 31);
         IsDerivedUpDown.Sorted = true;
@@ -1002,7 +991,7 @@ partial class ReCodeItForm
         // IsNestedUpDown
         // 
         IsNestedUpDown.BackColor = SystemColors.ScrollBar;
-        IsNestedUpDown.Location = new Point(10, 185);
+        IsNestedUpDown.Location = new Point(10, 149);
         IsNestedUpDown.Name = "IsNestedUpDown";
         IsNestedUpDown.Size = new Size(208, 31);
         IsNestedUpDown.Sorted = true;
@@ -1012,7 +1001,7 @@ partial class ReCodeItForm
         // HasAttributeUpDown
         // 
         HasAttributeUpDown.BackColor = SystemColors.ScrollBar;
-        HasAttributeUpDown.Location = new Point(10, 409);
+        HasAttributeUpDown.Location = new Point(10, 373);
         HasAttributeUpDown.Name = "HasAttributeUpDown";
         HasAttributeUpDown.Size = new Size(208, 31);
         HasAttributeUpDown.Sorted = true;
@@ -1022,7 +1011,7 @@ partial class ReCodeItForm
         // BaseClassExcludeTextField
         // 
         BaseClassExcludeTextField.BackColor = SystemColors.ScrollBar;
-        BaseClassExcludeTextField.Location = new Point(224, 224);
+        BaseClassExcludeTextField.Location = new Point(224, 188);
         BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
         BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
         BaseClassExcludeTextField.Size = new Size(208, 31);
@@ -1031,7 +1020,7 @@ partial class ReCodeItForm
         // MethodCountEnabled
         // 
         MethodCountEnabled.AutoSize = true;
-        MethodCountEnabled.Location = new Point(287, 338);
+        MethodCountEnabled.Location = new Point(287, 302);
         MethodCountEnabled.Name = "MethodCountEnabled";
         MethodCountEnabled.Size = new Size(154, 29);
         MethodCountEnabled.TabIndex = 14;
@@ -1041,7 +1030,7 @@ partial class ReCodeItForm
         // IsSealedUpDown
         // 
         IsSealedUpDown.BackColor = SystemColors.ScrollBar;
-        IsSealedUpDown.Location = new Point(10, 335);
+        IsSealedUpDown.Location = new Point(10, 299);
         IsSealedUpDown.Name = "IsSealedUpDown";
         IsSealedUpDown.Size = new Size(208, 31);
         IsSealedUpDown.Sorted = true;
@@ -1408,90 +1397,65 @@ partial class ReCodeItForm
         // 
         tabPage5.BackColor = SystemColors.ControlDarkDark;
         tabPage5.Controls.Add(groupBox4);
-        tabPage5.Controls.Add(groupBox3);
         tabPage5.Location = new Point(4, 34);
         tabPage5.Name = "tabPage5";
         tabPage5.Padding = new Padding(3);
         tabPage5.Size = new Size(1336, 953);
         tabPage5.TabIndex = 4;
-        tabPage5.Text = "Cross Patching";
+        tabPage5.Text = "Cross Compiler";
         tabPage5.Click += tabPage5_Click;
         // 
         // groupBox4
         // 
         groupBox4.Controls.Add(CrossPatchRunButton);
-        groupBox4.Controls.Add(CrossMapperProjectBuildPath);
-        groupBox4.Controls.Add(CrossPatchingProjectBuildDirButton);
-        groupBox4.Controls.Add(CrossMapperProjTargetAssembly);
-        groupBox4.Controls.Add(CrossMappingOutputChooseButton);
-        groupBox4.Location = new Point(13, 174);
+        groupBox4.Controls.Add(groupBox3);
+        groupBox4.Controls.Add(CrossPatchRemapButton);
+        groupBox4.Location = new Point(13, 18);
         groupBox4.Name = "groupBox4";
-        groupBox4.Size = new Size(631, 151);
+        groupBox4.Size = new Size(1273, 901);
         groupBox4.TabIndex = 22;
         groupBox4.TabStop = false;
-        groupBox4.Text = "Reverse Patch";
+        groupBox4.Text = "Cross Compiler";
         // 
         // CrossPatchRunButton
         // 
-        CrossPatchRunButton.Location = new Point(475, 104);
+        CrossPatchRunButton.Location = new Point(349, 323);
         CrossPatchRunButton.Name = "CrossPatchRunButton";
         CrossPatchRunButton.Size = new Size(150, 34);
         CrossPatchRunButton.TabIndex = 24;
-        CrossPatchRunButton.Text = "Reverse Patch";
+        CrossPatchRunButton.Text = "Compile Project";
         CrossPatchRunButton.UseVisualStyleBackColor = true;
         CrossPatchRunButton.Click += CrossPatchRunButton_Click;
         // 
-        // CrossMapperProjectBuildPath
-        // 
-        CrossMapperProjectBuildPath.Location = new Point(6, 30);
-        CrossMapperProjectBuildPath.Name = "CrossMapperProjectBuildPath";
-        CrossMapperProjectBuildPath.PlaceholderText = "Input Assembly that was built against the remap assembly";
-        CrossMapperProjectBuildPath.ReadOnly = true;
-        CrossMapperProjectBuildPath.Size = new Size(501, 31);
-        CrossMapperProjectBuildPath.TabIndex = 15;
-        // 
-        // CrossPatchingProjectBuildDirButton
-        // 
-        CrossPatchingProjectBuildDirButton.Location = new Point(513, 27);
-        CrossPatchingProjectBuildDirButton.Name = "CrossPatchingProjectBuildDirButton";
-        CrossPatchingProjectBuildDirButton.Size = new Size(112, 34);
-        CrossPatchingProjectBuildDirButton.TabIndex = 20;
-        CrossPatchingProjectBuildDirButton.Text = "Choose";
-        CrossPatchingProjectBuildDirButton.UseVisualStyleBackColor = true;
-        CrossPatchingProjectBuildDirButton.Click += CrossPatchingProjectBuildDirButton_Click;
-        // 
-        // CrossMapperProjTargetAssembly
-        // 
-        CrossMapperProjTargetAssembly.Location = new Point(6, 67);
-        CrossMapperProjTargetAssembly.Name = "CrossMapperProjTargetAssembly";
-        CrossMapperProjTargetAssembly.PlaceholderText = "Output directory";
-        CrossMapperProjTargetAssembly.ReadOnly = true;
-        CrossMapperProjTargetAssembly.Size = new Size(501, 31);
-        CrossMapperProjTargetAssembly.TabIndex = 19;
-        // 
-        // CrossMappingOutputChooseButton
-        // 
-        CrossMappingOutputChooseButton.Location = new Point(513, 66);
-        CrossMappingOutputChooseButton.Name = "CrossMappingOutputChooseButton";
-        CrossMappingOutputChooseButton.Size = new Size(112, 34);
-        CrossMappingOutputChooseButton.TabIndex = 17;
-        CrossMappingOutputChooseButton.Text = "Choose";
-        CrossMappingOutputChooseButton.UseVisualStyleBackColor = true;
-        CrossMappingOutputChooseButton.Click += CrossMappingOutputChooseButton_Click;
-        // 
         // groupBox3
         // 
+        groupBox3.Controls.Add(label1);
+        groupBox3.Controls.Add(CrossCompilerProjectComboBox);
+        groupBox3.Controls.Add(CrossCompilerNewProjectButton);
         groupBox3.Controls.Add(CrossPatchRemapOutputButton);
         groupBox3.Controls.Add(CrossMapperReferencePath);
-        groupBox3.Controls.Add(CrossPatchRemapButton);
         groupBox3.Controls.Add(CrossMapperOriginalAssembly);
+        groupBox3.Controls.Add(CrossMapperProjectBuildPath);
+        groupBox3.Controls.Add(CrossPatchingProjectBuildDirButton);
         groupBox3.Controls.Add(CrossPatchingOrigAssemblyButton);
-        groupBox3.Location = new Point(13, 6);
+        groupBox3.Controls.Add(CrossMapperProjTargetAssembly);
+        groupBox3.Controls.Add(CrossMappingOutputChooseButton);
+        groupBox3.Location = new Point(6, 30);
         groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(631, 162);
+        groupBox3.Size = new Size(631, 287);
         groupBox3.TabIndex = 21;
         groupBox3.TabStop = false;
-        groupBox3.Text = "Remap";
+        groupBox3.Text = "ReCodeIt Proj Settings";
+        // 
+        // CrossCompilerNewProjectButton
+        // 
+        CrossCompilerNewProjectButton.Location = new Point(475, 238);
+        CrossCompilerNewProjectButton.Name = "CrossCompilerNewProjectButton";
+        CrossCompilerNewProjectButton.Size = new Size(150, 34);
+        CrossCompilerNewProjectButton.TabIndex = 25;
+        CrossCompilerNewProjectButton.Text = "Create New";
+        CrossCompilerNewProjectButton.UseVisualStyleBackColor = true;
+        CrossCompilerNewProjectButton.Click += CrossCompilerNewProjectButton_Click;
         // 
         // CrossPatchRemapOutputButton
         // 
@@ -1512,16 +1476,6 @@ partial class ReCodeItForm
         CrossMapperReferencePath.Size = new Size(501, 31);
         CrossMapperReferencePath.TabIndex = 14;
         // 
-        // CrossPatchRemapButton
-        // 
-        CrossPatchRemapButton.Location = new Point(513, 115);
-        CrossPatchRemapButton.Name = "CrossPatchRemapButton";
-        CrossPatchRemapButton.Size = new Size(112, 34);
-        CrossPatchRemapButton.TabIndex = 21;
-        CrossPatchRemapButton.Text = "Remap";
-        CrossPatchRemapButton.UseVisualStyleBackColor = true;
-        CrossPatchRemapButton.Click += CrossPatchRemapButton_Click;
-        // 
         // CrossMapperOriginalAssembly
         // 
         CrossMapperOriginalAssembly.Location = new Point(6, 39);
@@ -1530,6 +1484,25 @@ partial class ReCodeItForm
         CrossMapperOriginalAssembly.ReadOnly = true;
         CrossMapperOriginalAssembly.Size = new Size(501, 31);
         CrossMapperOriginalAssembly.TabIndex = 13;
+        // 
+        // CrossMapperProjectBuildPath
+        // 
+        CrossMapperProjectBuildPath.Location = new Point(6, 114);
+        CrossMapperProjectBuildPath.Name = "CrossMapperProjectBuildPath";
+        CrossMapperProjectBuildPath.PlaceholderText = "Visual studio solution directory";
+        CrossMapperProjectBuildPath.ReadOnly = true;
+        CrossMapperProjectBuildPath.Size = new Size(501, 31);
+        CrossMapperProjectBuildPath.TabIndex = 15;
+        // 
+        // CrossPatchingProjectBuildDirButton
+        // 
+        CrossPatchingProjectBuildDirButton.Location = new Point(513, 111);
+        CrossPatchingProjectBuildDirButton.Name = "CrossPatchingProjectBuildDirButton";
+        CrossPatchingProjectBuildDirButton.Size = new Size(112, 34);
+        CrossPatchingProjectBuildDirButton.TabIndex = 20;
+        CrossPatchingProjectBuildDirButton.Text = "Choose";
+        CrossPatchingProjectBuildDirButton.UseVisualStyleBackColor = true;
+        CrossPatchingProjectBuildDirButton.Click += CrossPatchingProjectBuildDirButton_Click;
         // 
         // CrossPatchingOrigAssemblyButton
         // 
@@ -1540,6 +1513,35 @@ partial class ReCodeItForm
         CrossPatchingOrigAssemblyButton.Text = "Choose";
         CrossPatchingOrigAssemblyButton.UseVisualStyleBackColor = true;
         CrossPatchingOrigAssemblyButton.Click += CrossPatchingOrigAssemblyButton_Click;
+        // 
+        // CrossMapperProjTargetAssembly
+        // 
+        CrossMapperProjTargetAssembly.Location = new Point(6, 151);
+        CrossMapperProjTargetAssembly.Name = "CrossMapperProjTargetAssembly";
+        CrossMapperProjTargetAssembly.PlaceholderText = "Build Directory";
+        CrossMapperProjTargetAssembly.ReadOnly = true;
+        CrossMapperProjTargetAssembly.Size = new Size(501, 31);
+        CrossMapperProjTargetAssembly.TabIndex = 19;
+        // 
+        // CrossMappingOutputChooseButton
+        // 
+        CrossMappingOutputChooseButton.Location = new Point(513, 150);
+        CrossMappingOutputChooseButton.Name = "CrossMappingOutputChooseButton";
+        CrossMappingOutputChooseButton.Size = new Size(112, 34);
+        CrossMappingOutputChooseButton.TabIndex = 17;
+        CrossMappingOutputChooseButton.Text = "Choose";
+        CrossMappingOutputChooseButton.UseVisualStyleBackColor = true;
+        CrossMappingOutputChooseButton.Click += CrossMappingOutputChooseButton_Click;
+        // 
+        // CrossPatchRemapButton
+        // 
+        CrossPatchRemapButton.Location = new Point(12, 323);
+        CrossPatchRemapButton.Name = "CrossPatchRemapButton";
+        CrossPatchRemapButton.Size = new Size(316, 34);
+        CrossPatchRemapButton.TabIndex = 21;
+        CrossPatchRemapButton.Text = "Generate Remapped Reference";
+        CrossPatchRemapButton.UseVisualStyleBackColor = true;
+        CrossPatchRemapButton.Click += CrossPatchRemapButton_Click;
         // 
         // SettingsTab
         // 
@@ -1586,6 +1588,24 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
+        // CrossCompilerProjectComboBox
+        // 
+        CrossCompilerProjectComboBox.FormattingEnabled = true;
+        CrossCompilerProjectComboBox.Location = new Point(6, 238);
+        CrossCompilerProjectComboBox.Name = "CrossCompilerProjectComboBox";
+        CrossCompilerProjectComboBox.Size = new Size(194, 33);
+        CrossCompilerProjectComboBox.TabIndex = 26;
+        CrossCompilerProjectComboBox.SelectedIndexChanged += CrossCompilerProjectComboBox_SelectedIndexChanged;
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(206, 243);
+        label1.Name = "label1";
+        label1.Size = new Size(150, 25);
+        label1.TabIndex = 27;
+        label1.Text = "Available Projects";
+        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1620,7 +1640,6 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
         tabPage5.ResumeLayout(false);
         groupBox4.ResumeLayout(false);
-        groupBox4.PerformLayout();
         groupBox3.ResumeLayout(false);
         groupBox3.PerformLayout();
         SettingsTab.ResumeLayout(false);
@@ -1695,7 +1714,6 @@ partial class ReCodeItForm
     private CheckBox NestedTypeCountEnabled;
     private DomainUpDown IsInterfaceUpDown;
     private TreeView RemapTreeView;
-    private Button SaveMappingFileButton;
     private Button RunRemapButton;
     private Button LoadMappingFileButton;
     private NumericUpDown ConstuctorCountUpDown;
@@ -1706,7 +1724,6 @@ partial class ReCodeItForm
     private GroupBox groupBox2;
     private CheckBox SilentModeCheckbox;
     private CheckBox DebugLoggingCheckbox;
-    private Button EditRemapButton;
     private TabPage AutoMapperTab;
     private TextBox AutoMapperTypesToIgnoreTextField;
     private Button AutoMapperExcludeTypesRemoveButton;
@@ -1767,4 +1784,8 @@ partial class ReCodeItForm
     private Button CrossPatchRemapOutputButton;
     private Button CrossPatchRunButton;
     private GroupBox groupBox4;
+    private TextBox LoadedMappingFilePath;
+    private Button CrossCompilerNewProjectButton;
+    private ComboBox CrossCompilerProjectComboBox;
+    private Label label1;
 }

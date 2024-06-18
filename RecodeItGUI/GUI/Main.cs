@@ -1,8 +1,9 @@
+using ReCodeIt.AutoMapper;
+using ReCodeIt.CrossPatcher;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
-using ReCodeItLib.AutoMapper;
 
 namespace ReCodeIt.GUI;
 
@@ -10,6 +11,8 @@ public partial class ReCodeItForm : Form
 {
     public static ReCodeItRemapper Remapper { get; private set; } = new();
     public static ReCodeItAutoMapper AutoMapper { get; private set; } = new();
+
+    public static ReCodeItCrossCompiler CrossPatcher { get; private set; } = new();
 
     private RemapModel CurrentRemap { get; set; }
 
@@ -19,6 +22,7 @@ public partial class ReCodeItForm : Form
     {
         InitializeComponent();
         DataProvider.LoadMappingFile(DataProvider.Settings.Remapper.MappingPath);
+        LoadedMappingFilePath.Text = DataProvider.Settings.Remapper.MappingPath;
         PopulateDomainUpDowns();
         RefreshSettingsPage();
         RefreshAutoMapperPage();
@@ -97,7 +101,7 @@ public partial class ReCodeItForm : Form
         };
 
         var existingRemap = DataProvider.Remaps
-            .Where(remap => remap.NewTypeName == NewTypeName.Text)
+            .Where(remap => remap.NewTypeName == newRemap.NewTypeName)
             .FirstOrDefault();
 
         // Handle overwriting an existing remap
@@ -111,6 +115,8 @@ public partial class ReCodeItForm : Form
             DataProvider.Remaps.Insert(index, newRemap);
             RemapTreeView.Nodes.Insert(index, GUIHelpers.GenerateTreeNode(newRemap, this));
 
+            DataProvider.SaveMapping();
+
             CurrentRemap = existingRemap;
 
             ResetAll();
@@ -120,6 +126,7 @@ public partial class ReCodeItForm : Form
         CurrentRemap = newRemap;
         RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(newRemap, this));
         DataProvider.Remaps.Add(newRemap);
+        DataProvider.SaveMapping();
 
         ResetAll();
     }
@@ -128,11 +135,13 @@ public partial class ReCodeItForm : Form
     {
         DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
         RemapTreeView.SelectedNode?.Remove();
+        DataProvider.SaveMapping();
     }
 
     private void EditRemapButton_Click(object sender, EventArgs e)
     {
         EditSelectedRemap(this, null);
+        DataProvider.SaveMapping();
     }
 
     private void RunRemapButton_Click(object sender, EventArgs e)
@@ -147,7 +156,9 @@ public partial class ReCodeItForm : Form
 
         Console.Clear();
 
-        Remapper.InitializeRemap();
+        var settings = DataProvider.Settings;
+
+        Remapper.InitializeRemap(settings.Remapper.AssemblyPath, settings.Remapper.OutputPath);
     }
 
     private void SaveMappingFileButton_Click(object sender, EventArgs e)
@@ -159,7 +170,7 @@ public partial class ReCodeItForm : Form
             MessageBoxIcon.Exclamation,
             MessageBoxDefaultButton.Button2) == DialogResult.Yes)
         {
-            DataProvider.SaveMapping(DataProvider.Settings.Remapper.MappingPath);
+            DataProvider.SaveMapping();
         }
     }
 
@@ -171,6 +182,10 @@ public partial class ReCodeItForm : Form
         if (result == string.Empty) { return; }
 
         DataProvider.LoadMappingFile(result);
+        DataProvider.Settings.Remapper.MappingPath = result;
+        DataProvider.SaveAppSettings();
+
+        LoadedMappingFilePath.Text = result;
 
         RemapTreeView.Nodes.Clear();
 
@@ -394,26 +409,6 @@ public partial class ReCodeItForm : Form
         RemapperPublicicize.Checked = DataProvider.Settings.Remapper.MappingSettings.Publicize;
         RemapperUnseal.Checked = DataProvider.Settings.Remapper.MappingSettings.Unseal;
     }
-
-    #region SETTINGS_BUTTONS
-
-    private void MappingChooseButton_Click(object sender, EventArgs e)
-    {
-        var fDialog = new OpenFileDialog
-        {
-            Title = "Select a mapping file",
-            Filter = "JSON Files (*.json)|*.json|JSONC Files (*.jsonc)|*.jsonc|All Files (*.*)|*.*",
-            Multiselect = false
-        };
-
-        if (fDialog.ShowDialog() == DialogResult.OK)
-        {
-            DataProvider.LoadMappingFile(fDialog.FileName);
-            MappingPathTextBox.Text = fDialog.FileName;
-        }
-    }
-
-    #endregion SETTINGS_BUTTONS
 
     #region CHECKBOXES
 
@@ -639,7 +634,7 @@ public partial class ReCodeItForm : Form
 
     #endregion AUTOMAPPER
 
-    #region CROSSPATCHER
+    #region CROSS_COMPILER
 
     /// <summary>
     /// Remapper Input
@@ -653,7 +648,7 @@ public partial class ReCodeItForm : Form
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossPatching.OriginalAssemblyPath = result;
+            DataProvider.Settings.CrossCompiler.OriginalAssemblyPath = result;
             CrossMapperOriginalAssembly.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -671,7 +666,7 @@ public partial class ReCodeItForm : Form
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossPatching.RemappedOutput = result;
+            DataProvider.Settings.CrossCompiler.RemappedOutput = result;
             CrossMapperReferencePath.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -684,12 +679,11 @@ public partial class ReCodeItForm : Form
     /// <param name="e"></param>
     private void CrossPatchingProjectBuildDirButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFileDialog("Select the assembly that referenced the remapped dll",
-            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+        var result = GUIHelpers.OpenFolderDialog("Select your visual studio solution directory");
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossPatching.ReversePatchInputPath = result;
+            DataProvider.Settings.CrossCompiler.VisualStudioSolutionDirectory = result;
             CrossMapperProjectBuildPath.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -702,12 +696,11 @@ public partial class ReCodeItForm : Form
     /// <param name="e"></param>
     private void CrossMappingOutputChooseButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFileDialog("Output location of the final unmapped dll",
-            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+        var result = GUIHelpers.OpenFolderDialog("Select your final build directory");
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossPatching.ReversePatchOutputPath = result;
+            DataProvider.Settings.CrossCompiler.BuildDirectory = result;
             CrossMapperProjTargetAssembly.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -715,21 +708,32 @@ public partial class ReCodeItForm : Form
 
     private void CrossPatchRemapButton_Click(object sender, EventArgs e)
     {
+        CrossPatcher.StartRemap();
     }
 
     private void CrossPatchRunButton_Click(object sender, EventArgs e)
     {
+        CrossPatcher.StartCrossCompile();
     }
 
     private void RefreshCrossPatchPage()
     {
-        CrossMapperOriginalAssembly.Text = DataProvider.Settings.CrossPatching.OriginalAssemblyPath;
-        CrossMapperReferencePath.Text = DataProvider.Settings.CrossPatching.RemappedOutput;
-        CrossMapperProjectBuildPath.Text = DataProvider.Settings.CrossPatching.ReversePatchInputPath;
-        CrossMapperProjTargetAssembly.Text = DataProvider.Settings.CrossPatching.ReversePatchOutputPath;
+        CrossMapperOriginalAssembly.Text = DataProvider.Settings.CrossCompiler.OriginalAssemblyPath;
+        CrossMapperReferencePath.Text = DataProvider.Settings.CrossCompiler.RemappedOutput;
+        CrossMapperProjectBuildPath.Text = DataProvider.Settings.CrossCompiler.VisualStudioSolutionDirectory;
+        CrossMapperProjTargetAssembly.Text = DataProvider.Settings.CrossCompiler.BuildDirectory;
     }
 
-    #endregion CROSSPATCHER
+    private void CrossCompilerNewProjectButton_Click(object sender, EventArgs e)
+    {
+        CrossPatcher.CreateProject();
+    }
+
+    private void CrossCompilerProjectComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
+
+    #endregion CROSS_COMPILER
 
     // Reset All UI elements to default
     private void ResetAll()

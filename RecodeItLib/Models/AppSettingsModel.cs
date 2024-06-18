@@ -8,7 +8,7 @@ public class Settings
     public AppSettings AppSettings { get; set; }
     public RemapperSettings Remapper { get; set; }
     public AutoMapperSettings AutoMapper { get; set; }
-    public CrossPatchingSettings CrossPatching { get; set; }
+    public CrossCompilerSettings CrossCompiler { get; set; }
 }
 
 /// <summary>
@@ -100,9 +100,9 @@ public class AutoMapperSettings
 }
 
 /// <summary>
-/// These are settings for the cross patching module
+/// These are settings for the cross compiler module
 /// </summary>
-public class CrossPatchingSettings
+public class CrossCompilerSettings
 {
     /// <summary>
     /// The path to the original assembly to use as a reference, for unity games its
@@ -116,14 +116,14 @@ public class CrossPatchingSettings
     public string RemappedOutput { get; set; }
 
     /// <summary>
-    /// The input path of the assembly referenced by the remapped dll
+    /// The path to the solution directory of the project
     /// </summary>
-    public string ReversePatchInputPath { get; set; }
+    public string VisualStudioSolutionDirectory { get; set; }
 
     /// <summary>
     /// Where should the de-patched dll be placed? (This is the one you test/distribute with)
     /// </summary>
-    public string ReversePatchOutputPath { get; set; }
+    public string BuildDirectory { get; set; }
 }
 
 /// <summary>

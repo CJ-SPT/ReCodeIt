@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using ReCodeIt.CrossPatcher;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper.Search;
@@ -9,6 +10,16 @@ namespace ReCodeIt.ReMapper;
 
 public class ReCodeItRemapper
 {
+    public ReCodeItRemapper(ReCodeItCrossCompiler compiler)
+    {
+        _compiler = compiler;
+    }
+
+    public ReCodeItRemapper()
+    { }
+
+    private readonly ReCodeItCrossCompiler _compiler;
+
     public static bool IsRunning { get; private set; } = false;
 
     public delegate void OnCompleteHandler(object sender, EventArgs e);
@@ -19,12 +30,20 @@ public class ReCodeItRemapper
 
     private RemapperSettings Settings => DataProvider.Settings.Remapper;
 
+    private string OutPath { get; set; } = string.Empty;
+
+    private bool CrossMapMode { get; set; } = false;
+
     /// <summary>
     /// Start the remapping process
     /// </summary>
-    public void InitializeRemap()
+    public void InitializeRemap(string assemblyPath, string outPath, bool crossMapMode = false)
     {
-        DataProvider.LoadAssemblyDefinition(Settings.AssemblyPath);
+        DataProvider.LoadAssemblyDefinition(assemblyPath);
+
+        CrossMapMode = crossMapMode;
+
+        OutPath = outPath;
 
         IsRunning = true;
         DisplayBasicModuleInformation();
@@ -155,6 +174,13 @@ public class ReCodeItRemapper
         remap.OriginalTypeName = type.Name;
         remap.FailureReason = EFailureReason.None;
         remap.Succeeded = true;
+
+        if (CrossMapMode)
+        {
+            // Store the original types for caching
+            _compiler.ChangedTypes.Add(remap.NewTypeName, type.Name);
+        }
+
         type.Name = remap.NewTypeName;
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
@@ -186,6 +212,7 @@ public class ReCodeItRemapper
                 Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.FailureReason}", ConsoleColor.Red);
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
                 failures++;
+                continue;
             }
 
             changes++;
@@ -226,7 +253,12 @@ public class ReCodeItRemapper
             }
         }
 
-        highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
+        // highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
+
+        if (CrossMapMode)
+        {// Store the original types for caching
+            _compiler.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
+        }
 
         // Rename type and all associated type members
         RenameHelper.RenameAll(highestScore);
@@ -239,7 +271,7 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
-        var path = DataProvider.WriteAssemblyDefinition(Settings.OutputPath);
+        var path = DataProvider.WriteAssemblyDefinition(OutPath);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);

@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 
-namespace ReCodeItLib.AutoMapper;
+namespace ReCodeIt.AutoMapper;
 
 /// <summary>
 /// Represents a match of a field name to obfuscated class

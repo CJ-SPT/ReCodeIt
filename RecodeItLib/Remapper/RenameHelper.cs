@@ -2,7 +2,7 @@
 using Mono.Collections.Generic;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
-using ReCodeItLib.Utils;
+using ReCodeIt.Utils;
 
 namespace ReCodeIt.ReMapper;
 
@@ -14,7 +14,7 @@ internal static class RenameHelper
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
     /// <param name="score"></param>
-    public static void RenameAll(ScoringModel score)
+    public static void RenameAll(ScoringModel score, bool direct = false)
     {
         var types = DataProvider.ModuleDefinition.Types;
 
@@ -22,7 +22,10 @@ internal static class RenameHelper
         RenameAllFields(score.Definition.Name, score.ReMap.NewTypeName, types);
         RenameAllProperties(score.Definition.Name, score.ReMap.NewTypeName, types);
 
-        score.Definition.Name = score.ProposedNewName;
+        if (!direct)
+        {
+            RenameType(types, score);
+        }
 
         Logger.Log($"{score.Definition.Name} Renamed.", ConsoleColor.Green);
     }
@@ -33,11 +36,12 @@ internal static class RenameHelper
     /// <param name="score"></param>
     public static void RenameAllDirect(RemapModel remap, TypeDefinition type)
     {
-        var directRename = new ScoringModel();
-        directRename.Definition = type;
-        directRename.ReMap = remap;
-
-        RenameAll(directRename);
+        var directRename = new ScoringModel
+        {
+            Definition = type,
+            ReMap = remap
+        };
+        RenameAll(directRename, true);
     }
 
     /// <summary>
@@ -145,5 +149,26 @@ internal static class RenameHelper
     public static string GetNewPropertyName(string newName, int propertyCount = 0)
     {
         return propertyCount > 0 ? $"{newName}_{propertyCount}" : newName;
+    }
+
+    private static void RenameType(Collection<TypeDefinition> typesToCheck, ScoringModel score)
+    {
+        foreach (var type in typesToCheck)
+        {
+            if (type.HasNestedTypes)
+            {
+                RenameType(type.NestedTypes, score);
+            }
+
+            if (score.Definition.Name == null) { continue; }
+
+            if (type.FullName == score.Definition.Name)
+            {
+                var oldName = type.FullName.ToString();
+                type.Name = score.ProposedNewName;
+
+                Logger.Log($"Renamed Type {oldName} to {type.FullName}");
+            }
+        }
     }
 }

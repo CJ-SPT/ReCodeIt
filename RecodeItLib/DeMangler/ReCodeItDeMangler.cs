@@ -1,4 +1,4 @@
-﻿namespace ReCodeItLib.DeMangler;
+﻿namespace ReCodeIt.DeMangler;
 
 internal class ReCodeItDeMangler
 {
