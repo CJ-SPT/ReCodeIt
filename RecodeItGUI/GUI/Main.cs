@@ -22,6 +22,7 @@ public partial class ReCodeItForm : Form
         PopulateDomainUpDowns();
         RefreshSettingsPage();
         RefreshAutoMapperPage();
+        RefreshCrossPatchPage();
         RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
 
         Remapper.OnComplete += ReloadTreeView;
@@ -638,6 +639,98 @@ public partial class ReCodeItForm : Form
 
     #endregion AUTOMAPPER
 
+    #region CROSSPATCHER
+
+    /// <summary>
+    /// Remapper Input
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CrossPatchingOrigAssemblyButton_Click(object sender, EventArgs e)
+    {
+        var result = GUIHelpers.OpenFileDialog("Select the original assembly",
+            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+
+        if (result != string.Empty)
+        {
+            DataProvider.Settings.CrossPatching.OriginalAssemblyPath = result;
+            CrossMapperOriginalAssembly.Text = result;
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    /// <summary>
+    /// Remapper Output
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CrossPatchingProjectReferncePath_Click(object sender, EventArgs e)
+    {
+        var result = GUIHelpers.OpenFileDialog("Output path of the Remapped assembly",
+            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+
+        if (result != string.Empty)
+        {
+            DataProvider.Settings.CrossPatching.RemappedOutput = result;
+            CrossMapperReferencePath.Text = result;
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    /// <summary>
+    /// Reverse Patch Input - The input path of the assembly referenced by the remapped dll
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CrossPatchingProjectBuildDirButton_Click(object sender, EventArgs e)
+    {
+        var result = GUIHelpers.OpenFileDialog("Select the assembly that referenced the remapped dll",
+            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+
+        if (result != string.Empty)
+        {
+            DataProvider.Settings.CrossPatching.ReversePatchInputPath = result;
+            CrossMapperProjectBuildPath.Text = result;
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    /// <summary>
+    /// Reverse Patch output
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CrossMappingOutputChooseButton_Click(object sender, EventArgs e)
+    {
+        var result = GUIHelpers.OpenFileDialog("Output location of the final unmapped dll",
+            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+
+        if (result != string.Empty)
+        {
+            DataProvider.Settings.CrossPatching.ReversePatchOutputPath = result;
+            CrossMapperProjTargetAssembly.Text = result;
+            DataProvider.SaveAppSettings();
+        }
+    }
+
+    private void CrossPatchRemapButton_Click(object sender, EventArgs e)
+    {
+    }
+
+    private void CrossPatchRunButton_Click(object sender, EventArgs e)
+    {
+    }
+
+    private void RefreshCrossPatchPage()
+    {
+        CrossMapperOriginalAssembly.Text = DataProvider.Settings.CrossPatching.OriginalAssemblyPath;
+        CrossMapperReferencePath.Text = DataProvider.Settings.CrossPatching.RemappedOutput;
+        CrossMapperProjectBuildPath.Text = DataProvider.Settings.CrossPatching.ReversePatchInputPath;
+        CrossMapperProjTargetAssembly.Text = DataProvider.Settings.CrossPatching.ReversePatchOutputPath;
+    }
+
+    #endregion CROSSPATCHER
+
     // Reset All UI elements to default
     private void ResetAll()
     {
@@ -786,15 +879,24 @@ public partial class ReCodeItForm : Form
         HasGenericParametersUpDown.BuildStringList("HasGenericParams");
     }
 
+    #region TAB_REFRESH
+
     private void AutoMapperTab_Click(object sender, EventArgs e)
     {
         RefreshAutoMapperPage();
+    }
+
+    private void tabPage5_Click(object sender, EventArgs e)
+    {
+        RefreshCrossPatchPage();
     }
 
     private void SettingsTab_Click(object sender, EventArgs e)
     {
         RefreshSettingsPage();
     }
+
+    #endregion TAB_REFRESH
 
     /// <summary>
     /// Subscribes the the remappers OnComplete event

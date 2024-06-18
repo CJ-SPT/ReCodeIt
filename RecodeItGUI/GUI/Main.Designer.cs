@@ -141,18 +141,17 @@ partial class ReCodeItForm
         AutoMapperTypesExcludeBox = new ListBox();
         tabPage5 = new TabPage();
         groupBox4 = new GroupBox();
-        CrossPatcherUnsealEnabled = new CheckBox();
-        CrossPatchingPublicizeEnabled = new CheckBox();
-        groupBox3 = new GroupBox();
-        CrossPatchingRunButton = new Button();
-        textBox4 = new TextBox();
-        CrossPatchingBuildDirButton = new Button();
-        textBox3 = new TextBox();
-        textBox1 = new TextBox();
-        textBox2 = new TextBox();
-        CrossPatchingMappingChooseButton = new Button();
-        CrossPatchingOrigAssemblyButton = new Button();
+        CrossPatchRunButton = new Button();
+        CrossMapperProjectBuildPath = new TextBox();
+        CrossPatchingProjectBuildDirButton = new Button();
+        CrossMapperProjTargetAssembly = new TextBox();
         CrossMappingOutputChooseButton = new Button();
+        groupBox3 = new GroupBox();
+        CrossPatchRemapOutputButton = new Button();
+        CrossMapperReferencePath = new TextBox();
+        CrossPatchRemapButton = new Button();
+        CrossMapperOriginalAssembly = new TextBox();
+        CrossPatchingOrigAssemblyButton = new Button();
         SettingsTab = new TabPage();
         groupBox2 = new GroupBox();
         SilentModeCheckbox = new CheckBox();
@@ -1416,140 +1415,131 @@ partial class ReCodeItForm
         tabPage5.Size = new Size(1336, 953);
         tabPage5.TabIndex = 4;
         tabPage5.Text = "Cross Patching";
+        tabPage5.Click += tabPage5_Click;
         // 
         // groupBox4
         // 
-        groupBox4.Controls.Add(CrossPatcherUnsealEnabled);
-        groupBox4.Controls.Add(CrossPatchingPublicizeEnabled);
-        groupBox4.Location = new Point(490, 6);
+        groupBox4.Controls.Add(CrossPatchRunButton);
+        groupBox4.Controls.Add(CrossMapperProjectBuildPath);
+        groupBox4.Controls.Add(CrossPatchingProjectBuildDirButton);
+        groupBox4.Controls.Add(CrossMapperProjTargetAssembly);
+        groupBox4.Controls.Add(CrossMappingOutputChooseButton);
+        groupBox4.Location = new Point(13, 174);
         groupBox4.Name = "groupBox4";
-        groupBox4.Size = new Size(445, 350);
+        groupBox4.Size = new Size(631, 151);
         groupBox4.TabIndex = 22;
         groupBox4.TabStop = false;
-        groupBox4.Text = "Patch Settings";
+        groupBox4.Text = "Reverse Patch";
         // 
-        // CrossPatcherUnsealEnabled
+        // CrossPatchRunButton
         // 
-        CrossPatcherUnsealEnabled.AutoSize = true;
-        CrossPatcherUnsealEnabled.Checked = true;
-        CrossPatcherUnsealEnabled.CheckState = CheckState.Checked;
-        CrossPatcherUnsealEnabled.Location = new Point(6, 65);
-        CrossPatcherUnsealEnabled.Name = "CrossPatcherUnsealEnabled";
-        CrossPatcherUnsealEnabled.Size = new Size(90, 29);
-        CrossPatcherUnsealEnabled.TabIndex = 12;
-        CrossPatcherUnsealEnabled.Text = "Unseal";
-        CrossPatcherUnsealEnabled.UseVisualStyleBackColor = true;
+        CrossPatchRunButton.Location = new Point(475, 104);
+        CrossPatchRunButton.Name = "CrossPatchRunButton";
+        CrossPatchRunButton.Size = new Size(150, 34);
+        CrossPatchRunButton.TabIndex = 24;
+        CrossPatchRunButton.Text = "Reverse Patch";
+        CrossPatchRunButton.UseVisualStyleBackColor = true;
+        CrossPatchRunButton.Click += CrossPatchRunButton_Click;
         // 
-        // CrossPatchingPublicizeEnabled
+        // CrossMapperProjectBuildPath
         // 
-        CrossPatchingPublicizeEnabled.AutoSize = true;
-        CrossPatchingPublicizeEnabled.Checked = true;
-        CrossPatchingPublicizeEnabled.CheckState = CheckState.Checked;
-        CrossPatchingPublicizeEnabled.Location = new Point(6, 30);
-        CrossPatchingPublicizeEnabled.Name = "CrossPatchingPublicizeEnabled";
-        CrossPatchingPublicizeEnabled.Size = new Size(106, 29);
-        CrossPatchingPublicizeEnabled.TabIndex = 11;
-        CrossPatchingPublicizeEnabled.Text = "Publicize";
-        CrossPatchingPublicizeEnabled.UseVisualStyleBackColor = true;
+        CrossMapperProjectBuildPath.Location = new Point(6, 30);
+        CrossMapperProjectBuildPath.Name = "CrossMapperProjectBuildPath";
+        CrossMapperProjectBuildPath.PlaceholderText = "Input Assembly that was built against the remap assembly";
+        CrossMapperProjectBuildPath.ReadOnly = true;
+        CrossMapperProjectBuildPath.Size = new Size(501, 31);
+        CrossMapperProjectBuildPath.TabIndex = 15;
         // 
-        // groupBox3
+        // CrossPatchingProjectBuildDirButton
         // 
-        groupBox3.Controls.Add(CrossPatchingRunButton);
-        groupBox3.Controls.Add(textBox4);
-        groupBox3.Controls.Add(CrossPatchingBuildDirButton);
-        groupBox3.Controls.Add(textBox3);
-        groupBox3.Controls.Add(textBox1);
-        groupBox3.Controls.Add(textBox2);
-        groupBox3.Controls.Add(CrossPatchingMappingChooseButton);
-        groupBox3.Controls.Add(CrossPatchingOrigAssemblyButton);
-        groupBox3.Controls.Add(CrossMappingOutputChooseButton);
-        groupBox3.Location = new Point(13, 6);
-        groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(445, 350);
-        groupBox3.TabIndex = 21;
-        groupBox3.TabStop = false;
-        groupBox3.Text = "General";
+        CrossPatchingProjectBuildDirButton.Location = new Point(513, 27);
+        CrossPatchingProjectBuildDirButton.Name = "CrossPatchingProjectBuildDirButton";
+        CrossPatchingProjectBuildDirButton.Size = new Size(112, 34);
+        CrossPatchingProjectBuildDirButton.TabIndex = 20;
+        CrossPatchingProjectBuildDirButton.Text = "Choose";
+        CrossPatchingProjectBuildDirButton.UseVisualStyleBackColor = true;
+        CrossPatchingProjectBuildDirButton.Click += CrossPatchingProjectBuildDirButton_Click;
         // 
-        // CrossPatchingRunButton
+        // CrossMapperProjTargetAssembly
         // 
-        CrossPatchingRunButton.Location = new Point(308, 310);
-        CrossPatchingRunButton.Name = "CrossPatchingRunButton";
-        CrossPatchingRunButton.Size = new Size(112, 34);
-        CrossPatchingRunButton.TabIndex = 21;
-        CrossPatchingRunButton.Text = "Run";
-        CrossPatchingRunButton.UseVisualStyleBackColor = true;
-        // 
-        // textBox4
-        // 
-        textBox4.Location = new Point(6, 39);
-        textBox4.Name = "textBox4";
-        textBox4.PlaceholderText = "Original Assembly";
-        textBox4.ReadOnly = true;
-        textBox4.Size = new Size(296, 31);
-        textBox4.TabIndex = 13;
-        // 
-        // CrossPatchingBuildDirButton
-        // 
-        CrossPatchingBuildDirButton.Location = new Point(308, 73);
-        CrossPatchingBuildDirButton.Name = "CrossPatchingBuildDirButton";
-        CrossPatchingBuildDirButton.Size = new Size(112, 34);
-        CrossPatchingBuildDirButton.TabIndex = 20;
-        CrossPatchingBuildDirButton.Text = "Choose";
-        CrossPatchingBuildDirButton.UseVisualStyleBackColor = true;
-        // 
-        // textBox3
-        // 
-        textBox3.Location = new Point(6, 113);
-        textBox3.Name = "textBox3";
-        textBox3.PlaceholderText = "Output Directory";
-        textBox3.ReadOnly = true;
-        textBox3.Size = new Size(296, 31);
-        textBox3.TabIndex = 14;
-        // 
-        // textBox1
-        // 
-        textBox1.Location = new Point(6, 76);
-        textBox1.Name = "textBox1";
-        textBox1.PlaceholderText = "VS build path including file name";
-        textBox1.ReadOnly = true;
-        textBox1.Size = new Size(296, 31);
-        textBox1.TabIndex = 19;
-        // 
-        // textBox2
-        // 
-        textBox2.Location = new Point(6, 150);
-        textBox2.Name = "textBox2";
-        textBox2.PlaceholderText = "Mapping.json path";
-        textBox2.ReadOnly = true;
-        textBox2.Size = new Size(296, 31);
-        textBox2.TabIndex = 15;
-        // 
-        // CrossPatchingMappingChooseButton
-        // 
-        CrossPatchingMappingChooseButton.Location = new Point(308, 147);
-        CrossPatchingMappingChooseButton.Name = "CrossPatchingMappingChooseButton";
-        CrossPatchingMappingChooseButton.Size = new Size(112, 34);
-        CrossPatchingMappingChooseButton.TabIndex = 18;
-        CrossPatchingMappingChooseButton.Text = "Choose";
-        CrossPatchingMappingChooseButton.UseVisualStyleBackColor = true;
-        // 
-        // CrossPatchingOrigAssemblyButton
-        // 
-        CrossPatchingOrigAssemblyButton.Location = new Point(308, 39);
-        CrossPatchingOrigAssemblyButton.Name = "CrossPatchingOrigAssemblyButton";
-        CrossPatchingOrigAssemblyButton.Size = new Size(112, 34);
-        CrossPatchingOrigAssemblyButton.TabIndex = 16;
-        CrossPatchingOrigAssemblyButton.Text = "Choose";
-        CrossPatchingOrigAssemblyButton.UseVisualStyleBackColor = true;
+        CrossMapperProjTargetAssembly.Location = new Point(6, 67);
+        CrossMapperProjTargetAssembly.Name = "CrossMapperProjTargetAssembly";
+        CrossMapperProjTargetAssembly.PlaceholderText = "Output directory";
+        CrossMapperProjTargetAssembly.ReadOnly = true;
+        CrossMapperProjTargetAssembly.Size = new Size(501, 31);
+        CrossMapperProjTargetAssembly.TabIndex = 19;
         // 
         // CrossMappingOutputChooseButton
         // 
-        CrossMappingOutputChooseButton.Location = new Point(308, 110);
+        CrossMappingOutputChooseButton.Location = new Point(513, 66);
         CrossMappingOutputChooseButton.Name = "CrossMappingOutputChooseButton";
         CrossMappingOutputChooseButton.Size = new Size(112, 34);
         CrossMappingOutputChooseButton.TabIndex = 17;
         CrossMappingOutputChooseButton.Text = "Choose";
         CrossMappingOutputChooseButton.UseVisualStyleBackColor = true;
+        CrossMappingOutputChooseButton.Click += CrossMappingOutputChooseButton_Click;
+        // 
+        // groupBox3
+        // 
+        groupBox3.Controls.Add(CrossPatchRemapOutputButton);
+        groupBox3.Controls.Add(CrossMapperReferencePath);
+        groupBox3.Controls.Add(CrossPatchRemapButton);
+        groupBox3.Controls.Add(CrossMapperOriginalAssembly);
+        groupBox3.Controls.Add(CrossPatchingOrigAssemblyButton);
+        groupBox3.Location = new Point(13, 6);
+        groupBox3.Name = "groupBox3";
+        groupBox3.Size = new Size(631, 162);
+        groupBox3.TabIndex = 21;
+        groupBox3.TabStop = false;
+        groupBox3.Text = "Remap";
+        // 
+        // CrossPatchRemapOutputButton
+        // 
+        CrossPatchRemapOutputButton.Location = new Point(513, 75);
+        CrossPatchRemapOutputButton.Name = "CrossPatchRemapOutputButton";
+        CrossPatchRemapOutputButton.Size = new Size(112, 34);
+        CrossPatchRemapOutputButton.TabIndex = 23;
+        CrossPatchRemapOutputButton.Text = "Choose";
+        CrossPatchRemapOutputButton.UseVisualStyleBackColor = true;
+        CrossPatchRemapOutputButton.Click += CrossPatchingProjectReferncePath_Click;
+        // 
+        // CrossMapperReferencePath
+        // 
+        CrossMapperReferencePath.Location = new Point(6, 77);
+        CrossMapperReferencePath.Name = "CrossMapperReferencePath";
+        CrossMapperReferencePath.PlaceholderText = "Remapped Assembly Output (Assembly-CSharp-Remapped)";
+        CrossMapperReferencePath.ReadOnly = true;
+        CrossMapperReferencePath.Size = new Size(501, 31);
+        CrossMapperReferencePath.TabIndex = 14;
+        // 
+        // CrossPatchRemapButton
+        // 
+        CrossPatchRemapButton.Location = new Point(513, 115);
+        CrossPatchRemapButton.Name = "CrossPatchRemapButton";
+        CrossPatchRemapButton.Size = new Size(112, 34);
+        CrossPatchRemapButton.TabIndex = 21;
+        CrossPatchRemapButton.Text = "Remap";
+        CrossPatchRemapButton.UseVisualStyleBackColor = true;
+        CrossPatchRemapButton.Click += CrossPatchRemapButton_Click;
+        // 
+        // CrossMapperOriginalAssembly
+        // 
+        CrossMapperOriginalAssembly.Location = new Point(6, 39);
+        CrossMapperOriginalAssembly.Name = "CrossMapperOriginalAssembly";
+        CrossMapperOriginalAssembly.PlaceholderText = "Original Input Target Assembly (Assembly-CSharp)";
+        CrossMapperOriginalAssembly.ReadOnly = true;
+        CrossMapperOriginalAssembly.Size = new Size(501, 31);
+        CrossMapperOriginalAssembly.TabIndex = 13;
+        // 
+        // CrossPatchingOrigAssemblyButton
+        // 
+        CrossPatchingOrigAssemblyButton.Location = new Point(513, 37);
+        CrossPatchingOrigAssemblyButton.Name = "CrossPatchingOrigAssemblyButton";
+        CrossPatchingOrigAssemblyButton.Size = new Size(112, 34);
+        CrossPatchingOrigAssemblyButton.TabIndex = 16;
+        CrossPatchingOrigAssemblyButton.Text = "Choose";
+        CrossPatchingOrigAssemblyButton.UseVisualStyleBackColor = true;
+        CrossPatchingOrigAssemblyButton.Click += CrossPatchingOrigAssemblyButton_Click;
         // 
         // SettingsTab
         // 
@@ -1743,19 +1733,15 @@ partial class ReCodeItForm
     private TabPage tabPage5;
     private Button PickNameMangledPathButton;
     private TextBox NameMangledAssemblyTextBox;
-    private Button CrossPatchingBuildDirButton;
-    private TextBox textBox1;
-    private Button CrossPatchingMappingChooseButton;
+    private Button CrossPatchingProjectBuildDirButton;
+    private TextBox CrossMapperProjTargetAssembly;
     private Button CrossMappingOutputChooseButton;
     private Button CrossPatchingOrigAssemblyButton;
-    private TextBox textBox2;
-    private TextBox textBox3;
-    private TextBox textBox4;
-    private GroupBox groupBox4;
-    private CheckBox CrossPatcherUnsealEnabled;
-    private CheckBox CrossPatchingPublicizeEnabled;
+    private TextBox CrossMapperProjectBuildPath;
+    private TextBox CrossMapperReferencePath;
+    private TextBox CrossMapperOriginalAssembly;
     private GroupBox groupBox3;
-    private Button CrossPatchingRunButton;
+    private Button CrossPatchRemapButton;
     private CheckBox UnsealCheckbox;
     private CheckBox RenamePropertiesCheckbox;
     private CheckBox PublicizeCheckbox;
@@ -1778,4 +1764,7 @@ partial class ReCodeItForm
     private CheckBox AutoMapperPublicize;
     private CheckBox AutoMapperRenameProps;
     private CheckBox AutoMapperRenameFields;
+    private Button CrossPatchRemapOutputButton;
+    private Button CrossPatchRunButton;
+    private GroupBox groupBox4;
 }

@@ -111,25 +111,19 @@ public class CrossPatchingSettings
     public string OriginalAssemblyPath { get; set; }
 
     /// <summary>
-    /// Where should the new reference dll be placed? (This is the remapped one you reference in
-    /// your project)
+    /// The output path of the remapped assembly
     /// </summary>
-    public string ReferencePath { get; set; }
+    public string RemappedOutput { get; set; }
 
     /// <summary>
-    /// Path to the mapping file
+    /// The input path of the assembly referenced by the remapped dll
     /// </summary>
-    public string MappingPath { get; set; }
+    public string ReversePatchInputPath { get; set; }
 
     /// <summary>
-    /// The build path of your project, specifically the absolute path of your projects output assembly.
+    /// Where should the de-patched dll be placed? (This is the one you test/distribute with)
     /// </summary>
-    public string TargetProjectAssemblyBuildPath { get; set; }
-
-    /// <summary>
-    /// Where should the final cross patched dll be placed? (This is the one you test/distribute with)
-    /// </summary>
-    public string OutputPath { get; set; }
+    public string ReversePatchOutputPath { get; set; }
 }
 
 /// <summary>
