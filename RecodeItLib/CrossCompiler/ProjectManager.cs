@@ -6,20 +6,8 @@ namespace ReCodeIt.CrossCompiler;
 
 public static class ProjectManager
 {
-    /// <summary>
-    /// Key: Path of the project, Value: Project file
-    /// </summary>
-    public static Dictionary<string, CrossCompilerProjectModel> Projects { get; private set; } = [];
-
     public static CrossCompilerProjectModel ActiveProject { get; private set; }
-
     private static CrossCompilerSettings Settings => DataProvider.Settings.CrossCompiler;
-
-    private static HashSet<string> CopyIgnoreDirectories { get; } =
-    [
-        ".vs",
-        ".git"
-    ];
 
     public static void CreateProject(
         string OrigAssemblyPath,
@@ -55,7 +43,7 @@ public static class ProjectManager
 
         Logger.Log($"Found Solution: {ActiveProject.SolutionName}", ConsoleColor.Yellow);
         Logger.Log($"Original Assembly Checksum: {ActiveProject.OriginalAssemblyHash}", ConsoleColor.Yellow);
-        Logger.Log($"Project Generated to: {DataProvider.Settings.CrossCompiler.LastActiveProjectPath}", ConsoleColor.Green);
+        Logger.Log($"Project Generated to: {DataProvider.Settings.CrossCompiler.LastLoadedProject}", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
@@ -119,9 +107,16 @@ public static class ProjectManager
             file.CopyTo(tempPath, true);
         }
 
+        // We dont want git and vs directories they are often locked leading to problems
+        List<string> copyIgnoreDirectories =
+        [
+            ".vs",
+            ".git"
+        ];
+
         foreach (DirectoryInfo subdir in dirs)
         {
-            if (CopyIgnoreDirectories.Contains(subdir.Name)) { continue; }
+            if (copyIgnoreDirectories.Contains(subdir.Name)) { continue; }
 
             string tempPath = Path.Combine(destinationDirPath, subdir.Name);
             CopyProjectRecursive(subdir.FullName, tempPath);
@@ -141,7 +136,7 @@ public static class ProjectManager
 
         File.WriteAllText(path, jsonText);
 
-        DataProvider.Settings.CrossCompiler.LastActiveProjectPath = path;
+        DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
         DataProvider.SaveAppSettings();
 
         Logger.Log($"Cross Compiler project json generated to {path}", ConsoleColor.Green);
@@ -158,7 +153,7 @@ public static class ProjectManager
 
         var model = JsonConvert.DeserializeObject<CrossCompilerProjectModel>(jsonText);
 
-        DataProvider.Settings.CrossCompiler.LastActiveProjectPath = path;
+        DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
         DataProvider.SaveAppSettings();
 
         Logger.Log($"Loaded Cross Compiler Project: {model?.RemappedAssemblyPath}");

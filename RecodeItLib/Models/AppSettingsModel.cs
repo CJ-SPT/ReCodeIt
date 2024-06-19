@@ -107,7 +107,12 @@ public class CrossCompilerSettings
     /// <summary>
     /// Last Loaded Project Path
     /// </summary>
-    public string LastActiveProjectPath { get; set; }
+    public string LastLoadedProject { get; set; }
+
+    /// <summary>
+    /// Should the last active project be auto loaded
+    /// </summary>
+    public bool AutoLoadLastActiveProject { get; set; }
 }
 
 /// <summary>

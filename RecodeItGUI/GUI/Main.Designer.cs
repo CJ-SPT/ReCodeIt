@@ -145,6 +145,7 @@ partial class ReCodeItForm
         CCMappingTreeView = new TreeView();
         CrossPatchRunButton = new Button();
         groupBox3 = new GroupBox();
+        CCAutoLoadLastProj = new CheckBox();
         CCLoadProjButton = new Button();
         CCRemappedOutputButton = new Button();
         CCRemappedOutputText = new TextBox();
@@ -160,7 +161,6 @@ partial class ReCodeItForm
         groupBox2 = new GroupBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
-        CCAutoLoadLastProj = new CheckBox();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -262,6 +262,7 @@ partial class ReCodeItForm
         ActiveProjectMappingsCheckbox.TabIndex = 39;
         ActiveProjectMappingsCheckbox.Text = "Use Active Project Mappings";
         ActiveProjectMappingsCheckbox.UseVisualStyleBackColor = true;
+        ActiveProjectMappingsCheckbox.CheckedChanged += ActiveProjectMappingsCheckbox_CheckedChanged;
         // 
         // LoadedMappingFilePath
         // 
@@ -1481,6 +1482,19 @@ partial class ReCodeItForm
         groupBox3.TabStop = false;
         groupBox3.Text = "ReCodeIt Proj Settings";
         // 
+        // CCAutoLoadLastProj
+        // 
+        CCAutoLoadLastProj.AutoSize = true;
+        CCAutoLoadLastProj.Checked = true;
+        CCAutoLoadLastProj.CheckState = CheckState.Checked;
+        CCAutoLoadLastProj.Location = new Point(6, 247);
+        CCAutoLoadLastProj.Name = "CCAutoLoadLastProj";
+        CCAutoLoadLastProj.Size = new Size(259, 29);
+        CCAutoLoadLastProj.TabIndex = 34;
+        CCAutoLoadLastProj.Text = "Auto load last active project";
+        CCAutoLoadLastProj.UseVisualStyleBackColor = true;
+        CCAutoLoadLastProj.CheckedChanged += CCAutoLoadLastProj_CheckedChanged_1;
+        // 
         // CCLoadProjButton
         // 
         CCLoadProjButton.Location = new Point(475, 247);
@@ -1631,16 +1645,6 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.Text = "Debug logging";
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
-        // 
-        // CCAutoLoadLastProj
-        // 
-        CCAutoLoadLastProj.AutoSize = true;
-        CCAutoLoadLastProj.Location = new Point(6, 247);
-        CCAutoLoadLastProj.Name = "CCAutoLoadLastProj";
-        CCAutoLoadLastProj.Size = new Size(259, 29);
-        CCAutoLoadLastProj.TabIndex = 34;
-        CCAutoLoadLastProj.Text = "Auto load last active project";
-        CCAutoLoadLastProj.UseVisualStyleBackColor = true;
         // 
         // ReCodeItForm
         // 

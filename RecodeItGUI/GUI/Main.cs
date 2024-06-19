@@ -28,13 +28,15 @@ public partial class ReCodeItForm : Form
 
         DataProvider.LoadMappingFile(DataProvider.Settings.Remapper.MappingPath);
         LoadedMappingFilePath.Text = DataProvider.Settings.Remapper.MappingPath;
+
         PopulateDomainUpDowns();
         RefreshSettingsPage();
         RefreshAutoMapperPage();
-        RefreshCrossPatchPage();
-        RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
+        RefreshCrossCompilerPage();
 
+        RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
         Remapper.OnComplete += ReloadTreeView;
+
         ReloadTreeView(this, EventArgs.Empty);
     }
 
@@ -641,8 +643,29 @@ public partial class ReCodeItForm : Form
 
     #region CROSS_COMPILER
 
-    private void RefreshCrossPatchPage()
+    private void RefreshCrossCompilerPage()
     {
+        var ccSettings = DataProvider.Settings.CrossCompiler;
+
+        CCAutoLoadLastProj.Checked = ccSettings.AutoLoadLastActiveProject;
+
+        if (ccSettings.AutoLoadLastActiveProject)
+        {
+            // Dont continue if its an empty string, it hasnt been set yet
+            if (ccSettings.LastLoadedProject == string.Empty)
+            {
+                return;
+            }
+
+            if (!File.Exists(ccSettings.LastLoadedProject))
+            {
+                MessageBox.Show("Couldnt find last loaded project");
+                return;
+            }
+
+            ProjectManager.LoadProject(ccSettings.LastLoadedProject);
+        }
+
         if (CrossCompiler.ActiveProject == null)
         {
             return;
@@ -663,7 +686,6 @@ public partial class ReCodeItForm : Form
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossCompiler.OriginalAssemblyPath = result;
             CCOriginalAssemblyText.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -675,7 +697,6 @@ public partial class ReCodeItForm : Form
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossCompiler.RemappedOutput = result;
             CCRemappedOutputText.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -687,7 +708,6 @@ public partial class ReCodeItForm : Form
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossCompiler.VisualStudioSolutionPath = result;
             CCVisualStudioProjDirText.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -699,7 +719,6 @@ public partial class ReCodeItForm : Form
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossCompiler.BuildPath = result;
             CCBuildDirText.Text = result;
             DataProvider.SaveAppSettings();
         }
@@ -743,6 +762,18 @@ public partial class ReCodeItForm : Form
         {
             ProjectManager.LoadProject(result);
         }
+    }
+
+    private void CCAutoLoadLastProj_CheckedChanged_1(object sender, EventArgs e)
+    {
+        DataProvider.Settings.CrossCompiler.AutoLoadLastActiveProject = CCAutoLoadLastProj.Checked;
+        DataProvider.SaveAppSettings();
+    }
+
+    // Use the projects remap list on the remap tab
+    private void ActiveProjectMappingsCheckbox_CheckedChanged(object sender, EventArgs e)
+    {
+        // TODO
     }
 
     #endregion CROSS_COMPILER
@@ -904,7 +935,7 @@ public partial class ReCodeItForm : Form
 
     private void tabPage5_Click(object sender, EventArgs e)
     {
-        RefreshCrossPatchPage();
+        RefreshCrossCompilerPage();
     }
 
     private void SettingsTab_Click(object sender, EventArgs e)

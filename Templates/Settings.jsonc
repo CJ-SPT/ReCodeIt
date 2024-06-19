@@ -66,6 +66,7 @@
         ]
     },
     "CrossCompiler": {
+        "AutoLoadLastActiveProject": true,                              // Autoload last active project
         "LastLoadedProject": ""                                         // Last loaded project path
     }
 }
