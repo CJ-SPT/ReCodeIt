@@ -148,6 +148,7 @@ partial class ReCodeItForm
         label4 = new Label();
         CCMappingTreeView = new TreeView();
         groupBox3 = new GroupBox();
+        CCImportMappings = new Button();
         CCAutoLoadLastProj = new CheckBox();
         CCLoadProjButton = new Button();
         CCRemappedOutputButton = new Button();
@@ -1440,7 +1441,7 @@ partial class ReCodeItForm
         groupBox5.Controls.Add(CCBuildConfiguration);
         groupBox5.Controls.Add(CrossPatchRemapButton);
         groupBox5.Controls.Add(CrossPatchRunButton);
-        groupBox5.Location = new Point(6, 274);
+        groupBox5.Location = new Point(6, 304);
         groupBox5.Name = "groupBox5";
         groupBox5.Size = new Size(631, 215);
         groupBox5.TabIndex = 27;
@@ -1495,6 +1496,7 @@ partial class ReCodeItForm
         // 
         // groupBox3
         // 
+        groupBox3.Controls.Add(CCImportMappings);
         groupBox3.Controls.Add(CCAutoLoadLastProj);
         groupBox3.Controls.Add(CCLoadProjButton);
         groupBox3.Controls.Add(CCRemappedOutputButton);
@@ -1508,10 +1510,21 @@ partial class ReCodeItForm
         groupBox3.Controls.Add(CCBuildDirText);
         groupBox3.Location = new Point(6, 30);
         groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(631, 238);
+        groupBox3.Size = new Size(631, 268);
         groupBox3.TabIndex = 21;
         groupBox3.TabStop = false;
         groupBox3.Text = "ReCodeIt Proj Settings";
+        // 
+        // CCImportMappings
+        // 
+        CCImportMappings.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+        CCImportMappings.Location = new Point(6, 219);
+        CCImportMappings.Name = "CCImportMappings";
+        CCImportMappings.Size = new Size(150, 34);
+        CCImportMappings.TabIndex = 35;
+        CCImportMappings.Text = "Import Mappings";
+        CCImportMappings.UseVisualStyleBackColor = true;
+        CCImportMappings.Click += CCImportMappings_Click;
         // 
         // CCAutoLoadLastProj
         // 
@@ -1869,4 +1882,5 @@ partial class ReCodeItForm
     private GroupBox groupBox5;
     private TextBox CCBuildConfiguration;
     private LinkLabel GithubLinkLabel;
+    private Button CCImportMappings;
 }

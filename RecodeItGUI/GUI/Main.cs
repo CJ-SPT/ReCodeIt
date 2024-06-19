@@ -48,7 +48,7 @@ public partial class ReCodeItForm : Form
         {
             if (CrossCompiler.ActiveProject == null)
             {
-                DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath);
+                DataProvider.Remaps = DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath);
                 LoadedMappingFilePath.Text = AppSettings.Remapper.MappingPath;
                 return;
             }
@@ -60,7 +60,7 @@ public partial class ReCodeItForm : Form
             return;
         }
 
-        DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath);
+        DataProvider.Remaps = DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath);
         LoadedMappingFilePath.Text = AppSettings.Remapper.MappingPath;
     }
 
@@ -283,7 +283,7 @@ public partial class ReCodeItForm : Form
 
         if (result == string.Empty) { return; }
 
-        DataProvider.LoadMappingFile(result);
+        DataProvider.Remaps = DataProvider.LoadMappingFile(result);
         AppSettings.Remapper.MappingPath = result;
         AppSettings.Remapper.UseProjectMappings = false;
         ActiveProjectMappingsCheckbox.Checked = false;
@@ -892,6 +892,47 @@ public partial class ReCodeItForm : Form
     private void ActiveProjectMappingsCheckbox_CheckedChanged(object sender, EventArgs e)
     {
         // TODO
+    }
+
+    private void CCImportMappings_Click(object sender, EventArgs e)
+    {
+        if (CrossCompiler.ActiveProject == null)
+        {
+            MessageBox.Show("No project is loaded to add mappings too.");
+            return;
+        }
+
+        var answer = MessageBox.Show(
+            "'Yes' to Add the items to the existing list, or 'No' to clear the list before adding these.",
+            "Add Items to existing list?",
+            MessageBoxButtons.YesNoCancel);
+
+        switch (answer)
+        {
+            case DialogResult.Yes:
+                break;
+
+            case DialogResult.No:
+                CrossCompiler.ActiveProject.RemapModels.Clear();
+                break;
+
+            case DialogResult.Cancel:
+                return;
+
+            default:
+                break;
+        }
+
+        var result = GUIHelpers.OpenFileDialog("Select a mapping file",
+            "JSON Files (*.json)|*.json|JSONC Files (*.jsonc)|*.jsonc|All Files (*.*)|*.*");
+
+        if (result == string.Empty) { return; }
+
+        var remaps = DataProvider.LoadMappingFile(result);
+
+        CrossCompiler.ActiveProject.RemapModels.AddRange(remaps);
+
+        ReloadCCRemapTreeView(CrossCompiler.ActiveProject.RemapModels);
     }
 
     #endregion CROSS_COMPILER

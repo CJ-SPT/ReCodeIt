@@ -18,7 +18,7 @@ public static class DataProvider
 
     public static readonly string ReCodeItProjectsPath = Path.Combine(AppContext.BaseDirectory, "Projects");
 
-    public static List<RemapModel> Remaps { get; private set; } = [];
+    public static List<RemapModel> Remaps { get; set; } = [];
 
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
@@ -74,7 +74,7 @@ public static class DataProvider
         //Logger.Log($"App settings saved to {settingsPath}");
     }
 
-    public static void LoadMappingFile(string path)
+    public static List<RemapModel> LoadMappingFile(string path)
     {
         if (!File.Exists(path))
         {
@@ -85,9 +85,9 @@ public static class DataProvider
 
         ScoringModels = [];
 
-        Remaps = JsonConvert.DeserializeObject<List<RemapModel>>(jsonText);
+        var remaps = JsonConvert.DeserializeObject<List<RemapModel>>(jsonText);
 
-        if (Remaps == null) { Remaps = []; }
+        if (remaps == null) { return []; }
 
         var properties = typeof(SearchParams).GetProperties();
 
@@ -103,6 +103,8 @@ public static class DataProvider
         }
 
         Logger.Log($"Mapping file loaded from '{path}' containing {Remaps.Count} remaps");
+
+        return remaps;
     }
 
     public static void SaveMapping()
