@@ -172,8 +172,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis" Version="4.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.10.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
     <PackageReference Include="morelinq" Version="4.2.0" />
