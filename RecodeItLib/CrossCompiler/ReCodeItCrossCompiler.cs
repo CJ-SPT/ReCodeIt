@@ -20,6 +20,8 @@ public class ReCodeItCrossCompiler
 
     public CrossCompilerProjectModel ActiveProject => ProjectManager.ActiveProject;
 
+    private int _identifiersChanged = 0;
+
     public void StartRemap()
     {
         ActiveProject.ChangedTypes.Clear();
@@ -42,18 +44,20 @@ public class ReCodeItCrossCompiler
             ActiveProject.RemappedAssemblyPath,
             true);
 
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-        Logger.Log($"Cross patch remap result", ConsoleColor.Yellow);
-        Logger.Log($"Changed {ActiveProject.ChangedTypes.Count} types", ConsoleColor.Yellow);
-        Logger.Log($"Original assembly path: {ActiveProject.OriginalAssemblyPath}", ConsoleColor.Yellow);
-        Logger.Log($"Original assembly hash: {ActiveProject.OriginalAssemblyHash}", ConsoleColor.Yellow);
-        Logger.Log($"Original patched assembly path: {ActiveProject.RemappedAssemblyPath}", ConsoleColor.Yellow);
-        Logger.Log($"Original patched assembly hash: {ActiveProject.RemappedAssemblyHash}", ConsoleColor.Yellow);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log($"Generated Cross Mapped DLL for project {ActiveProject.SolutionName}", ConsoleColor.Green);
+        Logger.Log($"Changed {ActiveProject.ChangedTypes.Count} types", ConsoleColor.Green);
+        Logger.Log($"Original assembly path: {ActiveProject.OriginalAssemblyPath}", ConsoleColor.Green);
+        Logger.Log($"Original assembly hash: {ActiveProject.OriginalAssemblyHash}", ConsoleColor.Green);
+        Logger.Log($"Original patched assembly path: {ActiveProject.RemappedAssemblyPath}", ConsoleColor.Green);
+        //Logger.Log($"Original patched assembly hash: {ActiveProject.RemappedAssemblyHash}", ConsoleColor.Green);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
     public void StartCrossCompile()
     {
+        _identifiersChanged = 0;
+
         AnalyzeSourceFiles();
 
         StartBuild();
@@ -70,7 +74,7 @@ public class ReCodeItCrossCompiler
         var fileName = Path.GetFileName(ActiveProject.OriginalAssemblyPath);
         var outPath = Path.Combine(ActiveProject.RemappedAssemblyPath, fileName);
 
-        Logger.Log($"Placing original reference back into cloned build directory", ConsoleColor.Green);
+        Logger.Log($"Placing original reference into cloned build directory", ConsoleColor.Green);
         File.Copy(ActiveProject.OriginalAssemblyPath, outPath, true);
     }
 
@@ -87,7 +91,9 @@ public class ReCodeItCrossCompiler
 
         if (!identifiers.Any()) { return; }
 
-        Logger.Log($"changing {identifiers.Count()} identifiers in file {Path.GetFileName(file)}", ConsoleColor.Green);
+        _identifiersChanged += identifiers.Count();
+
+        Logger.Log($"changing {_identifiersChanged} identifiers in file {Path.GetFileName(file)}", ConsoleColor.Green);
 
         // Do Black Voodoo Magic
         var newRoot = root.ReplaceNodes(identifiers, (oldNode, newNode) =>
@@ -107,14 +113,16 @@ public class ReCodeItCrossCompiler
             $"/p:Configuration=Debug " +
             $"/p:Platform=\"Any CPU\"";
 
+        var path = ActiveProject.VisualStudioClonedSolutionDirectory;
+
         // clean the project first
-        ExecuteDotnetCommand("clean", ActiveProject.VisualStudioClonedSolutionDirectory);
+        ExecuteDotnetCommand("clean", path);
 
         // Restore packages
-        ExecuteDotnetCommand("restore", ActiveProject.VisualStudioClonedSolutionDirectory);
+        ExecuteDotnetCommand("restore", path);
 
         // Then build the project
-        ExecuteDotnetCommand(arguements, ActiveProject.VisualStudioClonedSolutionDirectory);
+        ExecuteDotnetCommand(arguements, path);
     }
 
     private static void ExecuteDotnetCommand(string arguments, string workingDirectory)
@@ -148,5 +156,13 @@ public class ReCodeItCrossCompiler
 
     private void MoveResult()
     {
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log($"Successfully Cross Compiled Project {ActiveProject.SolutionName}", ConsoleColor.Green);
+        Logger.Log($"Reversed {_identifiersChanged} Remaps", ConsoleColor.Green);
+        Logger.Log($"Original assembly path: {ActiveProject.OriginalAssemblyPath}", ConsoleColor.Green);
+        Logger.Log($"Original assembly hash: {ActiveProject.OriginalAssemblyHash}", ConsoleColor.Green);
+        Logger.Log($"Final build directory: {ActiveProject.BuildDirectory}", ConsoleColor.Green);
+        //Logger.Log($"Original patched assembly hash: {ActiveProject.RemappedAssemblyHash}", ConsoleColor.Green);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 }
