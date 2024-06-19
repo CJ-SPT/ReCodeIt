@@ -14,3 +14,7 @@ ReCodeIt is a .net assembly remapper, it can take an assembly which has been de-
 # Planned Features
 - Cross Mapping - The ability to code in a de-obfuscated state and then convert your code back to a state the original assembly understands once your done. This provide the ability to rename things to whatever you want and use them.
 - De-Obfuscation - Taking a obfuscated dll and de-obfuscating it
+
+# Support me
+
+If you want to support the project you [buy me a coffee!](https://ko-fi.com/dirtbikercj)
