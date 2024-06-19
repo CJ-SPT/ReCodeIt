@@ -24,12 +24,6 @@ public class ReCodeItCrossCompiler
     {
         ActiveProject.ChangedTypes.Clear();
 
-        Remapper.InitializeRemap(
-            ActiveProject.RemapModels,
-            ActiveProject.OriginalAssemblyPath,
-            ActiveProject.RemappedAssemblyPath,
-            true);
-
         if (ActiveProject == null)
         {
             Logger.Log("ERROR: No Cross Compiler Project is loaded, create or load one first.", ConsoleColor.Red);
@@ -41,6 +35,12 @@ public class ReCodeItCrossCompiler
             Logger.Log("ERROR: No ReCodeIt Project directory is set. (Project Creation Failed)", ConsoleColor.Red);
             return;
         }
+
+        Remapper.InitializeRemap(
+            ActiveProject.RemapModels,
+            ActiveProject.OriginalAssemblyPath,
+            ActiveProject.RemappedAssemblyPath,
+            true);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
         Logger.Log($"Cross patch remap result", ConsoleColor.Yellow);
