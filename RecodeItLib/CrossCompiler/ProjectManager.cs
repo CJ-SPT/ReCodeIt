@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
 
@@ -8,6 +10,8 @@ public static class ProjectManager
 {
     public static CrossCompilerProjectModel ActiveProject { get; private set; }
     private static CrossCompilerSettings Settings => DataProvider.Settings.CrossCompiler;
+
+    public static List<string> AllProjectSourceFiles { get; private set; } = [];
 
     public static void CreateProject(
         string OrigAssemblyPath,
@@ -51,6 +55,7 @@ public static class ProjectManager
     {
         ActiveProject = LoadCrossCompilerProjModel(path);
         CopyVisualStudioProject(ActiveProject);
+        LoadVSProjectFromClone();
         Logger.Log($"Found and Loaded ReCodeIt Project at {path}");
     }
 
@@ -139,7 +144,7 @@ public static class ProjectManager
         DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
         DataProvider.SaveAppSettings();
 
-        Logger.Log($"Cross Compiler project json generated to {path}", ConsoleColor.Green);
+        Logger.Log($"Cross Compiler project json saved to {path}", ConsoleColor.Green);
     }
 
     private static CrossCompilerProjectModel LoadCrossCompilerProjModel(string path)
@@ -159,5 +164,37 @@ public static class ProjectManager
         Logger.Log($"Loaded Cross Compiler Project: {model?.RemappedAssemblyPath}");
 
         return model!;
+    }
+
+    private static void LoadVSProjectFromClone()
+    {
+        var path = Path.Combine(
+            DataProvider.ReCodeItProjectsPath,
+            ActiveProject.SolutionName);
+
+        // Find all the source files in the project, we dont want anything from the obj folder.
+        AllProjectSourceFiles = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories)
+            .Where(file => !file.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
+            .ToList();
+
+        Logger.Log($"Found {AllProjectSourceFiles.Count} source files in the project", ConsoleColor.Yellow);
+    }
+
+    private static void AnalyzeSyntaxTree(SyntaxNode root)
+    {
+        // Example: Find all method declarations
+        var methodDeclarations = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
+
+        foreach (var method in methodDeclarations)
+        {
+            Logger.Log($"Method: {method.Identifier.Text}");
+            Logger.Log($"Return Type: {method.ReturnType}");
+            Logger.Log("Parameters:");
+            foreach (var parameter in method.ParameterList.Parameters)
+            {
+                Logger.Log($"  {parameter.Type} {parameter.Identifier}");
+            }
+            Logger.Log(string.Empty);
+        }
     }
 }

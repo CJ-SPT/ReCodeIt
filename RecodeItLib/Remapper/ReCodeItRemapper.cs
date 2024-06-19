@@ -34,6 +34,8 @@ public class ReCodeItRemapper
 
     private bool CrossMapMode { get; set; } = false;
 
+    private string AssemblyPath { get; set; }
+
     /// <summary>
     /// Start the remapping process
     /// </summary>
@@ -45,6 +47,7 @@ public class ReCodeItRemapper
     {
         DataProvider.LoadAssemblyDefinition(assemblyPath);
 
+        AssemblyPath = assemblyPath;
         CrossMapMode = crossMapMode;
 
         OutPath = outPath;
@@ -275,7 +278,12 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
-        var path = DataProvider.WriteAssemblyDefinition(OutPath);
+        var fileName = Path.GetFileName(AssemblyPath);
+        var path = Path.Combine(OutPath, fileName);
+
+        Logger.Log(fileName);
+
+        path = DataProvider.WriteAssemblyDefinition(path);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);

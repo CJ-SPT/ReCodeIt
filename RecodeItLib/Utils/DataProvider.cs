@@ -194,20 +194,10 @@ public static class DataProvider
         Logger.Log($"Module {fileName} not found in assembly {fileName}");
     }
 
-    public static string WriteAssemblyDefinition(string path, string filename = "")
+    public static string WriteAssemblyDefinition(string path)
     {
-        filename = filename != string.Empty
-            ? filename
-            : Path.GetFileNameWithoutExtension(path) + "-Remapped.dll";
+        AssemblyDefinition.Write(path);
 
-        var strippedPath = Path.GetDirectoryName(path);
-
-        var remappedPath = Path.Combine(strippedPath!, filename);
-
-        AssemblyDefinition.Write(remappedPath);
-
-        Logger.Log($"Writing Assembly {filename} to path {remappedPath}");
-
-        return remappedPath;
+        return path;
     }
 }

@@ -1,4 +1,7 @@
-﻿using ReCodeIt.Models;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
 
@@ -55,6 +58,45 @@ public class ReCodeItCrossCompiler
 
     public void StartCrossCompile()
     {
-        //CopyVisualStudioProject();
+        AnalyzeSourceFiles();
+    }
+
+    private void AnalyzeSourceFiles()
+    {
+        foreach (var file in ProjectManager.AllProjectSourceFiles)
+        {
+            AnalyzeSourcefile(file);
+        }
+    }
+
+    private void AnalyzeSourcefile(string file)
+    {
+        var source = LoadSourceFile(file);
+        var syntaxTree = CSharpSyntaxTree.ParseText(source);
+        var root = syntaxTree.GetCompilationUnitRoot();
+
+        var identifiers = root.DescendantNodes()
+                .OfType<IdentifierNameSyntax>()
+                .Where(id => ActiveProject.ChangedTypes.ContainsKey(id.Identifier.Text));
+
+        if (!identifiers.Any()) { return; }
+
+        Logger.Log($"found {identifiers.Count()} objects to change in file {Path.GetFileNameWithoutExtension(file)}");
+
+        // Replace "RigClass" with "NewRigClass"
+        var newRoot = root.ReplaceNodes(identifiers, (oldNode, newNode) =>
+                SyntaxFactory.IdentifierName(ActiveProject.ChangedTypes[oldNode.Identifier.Text])
+                    .WithLeadingTrivia(oldNode.GetLeadingTrivia())
+                    .WithTrailingTrivia(oldNode.GetTrailingTrivia()));
+    }
+
+    /// <summary>
+    /// Loads a source file from disk
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    private string LoadSourceFile(string path)
+    {
+        return File.ReadAllText(path);
     }
 }
