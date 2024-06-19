@@ -46,6 +46,7 @@ public class ReCodeItCrossCompiler
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Generated Cross Mapped DLL for project {ActiveProject.SolutionName}", ConsoleColor.Green);
+        Logger.Log($"Built to: {Path.Combine(ActiveProject.RemappedAssemblyPath, ActiveProject.OriginalAssemblyDllName)}", ConsoleColor.Green);
         Logger.Log($"Changed {ActiveProject.ChangedTypes.Count} types", ConsoleColor.Green);
         Logger.Log($"Original assembly path: {ActiveProject.OriginalAssemblyPath}", ConsoleColor.Green);
         Logger.Log($"Original assembly hash: {ActiveProject.OriginalAssemblyHash}", ConsoleColor.Green);

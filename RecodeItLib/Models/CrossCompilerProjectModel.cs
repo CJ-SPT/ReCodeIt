@@ -44,6 +44,10 @@ public class CrossCompilerProjectModel
         DataProvider.ReCodeItProjectsPath,
         SolutionName);
 
+    public string ProjectDllName => SolutionName + ".dll";
+
+    public string OriginalAssemblyDllName => Path.GetFileName(OriginalAssemblyPath);
+
     /// <summary>
     /// This is where the final dll is built to
     ///

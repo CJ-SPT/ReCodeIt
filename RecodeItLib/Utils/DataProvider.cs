@@ -71,7 +71,7 @@ public static class DataProvider
 
         File.WriteAllText(settingsPath, jsonText);
 
-        Logger.Log($"App settings saved to {settingsPath}");
+        //Logger.Log($"App settings saved to {settingsPath}");
     }
 
     public static void LoadMappingFile(string path)
