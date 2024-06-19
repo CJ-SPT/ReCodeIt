@@ -42,6 +42,11 @@ public class RemapperSettings
     /// </summary>
     public string MappingPath { get; set; }
 
+    /// <summary>
+    /// Use the projects mappings instead of a standalone file
+    /// </summary>
+    public bool UseProjectMappings { get; set; }
+
     public MappingSettings MappingSettings { get; set; }
 }
 

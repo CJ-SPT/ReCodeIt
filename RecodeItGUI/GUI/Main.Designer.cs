@@ -262,7 +262,7 @@ partial class ReCodeItForm
         ActiveProjectMappingsCheckbox.TabIndex = 39;
         ActiveProjectMappingsCheckbox.Text = "Use Active Project Mappings";
         ActiveProjectMappingsCheckbox.UseVisualStyleBackColor = true;
-        ActiveProjectMappingsCheckbox.CheckedChanged += ActiveProjectMappingsCheckbox_CheckedChanged;
+        ActiveProjectMappingsCheckbox.CheckedChanged += UseProjectAutoMapping_Clicked;
         // 
         // LoadedMappingFilePath
         // 
@@ -1433,7 +1433,6 @@ partial class ReCodeItForm
         groupBox4.TabIndex = 22;
         groupBox4.TabStop = false;
         groupBox4.Text = "Cross Compiler";
-        groupBox4.Enter += groupBox4_Enter;
         // 
         // label4
         // 

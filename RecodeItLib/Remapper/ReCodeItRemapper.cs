@@ -22,7 +22,7 @@ public class ReCodeItRemapper
 
     public static bool IsRunning { get; private set; } = false;
 
-    public delegate void OnCompleteHandler(object sender, EventArgs e);
+    public delegate void OnCompleteHandler();
 
     public event OnCompleteHandler? OnComplete;
 
@@ -281,7 +281,7 @@ public class ReCodeItRemapper
 
         Reset();
         IsRunning = false;
-        OnComplete?.Invoke(this, EventArgs.Empty);
+        OnComplete?.Invoke();
     }
 
     private void Reset()

@@ -123,7 +123,7 @@ public static class ProjectManager
         }
     }
 
-    private static void SaveCrossCompilerProjectModel(CrossCompilerProjectModel model)
+    public static void SaveCrossCompilerProjectModel(CrossCompilerProjectModel model)
     {
         var path = Path.Combine(model.VisualStudioSolutionPath, "ReCodeItProj.json");
 
