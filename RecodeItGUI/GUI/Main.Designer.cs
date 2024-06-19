@@ -141,9 +141,12 @@ partial class ReCodeItForm
         AutoMapperTypesExcludeBox = new ListBox();
         tabPage5 = new TabPage();
         groupBox4 = new GroupBox();
+        groupBox5 = new GroupBox();
+        CCBuildConfiguration = new TextBox();
+        CrossPatchRemapButton = new Button();
+        CrossPatchRunButton = new Button();
         label4 = new Label();
         CCMappingTreeView = new TreeView();
-        CrossPatchRunButton = new Button();
         groupBox3 = new GroupBox();
         CCAutoLoadLastProj = new CheckBox();
         CCLoadProjButton = new Button();
@@ -156,13 +159,10 @@ partial class ReCodeItForm
         CCBuildDirButton = new Button();
         CCOriginalAssemblyButton = new Button();
         CCBuildDirText = new TextBox();
-        CrossPatchRemapButton = new Button();
         SettingsTab = new TabPage();
         groupBox2 = new GroupBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
-        groupBox5 = new GroupBox();
-        CCBuildConfiguration = new TextBox();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -181,10 +181,10 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
         tabPage5.SuspendLayout();
         groupBox4.SuspendLayout();
+        groupBox5.SuspendLayout();
         groupBox3.SuspendLayout();
         SettingsTab.SuspendLayout();
         groupBox2.SuspendLayout();
-        groupBox5.SuspendLayout();
         SuspendLayout();
         // 
         // TabPageRemapper
@@ -202,7 +202,7 @@ partial class ReCodeItForm
         // RemapTreeView
         // 
         RemapTreeView.BackColor = Color.Gray;
-        RemapTreeView.Location = new Point(790, 20);
+        RemapTreeView.Location = new Point(781, 20);
         RemapTreeView.Name = "RemapTreeView";
         RemapTreeView.Size = new Size(487, 890);
         RemapTreeView.TabIndex = 1;
@@ -1420,7 +1420,6 @@ partial class ReCodeItForm
         tabPage5.Size = new Size(1336, 953);
         tabPage5.TabIndex = 4;
         tabPage5.Text = "Cross Compiler";
-        tabPage5.Click += tabPage5_Click;
         // 
         // groupBox4
         // 
@@ -1435,22 +1434,36 @@ partial class ReCodeItForm
         groupBox4.TabStop = false;
         groupBox4.Text = "Cross Compiler";
         // 
-        // label4
+        // groupBox5
         // 
-        label4.AutoSize = true;
-        label4.Location = new Point(786, 27);
-        label4.Name = "label4";
-        label4.Size = new Size(446, 25);
-        label4.TabIndex = 26;
-        label4.Text = "Project Mappings (Double click to edit in remap editor)";
+        groupBox5.Controls.Add(CCBuildConfiguration);
+        groupBox5.Controls.Add(CrossPatchRemapButton);
+        groupBox5.Controls.Add(CrossPatchRunButton);
+        groupBox5.Location = new Point(6, 274);
+        groupBox5.Name = "groupBox5";
+        groupBox5.Size = new Size(631, 215);
+        groupBox5.TabIndex = 27;
+        groupBox5.TabStop = false;
+        groupBox5.Text = "Generation";
         // 
-        // CCMappingTreeView
+        // CCBuildConfiguration
         // 
-        CCMappingTreeView.BackColor = Color.Gray;
-        CCMappingTreeView.Location = new Point(786, 60);
-        CCMappingTreeView.Name = "CCMappingTreeView";
-        CCMappingTreeView.Size = new Size(472, 825);
-        CCMappingTreeView.TabIndex = 25;
+        CCBuildConfiguration.Location = new Point(6, 30);
+        CCBuildConfiguration.Name = "CCBuildConfiguration";
+        CCBuildConfiguration.PlaceholderText = "Build Configuration";
+        CCBuildConfiguration.Size = new Size(150, 31);
+        CCBuildConfiguration.TabIndex = 25;
+        CCBuildConfiguration.Text = "Debug";
+        // 
+        // CrossPatchRemapButton
+        // 
+        CrossPatchRemapButton.Location = new Point(6, 175);
+        CrossPatchRemapButton.Name = "CrossPatchRemapButton";
+        CrossPatchRemapButton.Size = new Size(316, 34);
+        CrossPatchRemapButton.TabIndex = 21;
+        CrossPatchRemapButton.Text = "Generate Remapped Reference";
+        CrossPatchRemapButton.UseVisualStyleBackColor = true;
+        CrossPatchRemapButton.Click += CrossPatchRemapButton_Click;
         // 
         // CrossPatchRunButton
         // 
@@ -1461,6 +1474,23 @@ partial class ReCodeItForm
         CrossPatchRunButton.Text = "Compile Project";
         CrossPatchRunButton.UseVisualStyleBackColor = true;
         CrossPatchRunButton.Click += CrossPatchRunButton_Click;
+        // 
+        // label4
+        // 
+        label4.AutoSize = true;
+        label4.Location = new Point(786, 18);
+        label4.Name = "label4";
+        label4.Size = new Size(446, 25);
+        label4.TabIndex = 26;
+        label4.Text = "Project Mappings (Double click to edit in remap editor)";
+        // 
+        // CCMappingTreeView
+        // 
+        CCMappingTreeView.BackColor = Color.Gray;
+        CCMappingTreeView.Location = new Point(786, 46);
+        CCMappingTreeView.Name = "CCMappingTreeView";
+        CCMappingTreeView.Size = new Size(487, 855);
+        CCMappingTreeView.TabIndex = 25;
         // 
         // groupBox3
         // 
@@ -1591,16 +1621,6 @@ partial class ReCodeItForm
         CCBuildDirText.Size = new Size(501, 31);
         CCBuildDirText.TabIndex = 30;
         // 
-        // CrossPatchRemapButton
-        // 
-        CrossPatchRemapButton.Location = new Point(6, 175);
-        CrossPatchRemapButton.Name = "CrossPatchRemapButton";
-        CrossPatchRemapButton.Size = new Size(316, 34);
-        CrossPatchRemapButton.TabIndex = 21;
-        CrossPatchRemapButton.Text = "Generate Remapped Reference";
-        CrossPatchRemapButton.UseVisualStyleBackColor = true;
-        CrossPatchRemapButton.Click += CrossPatchRemapButton_Click;
-        // 
         // SettingsTab
         // 
         SettingsTab.BackColor = SystemColors.ControlDarkDark;
@@ -1645,27 +1665,6 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
-        // groupBox5
-        // 
-        groupBox5.Controls.Add(CCBuildConfiguration);
-        groupBox5.Controls.Add(CrossPatchRemapButton);
-        groupBox5.Controls.Add(CrossPatchRunButton);
-        groupBox5.Location = new Point(6, 274);
-        groupBox5.Name = "groupBox5";
-        groupBox5.Size = new Size(631, 215);
-        groupBox5.TabIndex = 27;
-        groupBox5.TabStop = false;
-        groupBox5.Text = "Generation";
-        // 
-        // CCBuildConfiguration
-        // 
-        CCBuildConfiguration.Location = new Point(6, 30);
-        CCBuildConfiguration.Name = "CCBuildConfiguration";
-        CCBuildConfiguration.PlaceholderText = "Build Configuration";
-        CCBuildConfiguration.Size = new Size(150, 31);
-        CCBuildConfiguration.TabIndex = 25;
-        CCBuildConfiguration.Text = "Debug";
-        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1701,13 +1700,13 @@ partial class ReCodeItForm
         tabPage5.ResumeLayout(false);
         groupBox4.ResumeLayout(false);
         groupBox4.PerformLayout();
+        groupBox5.ResumeLayout(false);
+        groupBox5.PerformLayout();
         groupBox3.ResumeLayout(false);
         groupBox3.PerformLayout();
         SettingsTab.ResumeLayout(false);
         groupBox2.ResumeLayout(false);
         groupBox2.PerformLayout();
-        groupBox5.ResumeLayout(false);
-        groupBox5.PerformLayout();
         ResumeLayout(false);
     }
 

@@ -19,6 +19,7 @@ public partial class ReCodeItForm : Form
     private static Settings AppSettings => DataProvider.Settings;
 
     private int _selectedRemapTreeIndex = 0;
+    private int _selectedCCRemapTreeIndex = 0;
 
     public ReCodeItForm()
     {
@@ -32,7 +33,8 @@ public partial class ReCodeItForm : Form
         RefreshCrossCompilerPage();
         LoadMappingFile();
 
-        RemapTreeView.NodeMouseDoubleClick += EditSelectedRemap;
+        RemapTreeView.NodeMouseDoubleClick += ManualEditSelectedRemap;
+        CCMappingTreeView.NodeMouseDoubleClick += CCEditSelectedRemap;
         Remapper.OnComplete += ReloadTreeAfterMapping;
     }
 
@@ -52,7 +54,7 @@ public partial class ReCodeItForm : Form
 
             LoadedMappingFilePath.Text = $"Project Mode: ({CrossCompiler.ActiveProject.SolutionName})";
 
-            ReloadTreeView(CrossCompiler.ActiveProject.RemapModels);
+            ReloadRemapTreeView(CrossCompiler.ActiveProject.RemapModels);
 
             return;
         }
@@ -80,7 +82,7 @@ public partial class ReCodeItForm : Form
             LoadedMappingFilePath.Text = AppSettings.Remapper?.MappingPath;
         }
 
-        ReloadTreeView(remaps!);
+        ReloadRemapTreeView(remaps!);
 
         DataProvider.SaveAppSettings();
     }
@@ -234,7 +236,7 @@ public partial class ReCodeItForm : Form
                 CrossCompiler.ActiveProject.OriginalAssemblyPath,
                 CrossCompiler.ActiveProject.RemappedAssemblyPath);
 
-            ReloadTreeView(CrossCompiler.ActiveProject.RemapModels);
+            ReloadRemapTreeView(CrossCompiler.ActiveProject.RemapModels);
             return;
         }
 
@@ -249,7 +251,7 @@ public partial class ReCodeItForm : Form
             AppSettings.Remapper.AssemblyPath,
             AppSettings.Remapper.OutputPath);
 
-        ReloadTreeView(DataProvider.Remaps);
+        ReloadRemapTreeView(DataProvider.Remaps);
     }
 
     /// <summary>
@@ -257,7 +259,7 @@ public partial class ReCodeItForm : Form
     /// </summary>
     private void ReloadTreeAfterMapping()
     {
-        ReloadTreeView(DataProvider.Remaps);
+        ReloadRemapTreeView(DataProvider.Remaps);
     }
 
     private void SaveMappingFileButton_Click(object sender, EventArgs e)
@@ -776,6 +778,8 @@ public partial class ReCodeItForm : Form
         CCRemappedOutputText.Text = activeProj.RemappedAssemblyPath;
         CCVisualStudioProjDirText.Text = activeProj.VisualStudioSolutionPath;
         CCBuildDirText.Text = activeProj.BuildDirectory;
+
+        ReloadCCRemapTreeView(activeProj.RemapModels);
     }
 
     private void CCOriginalAssemblyButton_Click(object sender, EventArgs e)
@@ -873,6 +877,7 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             ProjectManager.LoadProject(result);
+            ReloadCCRemapTreeView(ProjectManager.ActiveProject.RemapModels);
         }
     }
 
@@ -941,7 +946,34 @@ public partial class ReCodeItForm : Form
         NestedTypesExcludeBox.Items.Clear();
     }
 
-    private void EditSelectedRemap(object? sender, TreeNodeMouseClickEventArgs e)
+    private void CCEditSelectedRemap(object? sender, TreeNodeMouseClickEventArgs e)
+    {
+        if (e?.Node.Level != 0 || CCMappingTreeView?.SelectedNode?.Index < 0 || CCMappingTreeView?.SelectedNode?.Index == null)
+        {
+            return;
+        }
+
+        _selectedCCRemapTreeIndex = CCMappingTreeView.SelectedNode.Index;
+
+        // Go to remapper page
+        TabControlMain.SelectedIndex = 0;
+
+        DataProvider.Settings.Remapper.UseProjectMappings = true;
+        ActiveProjectMappingsCheckbox.Checked = true;
+        DataProvider.SaveAppSettings();
+
+        EditSelectedRemap(this, e, true);
+    }
+
+    private void ManualEditSelectedRemap(object? sender, TreeNodeMouseClickEventArgs e)
+    {
+        EditSelectedRemap(this, e);
+    }
+
+    private void EditSelectedRemap(
+        object? sender,
+        TreeNodeMouseClickEventArgs e,
+        bool isComingFromOtherTab = false)
     {
         if (e?.Node.Level != 0 || RemapTreeView?.SelectedNode?.Index < 0 || RemapTreeView?.SelectedNode?.Index == null)
         {
@@ -953,7 +985,7 @@ public partial class ReCodeItForm : Form
         ResetAllRemapFields();
 
         var remap = AppSettings.Remapper.UseProjectMappings
-            ? CrossCompiler.ActiveProject.RemapModels.ElementAt(_selectedRemapTreeIndex)
+            ? CrossCompiler.ActiveProject.RemapModels.ElementAt(isComingFromOtherTab ? _selectedCCRemapTreeIndex : _selectedRemapTreeIndex)
             : DataProvider.Remaps.ElementAt(_selectedRemapTreeIndex);
 
         NewTypeName.Text = remap.NewTypeName;
@@ -1041,36 +1073,27 @@ public partial class ReCodeItForm : Form
         HasGenericParametersUpDown.BuildStringList("HasGenericParams");
     }
 
-    #region TAB_REFRESH
-
-    private void AutoMapperTab_Click(object sender, EventArgs e)
-    {
-        RefreshAutoMapperPage();
-    }
-
-    private void tabPage5_Click(object sender, EventArgs e)
-    {
-        RefreshCrossCompilerPage();
-    }
-
-    private void SettingsTab_Click(object sender, EventArgs e)
-    {
-        RefreshSettingsPage();
-    }
-
-    #endregion TAB_REFRESH
-
     /// <summary>
     /// Subscribes the the remappers OnComplete event
     /// </summary>
     /// <param name="remaps"></param>
-    private void ReloadTreeView(List<RemapModel> remaps)
+    private void ReloadRemapTreeView(List<RemapModel> remaps)
     {
         RemapTreeView.Nodes.Clear();
 
         foreach (var remap in remaps)
         {
             RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
+        }
+    }
+
+    private void ReloadCCRemapTreeView(List<RemapModel> remaps)
+    {
+        CCMappingTreeView.Nodes.Clear();
+
+        foreach (var remap in remaps)
+        {
+            CCMappingTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
         }
     }
 }
