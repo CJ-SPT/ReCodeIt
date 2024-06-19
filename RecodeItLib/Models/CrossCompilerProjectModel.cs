@@ -2,18 +2,56 @@
 
 public class CrossCompilerProjectModel
 {
+    #region REQUIRED_ON_CREATION
+
+    /// <summary>
+    /// The path of the original assembly
+    ///
+    /// (Required on creation)
+    /// </summary>
     public string OriginalAssemblyPath { get; set; }
 
-    public string OriginalAssemblyHash { get; set; }
-
-    public string VisualStudioSolutionDirectory { get; set; }
-
-    public string SolutionPath { get; set; }
-
-    public string ReCodeItProjectDir { get; set; }
-
+    /// <summary>
+    /// Remapped output path
+    ///
+    /// (Required on creation)
+    /// </summary>
     public string RemappedAssemblyPath { get; set; }
 
+    /// <summary>
+    /// The path to the working directory vs project
+    ///
+    /// (Required on creation)
+    /// </summary>
+    public string VisualStudioSolutionPath { get; set; }
+
+    /// <summary>
+    /// This is where the final dll is built to
+    ///
+    /// (Required on creation)
+    /// </summary>
+    public string BuildDirectory { get; set; }
+
+    #endregion REQUIRED_ON_CREATION
+
+    /// <summary>
+    /// Name of the solution
+    /// </summary>
+    public string SolutionName { get; set; }
+
+    /// <summary>
+    /// The ReCodeIt.json path
+    /// </summary>
+    public string ReCodeItProjectPath { get; set; }
+
+    /// <summary>
+    /// Remapped output hash
+    /// </summary>
+    public string OriginalAssemblyHash { get; set; }
+
+    /// <summary>
+    /// Remapped output hash
+    /// </summary>
     public string RemappedAssemblyHash { get; set; }
 
     /// <summary>

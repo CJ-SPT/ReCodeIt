@@ -31,6 +31,7 @@ partial class ReCodeItForm
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        ActiveProjectMappingsCheckbox = new CheckBox();
         LoadedMappingFilePath = new TextBox();
         RemapperUseForceRename = new CheckBox();
         RemapperUnseal = new CheckBox();
@@ -140,24 +141,26 @@ partial class ReCodeItForm
         AutoMapperTypesExcludeBox = new ListBox();
         tabPage5 = new TabPage();
         groupBox4 = new GroupBox();
+        label4 = new Label();
+        CCMappingTreeView = new TreeView();
         CrossPatchRunButton = new Button();
         groupBox3 = new GroupBox();
+        CCLoadProjButton = new Button();
+        CCRemappedOutputButton = new Button();
+        CCRemappedOutputText = new TextBox();
+        CCOriginalAssemblyText = new TextBox();
+        CCVisualStudioProjDirText = new TextBox();
         CrossCompilerNewProjectButton = new Button();
-        CrossPatchRemapOutputButton = new Button();
-        CrossMapperReferencePath = new TextBox();
-        CrossMapperOriginalAssembly = new TextBox();
-        CrossMapperProjectBuildPath = new TextBox();
-        CrossPatchingProjectBuildDirButton = new Button();
-        CrossPatchingOrigAssemblyButton = new Button();
-        CrossMapperProjTargetAssembly = new TextBox();
-        CrossMappingOutputChooseButton = new Button();
+        CCVisualStudioProjDirButton = new Button();
+        CCBuildDirButton = new Button();
+        CCOriginalAssemblyButton = new Button();
+        CCBuildDirText = new TextBox();
         CrossPatchRemapButton = new Button();
         SettingsTab = new TabPage();
         groupBox2 = new GroupBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
-        CrossCompilerProjectComboBox = new ComboBox();
-        label1 = new Label();
+        CCAutoLoadLastProj = new CheckBox();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -203,6 +206,7 @@ partial class ReCodeItForm
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(ActiveProjectMappingsCheckbox);
         groupBox1.Controls.Add(LoadedMappingFilePath);
         groupBox1.Controls.Add(RemapperUseForceRename);
         groupBox1.Controls.Add(RemapperUnseal);
@@ -248,6 +252,16 @@ partial class ReCodeItForm
         groupBox1.TabIndex = 0;
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
+        // 
+        // ActiveProjectMappingsCheckbox
+        // 
+        ActiveProjectMappingsCheckbox.AutoSize = true;
+        ActiveProjectMappingsCheckbox.Location = new Point(448, 479);
+        ActiveProjectMappingsCheckbox.Name = "ActiveProjectMappingsCheckbox";
+        ActiveProjectMappingsCheckbox.Size = new Size(264, 29);
+        ActiveProjectMappingsCheckbox.TabIndex = 39;
+        ActiveProjectMappingsCheckbox.Text = "Use Active Project Mappings";
+        ActiveProjectMappingsCheckbox.UseVisualStyleBackColor = true;
         // 
         // LoadedMappingFilePath
         // 
@@ -1407,6 +1421,8 @@ partial class ReCodeItForm
         // 
         // groupBox4
         // 
+        groupBox4.Controls.Add(label4);
+        groupBox4.Controls.Add(CCMappingTreeView);
         groupBox4.Controls.Add(CrossPatchRunButton);
         groupBox4.Controls.Add(groupBox3);
         groupBox4.Controls.Add(CrossPatchRemapButton);
@@ -1416,6 +1432,24 @@ partial class ReCodeItForm
         groupBox4.TabIndex = 22;
         groupBox4.TabStop = false;
         groupBox4.Text = "Cross Compiler";
+        groupBox4.Enter += groupBox4_Enter;
+        // 
+        // label4
+        // 
+        label4.AutoSize = true;
+        label4.Location = new Point(786, 27);
+        label4.Name = "label4";
+        label4.Size = new Size(446, 25);
+        label4.TabIndex = 26;
+        label4.Text = "Project Mappings (Double click to edit in remap editor)";
+        // 
+        // CCMappingTreeView
+        // 
+        CCMappingTreeView.BackColor = Color.Gray;
+        CCMappingTreeView.Location = new Point(786, 60);
+        CCMappingTreeView.Name = "CCMappingTreeView";
+        CCMappingTreeView.Size = new Size(472, 825);
+        CCMappingTreeView.TabIndex = 25;
         // 
         // CrossPatchRunButton
         // 
@@ -1429,17 +1463,17 @@ partial class ReCodeItForm
         // 
         // groupBox3
         // 
-        groupBox3.Controls.Add(label1);
-        groupBox3.Controls.Add(CrossCompilerProjectComboBox);
+        groupBox3.Controls.Add(CCAutoLoadLastProj);
+        groupBox3.Controls.Add(CCLoadProjButton);
+        groupBox3.Controls.Add(CCRemappedOutputButton);
+        groupBox3.Controls.Add(CCRemappedOutputText);
+        groupBox3.Controls.Add(CCOriginalAssemblyText);
+        groupBox3.Controls.Add(CCVisualStudioProjDirText);
         groupBox3.Controls.Add(CrossCompilerNewProjectButton);
-        groupBox3.Controls.Add(CrossPatchRemapOutputButton);
-        groupBox3.Controls.Add(CrossMapperReferencePath);
-        groupBox3.Controls.Add(CrossMapperOriginalAssembly);
-        groupBox3.Controls.Add(CrossMapperProjectBuildPath);
-        groupBox3.Controls.Add(CrossPatchingProjectBuildDirButton);
-        groupBox3.Controls.Add(CrossPatchingOrigAssemblyButton);
-        groupBox3.Controls.Add(CrossMapperProjTargetAssembly);
-        groupBox3.Controls.Add(CrossMappingOutputChooseButton);
+        groupBox3.Controls.Add(CCVisualStudioProjDirButton);
+        groupBox3.Controls.Add(CCBuildDirButton);
+        groupBox3.Controls.Add(CCOriginalAssemblyButton);
+        groupBox3.Controls.Add(CCBuildDirText);
         groupBox3.Location = new Point(6, 30);
         groupBox3.Name = "groupBox3";
         groupBox3.Size = new Size(631, 287);
@@ -1447,9 +1481,56 @@ partial class ReCodeItForm
         groupBox3.TabStop = false;
         groupBox3.Text = "ReCodeIt Proj Settings";
         // 
+        // CCLoadProjButton
+        // 
+        CCLoadProjButton.Location = new Point(475, 247);
+        CCLoadProjButton.Name = "CCLoadProjButton";
+        CCLoadProjButton.Size = new Size(150, 34);
+        CCLoadProjButton.TabIndex = 33;
+        CCLoadProjButton.Text = "Load Project";
+        CCLoadProjButton.UseVisualStyleBackColor = true;
+        CCLoadProjButton.Click += CCLoadProjButton_Click;
+        // 
+        // CCRemappedOutputButton
+        // 
+        CCRemappedOutputButton.Location = new Point(513, 66);
+        CCRemappedOutputButton.Name = "CCRemappedOutputButton";
+        CCRemappedOutputButton.Size = new Size(112, 34);
+        CCRemappedOutputButton.TabIndex = 32;
+        CCRemappedOutputButton.Text = "Choose";
+        CCRemappedOutputButton.UseVisualStyleBackColor = true;
+        CCRemappedOutputButton.Click += CCRemappedOutputButton_Click;
+        // 
+        // CCRemappedOutputText
+        // 
+        CCRemappedOutputText.Location = new Point(6, 68);
+        CCRemappedOutputText.Name = "CCRemappedOutputText";
+        CCRemappedOutputText.PlaceholderText = "Remapped Assembly Output (Assembly-CSharp-Remapped)";
+        CCRemappedOutputText.ReadOnly = true;
+        CCRemappedOutputText.Size = new Size(501, 31);
+        CCRemappedOutputText.TabIndex = 26;
+        // 
+        // CCOriginalAssemblyText
+        // 
+        CCOriginalAssemblyText.Location = new Point(6, 30);
+        CCOriginalAssemblyText.Name = "CCOriginalAssemblyText";
+        CCOriginalAssemblyText.PlaceholderText = "Original Input Target Assembly (Assembly-CSharp)";
+        CCOriginalAssemblyText.ReadOnly = true;
+        CCOriginalAssemblyText.Size = new Size(501, 31);
+        CCOriginalAssemblyText.TabIndex = 25;
+        // 
+        // CCVisualStudioProjDirText
+        // 
+        CCVisualStudioProjDirText.Location = new Point(6, 105);
+        CCVisualStudioProjDirText.Name = "CCVisualStudioProjDirText";
+        CCVisualStudioProjDirText.PlaceholderText = "Visual studio solution directory";
+        CCVisualStudioProjDirText.ReadOnly = true;
+        CCVisualStudioProjDirText.Size = new Size(501, 31);
+        CCVisualStudioProjDirText.TabIndex = 27;
+        // 
         // CrossCompilerNewProjectButton
         // 
-        CrossCompilerNewProjectButton.Location = new Point(475, 238);
+        CrossCompilerNewProjectButton.Location = new Point(319, 247);
         CrossCompilerNewProjectButton.Name = "CrossCompilerNewProjectButton";
         CrossCompilerNewProjectButton.Size = new Size(150, 34);
         CrossCompilerNewProjectButton.TabIndex = 25;
@@ -1457,81 +1538,44 @@ partial class ReCodeItForm
         CrossCompilerNewProjectButton.UseVisualStyleBackColor = true;
         CrossCompilerNewProjectButton.Click += CrossCompilerNewProjectButton_Click;
         // 
-        // CrossPatchRemapOutputButton
+        // CCVisualStudioProjDirButton
         // 
-        CrossPatchRemapOutputButton.Location = new Point(513, 75);
-        CrossPatchRemapOutputButton.Name = "CrossPatchRemapOutputButton";
-        CrossPatchRemapOutputButton.Size = new Size(112, 34);
-        CrossPatchRemapOutputButton.TabIndex = 23;
-        CrossPatchRemapOutputButton.Text = "Choose";
-        CrossPatchRemapOutputButton.UseVisualStyleBackColor = true;
-        CrossPatchRemapOutputButton.Click += CrossPatchingProjectReferncePath_Click;
+        CCVisualStudioProjDirButton.Location = new Point(513, 102);
+        CCVisualStudioProjDirButton.Name = "CCVisualStudioProjDirButton";
+        CCVisualStudioProjDirButton.Size = new Size(112, 34);
+        CCVisualStudioProjDirButton.TabIndex = 31;
+        CCVisualStudioProjDirButton.Text = "Choose";
+        CCVisualStudioProjDirButton.UseVisualStyleBackColor = true;
+        CCVisualStudioProjDirButton.Click += CCVisualStudioProjDirButton_Click;
         // 
-        // CrossMapperReferencePath
+        // CCBuildDirButton
         // 
-        CrossMapperReferencePath.Location = new Point(6, 77);
-        CrossMapperReferencePath.Name = "CrossMapperReferencePath";
-        CrossMapperReferencePath.PlaceholderText = "Remapped Assembly Output (Assembly-CSharp-Remapped)";
-        CrossMapperReferencePath.ReadOnly = true;
-        CrossMapperReferencePath.Size = new Size(501, 31);
-        CrossMapperReferencePath.TabIndex = 14;
+        CCBuildDirButton.Location = new Point(513, 141);
+        CCBuildDirButton.Name = "CCBuildDirButton";
+        CCBuildDirButton.Size = new Size(112, 34);
+        CCBuildDirButton.TabIndex = 29;
+        CCBuildDirButton.Text = "Choose";
+        CCBuildDirButton.UseVisualStyleBackColor = true;
+        CCBuildDirButton.Click += CCBuildDirButton_Click;
         // 
-        // CrossMapperOriginalAssembly
+        // CCOriginalAssemblyButton
         // 
-        CrossMapperOriginalAssembly.Location = new Point(6, 39);
-        CrossMapperOriginalAssembly.Name = "CrossMapperOriginalAssembly";
-        CrossMapperOriginalAssembly.PlaceholderText = "Original Input Target Assembly (Assembly-CSharp)";
-        CrossMapperOriginalAssembly.ReadOnly = true;
-        CrossMapperOriginalAssembly.Size = new Size(501, 31);
-        CrossMapperOriginalAssembly.TabIndex = 13;
+        CCOriginalAssemblyButton.Location = new Point(513, 28);
+        CCOriginalAssemblyButton.Name = "CCOriginalAssemblyButton";
+        CCOriginalAssemblyButton.Size = new Size(112, 34);
+        CCOriginalAssemblyButton.TabIndex = 28;
+        CCOriginalAssemblyButton.Text = "Choose";
+        CCOriginalAssemblyButton.UseVisualStyleBackColor = true;
+        CCOriginalAssemblyButton.Click += CCOriginalAssemblyButton_Click;
         // 
-        // CrossMapperProjectBuildPath
+        // CCBuildDirText
         // 
-        CrossMapperProjectBuildPath.Location = new Point(6, 114);
-        CrossMapperProjectBuildPath.Name = "CrossMapperProjectBuildPath";
-        CrossMapperProjectBuildPath.PlaceholderText = "Visual studio solution directory";
-        CrossMapperProjectBuildPath.ReadOnly = true;
-        CrossMapperProjectBuildPath.Size = new Size(501, 31);
-        CrossMapperProjectBuildPath.TabIndex = 15;
-        // 
-        // CrossPatchingProjectBuildDirButton
-        // 
-        CrossPatchingProjectBuildDirButton.Location = new Point(513, 111);
-        CrossPatchingProjectBuildDirButton.Name = "CrossPatchingProjectBuildDirButton";
-        CrossPatchingProjectBuildDirButton.Size = new Size(112, 34);
-        CrossPatchingProjectBuildDirButton.TabIndex = 20;
-        CrossPatchingProjectBuildDirButton.Text = "Choose";
-        CrossPatchingProjectBuildDirButton.UseVisualStyleBackColor = true;
-        CrossPatchingProjectBuildDirButton.Click += CrossPatchingProjectBuildDirButton_Click;
-        // 
-        // CrossPatchingOrigAssemblyButton
-        // 
-        CrossPatchingOrigAssemblyButton.Location = new Point(513, 37);
-        CrossPatchingOrigAssemblyButton.Name = "CrossPatchingOrigAssemblyButton";
-        CrossPatchingOrigAssemblyButton.Size = new Size(112, 34);
-        CrossPatchingOrigAssemblyButton.TabIndex = 16;
-        CrossPatchingOrigAssemblyButton.Text = "Choose";
-        CrossPatchingOrigAssemblyButton.UseVisualStyleBackColor = true;
-        CrossPatchingOrigAssemblyButton.Click += CrossPatchingOrigAssemblyButton_Click;
-        // 
-        // CrossMapperProjTargetAssembly
-        // 
-        CrossMapperProjTargetAssembly.Location = new Point(6, 151);
-        CrossMapperProjTargetAssembly.Name = "CrossMapperProjTargetAssembly";
-        CrossMapperProjTargetAssembly.PlaceholderText = "Build Directory";
-        CrossMapperProjTargetAssembly.ReadOnly = true;
-        CrossMapperProjTargetAssembly.Size = new Size(501, 31);
-        CrossMapperProjTargetAssembly.TabIndex = 19;
-        // 
-        // CrossMappingOutputChooseButton
-        // 
-        CrossMappingOutputChooseButton.Location = new Point(513, 150);
-        CrossMappingOutputChooseButton.Name = "CrossMappingOutputChooseButton";
-        CrossMappingOutputChooseButton.Size = new Size(112, 34);
-        CrossMappingOutputChooseButton.TabIndex = 17;
-        CrossMappingOutputChooseButton.Text = "Choose";
-        CrossMappingOutputChooseButton.UseVisualStyleBackColor = true;
-        CrossMappingOutputChooseButton.Click += CrossMappingOutputChooseButton_Click;
+        CCBuildDirText.Location = new Point(6, 142);
+        CCBuildDirText.Name = "CCBuildDirText";
+        CCBuildDirText.PlaceholderText = "Build Directory";
+        CCBuildDirText.ReadOnly = true;
+        CCBuildDirText.Size = new Size(501, 31);
+        CCBuildDirText.TabIndex = 30;
         // 
         // CrossPatchRemapButton
         // 
@@ -1588,23 +1632,15 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
-        // CrossCompilerProjectComboBox
+        // CCAutoLoadLastProj
         // 
-        CrossCompilerProjectComboBox.FormattingEnabled = true;
-        CrossCompilerProjectComboBox.Location = new Point(6, 238);
-        CrossCompilerProjectComboBox.Name = "CrossCompilerProjectComboBox";
-        CrossCompilerProjectComboBox.Size = new Size(194, 33);
-        CrossCompilerProjectComboBox.TabIndex = 26;
-        CrossCompilerProjectComboBox.SelectedIndexChanged += CrossCompilerProjectComboBox_SelectedIndexChanged;
-        // 
-        // label1
-        // 
-        label1.AutoSize = true;
-        label1.Location = new Point(206, 243);
-        label1.Name = "label1";
-        label1.Size = new Size(150, 25);
-        label1.TabIndex = 27;
-        label1.Text = "Available Projects";
+        CCAutoLoadLastProj.AutoSize = true;
+        CCAutoLoadLastProj.Location = new Point(6, 247);
+        CCAutoLoadLastProj.Name = "CCAutoLoadLastProj";
+        CCAutoLoadLastProj.Size = new Size(259, 29);
+        CCAutoLoadLastProj.TabIndex = 34;
+        CCAutoLoadLastProj.Text = "Auto load last active project";
+        CCAutoLoadLastProj.UseVisualStyleBackColor = true;
         // 
         // ReCodeItForm
         // 
@@ -1640,6 +1676,7 @@ partial class ReCodeItForm
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
         tabPage5.ResumeLayout(false);
         groupBox4.ResumeLayout(false);
+        groupBox4.PerformLayout();
         groupBox3.ResumeLayout(false);
         groupBox3.PerformLayout();
         SettingsTab.ResumeLayout(false);
@@ -1750,13 +1787,6 @@ partial class ReCodeItForm
     private TabPage tabPage5;
     private Button PickNameMangledPathButton;
     private TextBox NameMangledAssemblyTextBox;
-    private Button CrossPatchingProjectBuildDirButton;
-    private TextBox CrossMapperProjTargetAssembly;
-    private Button CrossMappingOutputChooseButton;
-    private Button CrossPatchingOrigAssemblyButton;
-    private TextBox CrossMapperProjectBuildPath;
-    private TextBox CrossMapperReferencePath;
-    private TextBox CrossMapperOriginalAssembly;
     private GroupBox groupBox3;
     private Button CrossPatchRemapButton;
     private CheckBox UnsealCheckbox;
@@ -1781,11 +1811,21 @@ partial class ReCodeItForm
     private CheckBox AutoMapperPublicize;
     private CheckBox AutoMapperRenameProps;
     private CheckBox AutoMapperRenameFields;
-    private Button CrossPatchRemapOutputButton;
     private Button CrossPatchRunButton;
     private GroupBox groupBox4;
     private TextBox LoadedMappingFilePath;
     private Button CrossCompilerNewProjectButton;
-    private ComboBox CrossCompilerProjectComboBox;
-    private Label label1;
+    private Button CCRemappedOutputButton;
+    private TextBox CCRemappedOutputText;
+    private TextBox CCOriginalAssemblyText;
+    private TextBox CCVisualStudioProjDirText;
+    private Button CCVisualStudioProjDirButton;
+    private Button CCOriginalAssemblyButton;
+    private TextBox CCBuildDirText;
+    private Button CCBuildDirButton;
+    private CheckBox ActiveProjectMappingsCheckbox;
+    private Label label4;
+    private TreeView CCMappingTreeView;
+    private Button CCLoadProjButton;
+    private CheckBox CCAutoLoadLastProj;
 }

@@ -1,5 +1,7 @@
+/// This entire file is fucked beyond belief, its just hacked together to make things work for now
+
 using ReCodeIt.AutoMapper;
-using ReCodeIt.CrossPatcher;
+using ReCodeIt.CrossCompiler;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
@@ -12,7 +14,7 @@ public partial class ReCodeItForm : Form
     public static ReCodeItRemapper Remapper { get; private set; } = new();
     public static ReCodeItAutoMapper AutoMapper { get; private set; } = new();
 
-    public static ReCodeItCrossCompiler CrossPatcher { get; private set; } = new();
+    public static ReCodeItCrossCompiler CrossCompiler { get; private set; }
 
     private RemapModel CurrentRemap { get; set; }
 
@@ -21,6 +23,9 @@ public partial class ReCodeItForm : Form
     public ReCodeItForm()
     {
         InitializeComponent();
+
+        CrossCompiler = new();
+
         DataProvider.LoadMappingFile(DataProvider.Settings.Remapper.MappingPath);
         LoadedMappingFilePath.Text = DataProvider.Settings.Remapper.MappingPath;
         PopulateDomainUpDowns();
@@ -636,101 +641,108 @@ public partial class ReCodeItForm : Form
 
     #region CROSS_COMPILER
 
-    /// <summary>
-    /// Remapper Input
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void CrossPatchingOrigAssemblyButton_Click(object sender, EventArgs e)
+    private void RefreshCrossPatchPage()
     {
-        var result = GUIHelpers.OpenFileDialog("Select the original assembly",
+        if (CrossCompiler.ActiveProject == null)
+        {
+            return;
+        }
+
+        var activeProj = CrossCompiler.ActiveProject;
+
+        CCOriginalAssemblyText.Text = activeProj.OriginalAssemblyPath;
+        CCRemappedOutputText.Text = activeProj.RemappedAssemblyPath;
+        CCVisualStudioProjDirText.Text = activeProj.VisualStudioSolutionPath;
+        CCBuildDirText.Text = activeProj.BuildDirectory;
+    }
+
+    private void CCOriginalAssemblyButton_Click(object sender, EventArgs e)
+    {
+        var result = GUIHelpers.OpenFileDialog("Select a DLL file",
             "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
 
         if (result != string.Empty)
         {
             DataProvider.Settings.CrossCompiler.OriginalAssemblyPath = result;
-            CrossMapperOriginalAssembly.Text = result;
+            CCOriginalAssemblyText.Text = result;
             DataProvider.SaveAppSettings();
         }
     }
 
-    /// <summary>
-    /// Remapper Output
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void CrossPatchingProjectReferncePath_Click(object sender, EventArgs e)
+    private void CCRemappedOutputButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFileDialog("Output path of the Remapped assembly",
-            "DLL Files (*.dll)|*.dll|All Files (*.*)|*.*");
+        var result = GUIHelpers.OpenFolderDialog("Select a Folder for the remapped reference dll");
 
         if (result != string.Empty)
         {
             DataProvider.Settings.CrossCompiler.RemappedOutput = result;
-            CrossMapperReferencePath.Text = result;
+            CCRemappedOutputText.Text = result;
             DataProvider.SaveAppSettings();
         }
     }
 
-    /// <summary>
-    /// Reverse Patch Input - The input path of the assembly referenced by the remapped dll
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void CrossPatchingProjectBuildDirButton_Click(object sender, EventArgs e)
+    private void CCVisualStudioProjDirButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFolderDialog("Select your visual studio solution directory");
+        var result = GUIHelpers.OpenFolderDialog("Select your visual studio project directory");
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossCompiler.VisualStudioSolutionDirectory = result;
-            CrossMapperProjectBuildPath.Text = result;
+            DataProvider.Settings.CrossCompiler.VisualStudioSolutionPath = result;
+            CCVisualStudioProjDirText.Text = result;
             DataProvider.SaveAppSettings();
         }
     }
 
-    /// <summary>
-    /// Reverse Patch output
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void CrossMappingOutputChooseButton_Click(object sender, EventArgs e)
+    private void CCBuildDirButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFolderDialog("Select your final build directory");
+        var result = GUIHelpers.OpenFolderDialog("Select where you want to final dll built at");
 
         if (result != string.Empty)
         {
-            DataProvider.Settings.CrossCompiler.BuildDirectory = result;
-            CrossMapperProjTargetAssembly.Text = result;
+            DataProvider.Settings.CrossCompiler.BuildPath = result;
+            CCBuildDirText.Text = result;
             DataProvider.SaveAppSettings();
         }
     }
 
     private void CrossPatchRemapButton_Click(object sender, EventArgs e)
     {
-        CrossPatcher.StartRemap();
+        CrossCompiler.StartRemap();
     }
 
     private void CrossPatchRunButton_Click(object sender, EventArgs e)
     {
-        CrossPatcher.StartCrossCompile();
-    }
-
-    private void RefreshCrossPatchPage()
-    {
-        CrossMapperOriginalAssembly.Text = DataProvider.Settings.CrossCompiler.OriginalAssemblyPath;
-        CrossMapperReferencePath.Text = DataProvider.Settings.CrossCompiler.RemappedOutput;
-        CrossMapperProjectBuildPath.Text = DataProvider.Settings.CrossCompiler.VisualStudioSolutionDirectory;
-        CrossMapperProjTargetAssembly.Text = DataProvider.Settings.CrossCompiler.BuildDirectory;
+        CrossCompiler.StartCrossCompile();
     }
 
     private void CrossCompilerNewProjectButton_Click(object sender, EventArgs e)
     {
-        CrossPatcher.CreateProject();
+        if (CCOriginalAssemblyText.Text == string.Empty
+            || CCRemappedOutputText.Text == string.Empty
+            || CCVisualStudioProjDirText.Text == string.Empty
+            || CCBuildDirText.Text == string.Empty)
+        {
+            // Dont create a project if any required fields are empty
+            MessageBox.Show("Cannot create a project without setting all paths in the project settings");
+            return;
+        }
+
+        ProjectManager.CreateProject(
+            CCOriginalAssemblyText.Text,
+            CCRemappedOutputText.Text,
+            CCVisualStudioProjDirText.Text,
+            CCBuildDirText.Text);
     }
 
-    private void CrossCompilerProjectComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    private void CCLoadProjButton_Click(object sender, EventArgs e)
     {
+        var result = GUIHelpers.OpenFileDialog("select a ReCodeItProj.json File",
+               "JSON Files (*.json)|*.json|JSONC Files (*.jsonc)|*.jsonc|All Files (*.*)|*.*");
+
+        if (result != string.Empty)
+        {
+            ProjectManager.LoadProject(result);
+        }
     }
 
     #endregion CROSS_COMPILER
@@ -915,5 +927,9 @@ public partial class ReCodeItForm : Form
         {
             RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
         }
+    }
+
+    private void groupBox4_Enter(object sender, EventArgs e)
+    {
     }
 }

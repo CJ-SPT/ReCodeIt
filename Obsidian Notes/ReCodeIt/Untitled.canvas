@@ -1,9 +1,7 @@
 {
 	"nodes":[
-		{"id":"ffede66903965668","x":-1260,"y":-740,"width":660,"height":300,"color":"4","type":"text","text":"Targeted ReMap Assembly Patching (TRAP)\n\n- The ability to remap types on your own, get a remapped DLL to reference for your project, use it. Then patch your assembly back to original types, for testing/production.\n- This will allow for ultimate flexibility in being version agnostic as the manual re-mapper is able to find things between versions by creating patterns for it to match. It works in the same fashion as using LINQ at runtime, because that's essentially what it is.\n- Below is how your build process would be effected."},
-		{"id":"af0d96082e896559","x":-1260,"y":-360,"width":660,"height":300,"color":"3","type":"text","text":"1. Provide the target DLL we wish to modify\n3. Build your desired remaps for it in the GUI editor.\n4. Remap it\n5. Use the re-mapped DLL as a reference in your project (Im using stash search for testing as it has a ton of GClass references)\n6. Once you are ready to compile, you will compile the dll as normal and place ReCodeIt on your sys path somewhere, then run a post build command to have ReCodeit patch your assembly back to original Type data."}
+		{"id":"ffede66903965668","x":-1260,"y":-740,"width":660,"height":300,"color":"4","type":"text","text":"ReCodeIt Cross Compiler\n\n- "},
+		{"id":"4116b6bff3d9eb35","x":-2020,"y":-740,"width":250,"height":460,"type":"text","text":"ReCodeItCrossCompiler\n\n"}
 	],
-	"edges":[
-		{"id":"01d35c343c0509f1","fromNode":"ffede66903965668","fromSide":"bottom","toNode":"af0d96082e896559","toSide":"top"}
-	]
+	"edges":[]
 }

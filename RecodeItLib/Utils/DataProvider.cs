@@ -8,15 +8,15 @@ public static class DataProvider
 {
     static DataProvider()
     {
-        if (!Directory.Exists(ProjectPath))
+        if (!Directory.Exists(ReCodeItProjectsPath))
         {
-            Directory.CreateDirectory(ProjectPath);
+            Directory.CreateDirectory(ReCodeItProjectsPath);
         }
     }
 
     public static readonly string DataPath = Path.Combine(AppContext.BaseDirectory, "Data");
 
-    public static readonly string ProjectPath = Path.Combine(AppContext.BaseDirectory, "Projects");
+    public static readonly string ReCodeItProjectsPath = Path.Combine(AppContext.BaseDirectory, "Projects");
 
     public static List<RemapModel> Remaps { get; private set; } = [];
 
@@ -156,38 +156,6 @@ public static class DataProvider
         File.WriteAllText(path, jsonText);
 
         Logger.Log($"Mapping file saved to {path}");
-    }
-
-    public static void SaveCrossCompilerProjectModel(CrossCompilerProjectModel model)
-    {
-        var path = Path.Combine(model.ReCodeItProjectDir, "ReCodeItProj.json");
-
-        JsonSerializerSettings settings = new()
-        {
-            Formatting = Formatting.Indented
-        };
-
-        var jsonText = JsonConvert.SerializeObject(model, settings);
-
-        File.WriteAllText(path, jsonText);
-
-        Logger.Log($"Cross Compiler project json generated to {path}", ConsoleColor.Green);
-    }
-
-    public static CrossCompilerProjectModel LoadCrossCompilerCacheModel(string path)
-    {
-        if (!File.Exists(path))
-        {
-            Logger.Log($"Error loading cache model from `{path}`", ConsoleColor.Red);
-        }
-
-        var jsonText = File.ReadAllText(path);
-
-        var model = JsonConvert.DeserializeObject<CrossCompilerProjectModel>(jsonText);
-
-        Logger.Log($"Loaded Cross Compiler Project: {model?.RemappedAssemblyPath}");
-
-        return model!;
     }
 
     public static void LoadAssemblyDefinition(string path)

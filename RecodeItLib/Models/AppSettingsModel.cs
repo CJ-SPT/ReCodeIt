@@ -105,25 +105,9 @@ public class AutoMapperSettings
 public class CrossCompilerSettings
 {
     /// <summary>
-    /// The path to the original assembly to use as a reference, for unity games its
-    /// 'Assembly-CSharp.dll' from the games Data/Managed Folder
+    /// Last Loaded Project Path
     /// </summary>
-    public string OriginalAssemblyPath { get; set; }
-
-    /// <summary>
-    /// The output path of the remapped assembly
-    /// </summary>
-    public string RemappedOutput { get; set; }
-
-    /// <summary>
-    /// The path to the solution directory of the project
-    /// </summary>
-    public string VisualStudioSolutionDirectory { get; set; }
-
-    /// <summary>
-    /// Where should the de-patched dll be placed? (This is the one you test/distribute with)
-    /// </summary>
-    public string BuildDirectory { get; set; }
+    public string LastActiveProjectPath { get; set; }
 }
 
 /// <summary>
