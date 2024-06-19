@@ -898,6 +898,7 @@ public partial class ReCodeItForm : Form
         // Text fields
 
         NewTypeName.Clear();
+        OriginalTypeName.Clear();
         BaseClassIncludeTextFIeld.Clear();
         BaseClassExcludeTextField.Clear();
         NestedTypeParentName.Clear();
