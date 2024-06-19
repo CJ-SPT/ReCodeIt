@@ -161,6 +161,8 @@ partial class ReCodeItForm
         groupBox2 = new GroupBox();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
+        groupBox5 = new GroupBox();
+        CCBuildConfiguration = new TextBox();
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -182,6 +184,7 @@ partial class ReCodeItForm
         groupBox3.SuspendLayout();
         SettingsTab.SuspendLayout();
         groupBox2.SuspendLayout();
+        groupBox5.SuspendLayout();
         SuspendLayout();
         // 
         // TabPageRemapper
@@ -1421,11 +1424,10 @@ partial class ReCodeItForm
         // 
         // groupBox4
         // 
+        groupBox4.Controls.Add(groupBox5);
         groupBox4.Controls.Add(label4);
         groupBox4.Controls.Add(CCMappingTreeView);
-        groupBox4.Controls.Add(CrossPatchRunButton);
         groupBox4.Controls.Add(groupBox3);
-        groupBox4.Controls.Add(CrossPatchRemapButton);
         groupBox4.Location = new Point(13, 18);
         groupBox4.Name = "groupBox4";
         groupBox4.Size = new Size(1273, 901);
@@ -1452,7 +1454,7 @@ partial class ReCodeItForm
         // 
         // CrossPatchRunButton
         // 
-        CrossPatchRunButton.Location = new Point(349, 323);
+        CrossPatchRunButton.Location = new Point(328, 175);
         CrossPatchRunButton.Name = "CrossPatchRunButton";
         CrossPatchRunButton.Size = new Size(150, 34);
         CrossPatchRunButton.TabIndex = 24;
@@ -1475,7 +1477,7 @@ partial class ReCodeItForm
         groupBox3.Controls.Add(CCBuildDirText);
         groupBox3.Location = new Point(6, 30);
         groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(631, 287);
+        groupBox3.Size = new Size(631, 238);
         groupBox3.TabIndex = 21;
         groupBox3.TabStop = false;
         groupBox3.Text = "ReCodeIt Proj Settings";
@@ -1485,7 +1487,7 @@ partial class ReCodeItForm
         CCAutoLoadLastProj.AutoSize = true;
         CCAutoLoadLastProj.Checked = true;
         CCAutoLoadLastProj.CheckState = CheckState.Checked;
-        CCAutoLoadLastProj.Location = new Point(6, 247);
+        CCAutoLoadLastProj.Location = new Point(318, 183);
         CCAutoLoadLastProj.Name = "CCAutoLoadLastProj";
         CCAutoLoadLastProj.Size = new Size(259, 29);
         CCAutoLoadLastProj.TabIndex = 34;
@@ -1495,7 +1497,7 @@ partial class ReCodeItForm
         // 
         // CCLoadProjButton
         // 
-        CCLoadProjButton.Location = new Point(475, 247);
+        CCLoadProjButton.Location = new Point(162, 179);
         CCLoadProjButton.Name = "CCLoadProjButton";
         CCLoadProjButton.Size = new Size(150, 34);
         CCLoadProjButton.TabIndex = 33;
@@ -1542,7 +1544,7 @@ partial class ReCodeItForm
         // 
         // CrossCompilerNewProjectButton
         // 
-        CrossCompilerNewProjectButton.Location = new Point(319, 247);
+        CrossCompilerNewProjectButton.Location = new Point(6, 179);
         CrossCompilerNewProjectButton.Name = "CrossCompilerNewProjectButton";
         CrossCompilerNewProjectButton.Size = new Size(150, 34);
         CrossCompilerNewProjectButton.TabIndex = 25;
@@ -1591,7 +1593,7 @@ partial class ReCodeItForm
         // 
         // CrossPatchRemapButton
         // 
-        CrossPatchRemapButton.Location = new Point(12, 323);
+        CrossPatchRemapButton.Location = new Point(6, 175);
         CrossPatchRemapButton.Name = "CrossPatchRemapButton";
         CrossPatchRemapButton.Size = new Size(316, 34);
         CrossPatchRemapButton.TabIndex = 21;
@@ -1643,6 +1645,27 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
+        // groupBox5
+        // 
+        groupBox5.Controls.Add(CCBuildConfiguration);
+        groupBox5.Controls.Add(CrossPatchRemapButton);
+        groupBox5.Controls.Add(CrossPatchRunButton);
+        groupBox5.Location = new Point(6, 274);
+        groupBox5.Name = "groupBox5";
+        groupBox5.Size = new Size(631, 215);
+        groupBox5.TabIndex = 27;
+        groupBox5.TabStop = false;
+        groupBox5.Text = "Generation";
+        // 
+        // CCBuildConfiguration
+        // 
+        CCBuildConfiguration.Location = new Point(6, 30);
+        CCBuildConfiguration.Name = "CCBuildConfiguration";
+        CCBuildConfiguration.PlaceholderText = "Build Configuration";
+        CCBuildConfiguration.Size = new Size(150, 31);
+        CCBuildConfiguration.TabIndex = 25;
+        CCBuildConfiguration.Text = "Debug";
+        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1683,6 +1706,8 @@ partial class ReCodeItForm
         SettingsTab.ResumeLayout(false);
         groupBox2.ResumeLayout(false);
         groupBox2.PerformLayout();
+        groupBox5.ResumeLayout(false);
+        groupBox5.PerformLayout();
         ResumeLayout(false);
     }
 
@@ -1829,4 +1854,6 @@ partial class ReCodeItForm
     private TreeView CCMappingTreeView;
     private Button CCLoadProjButton;
     private CheckBox CCAutoLoadLastProj;
+    private GroupBox groupBox5;
+    private TextBox CCBuildConfiguration;
 }
