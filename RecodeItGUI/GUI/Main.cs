@@ -196,9 +196,18 @@ public partial class ReCodeItForm : Form
 
     private void RemoveRemapButton_Click(object sender, EventArgs e)
     {
-        DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
+        if (AppSettings.Remapper.UseProjectMappings)
+        {
+            CrossCompiler.ActiveProject.RemapModels.RemoveAt(RemapTreeView.SelectedNode.Index);
+            ProjectManager.SaveCrossCompilerProjectModel(CrossCompiler.ActiveProject);
+        }
+        else
+        {
+            DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
+            DataProvider.SaveMapping();
+        }
+
         RemapTreeView.SelectedNode?.Remove();
-        DataProvider.SaveMapping();
     }
 
     private void EditRemapButton_Click(object sender, EventArgs e)
@@ -913,7 +922,9 @@ public partial class ReCodeItForm : Form
 
         ResetAll();
 
-        var remap = DataProvider.Remaps.ElementAt(_selectedRemapTreeIndex);
+        var remap = AppSettings.Remapper.UseProjectMappings
+            ? CrossCompiler.ActiveProject.RemapModels.ElementAt(_selectedRemapTreeIndex)
+            : DataProvider.Remaps.ElementAt(_selectedRemapTreeIndex);
 
         NewTypeName.Text = remap.NewTypeName;
         OriginalTypeName.Text = remap.OriginalTypeName;
