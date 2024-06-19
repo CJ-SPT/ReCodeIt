@@ -2,7 +2,7 @@
 
 namespace ReCodeIt.Utils;
 
-internal static class StringExtentions
+public static class SysTypeExtentions
 {
     /// <summary>
     /// Returns a string trimmed after any non letter character
@@ -40,8 +40,7 @@ internal static class StringExtentions
     }
 
     /// <summary>
-    /// Does the property or field name exist in a given list, this applies prefixes and handles
-    /// capitalization.
+    /// Does the property or field name exist in a given list, this applies prefixes and handles capitalization.
     /// </summary>
     /// <param name="str"></param>
     /// <param name="list"></param>

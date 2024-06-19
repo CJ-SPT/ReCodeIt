@@ -302,6 +302,7 @@ partial class ReCodeItForm
         RemapperUnseal.TabIndex = 36;
         RemapperUnseal.Text = "Unseal";
         RemapperUnseal.UseVisualStyleBackColor = true;
+        RemapperUnseal.CheckedChanged += RemapperUnseal_CheckedChanged;
         // 
         // RemapperPublicicize
         // 
@@ -314,6 +315,7 @@ partial class ReCodeItForm
         RemapperPublicicize.TabIndex = 35;
         RemapperPublicicize.Text = "Publicize";
         RemapperPublicicize.UseVisualStyleBackColor = true;
+        RemapperPublicicize.CheckedChanged += RemapperPublicicize_CheckedChanged;
         // 
         // RemapperOutputDirectoryPath
         // 
@@ -346,6 +348,7 @@ partial class ReCodeItForm
         RenamePropertiesCheckbox.TabIndex = 28;
         RenamePropertiesCheckbox.Text = "Rename Properties";
         RenamePropertiesCheckbox.UseVisualStyleBackColor = true;
+        RenamePropertiesCheckbox.CheckedChanged += RenamePropertiesCheckbox_CheckedChanged;
         // 
         // OutputDirectoryButton
         // 
@@ -386,6 +389,7 @@ partial class ReCodeItForm
         RenameFieldsCheckbox.TabIndex = 26;
         RenameFieldsCheckbox.Text = "Rename Fields";
         RenameFieldsCheckbox.UseVisualStyleBackColor = true;
+        RenameFieldsCheckbox.CheckedChanged += RenameFieldsCheckbox_CheckedChanged;
         // 
         // ConstructorCountEnabled
         // 

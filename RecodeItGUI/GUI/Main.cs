@@ -84,8 +84,6 @@ public partial class ReCodeItForm : Form
         }
 
         ReloadRemapTreeView(remaps!);
-
-        DataProvider.SaveAppSettings();
     }
 
     #region BUTTONS
@@ -214,7 +212,6 @@ public partial class ReCodeItForm : Form
         else
         {
             DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
-            DataProvider.SaveMapping();
         }
 
         RemapTreeView.SelectedNode?.Remove();
@@ -265,15 +262,7 @@ public partial class ReCodeItForm : Form
 
     private void SaveMappingFileButton_Click(object sender, EventArgs e)
     {
-        if (MessageBox.Show(
-            "Are you sure?",
-            "Confirmation",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Exclamation,
-            MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-        {
-            DataProvider.SaveMapping();
-        }
+        DataProvider.SaveMapping();
     }
 
     private void LoadMappingFileButton_Click(object sender, EventArgs e)
@@ -287,7 +276,6 @@ public partial class ReCodeItForm : Form
         AppSettings.Remapper.MappingPath = result;
         AppSettings.Remapper.UseProjectMappings = false;
         ActiveProjectMappingsCheckbox.Checked = false;
-        DataProvider.SaveAppSettings();
 
         LoadedMappingFilePath.Text = result;
 
@@ -466,6 +454,7 @@ public partial class ReCodeItForm : Form
             DataProvider.Settings.AutoMapper.TypesToIgnore.Add(AutoMapperTypesToIgnoreTextField.Text);
             AutoMapperTypesExcludeBox.Items.Add(AutoMapperTypesToIgnoreTextField.Text);
             AutoMapperTypesToIgnoreTextField.Clear();
+
             DataProvider.SaveAppSettings();
         }
     }
@@ -476,6 +465,7 @@ public partial class ReCodeItForm : Form
         {
             DataProvider.Settings.AutoMapper.TypesToIgnore.RemoveAt(AutoMapperTypesExcludeBox.SelectedIndex);
             AutoMapperTypesExcludeBox.Items.Remove(AutoMapperTypesExcludeBox.SelectedItem);
+
             DataProvider.SaveAppSettings();
         }
     }
@@ -492,6 +482,30 @@ public partial class ReCodeItForm : Form
     }
 
     #endregion LISTBOX_BUTTONS
+
+    #region CHECKBOX
+
+    private void RemapperUnseal_CheckedChanged(object sender, EventArgs e)
+    {
+        AppSettings.Remapper.MappingSettings.Unseal = RemapperUnseal.Checked;
+    }
+
+    private void RemapperPublicicize_CheckedChanged(object sender, EventArgs e)
+    {
+        AppSettings.Remapper.MappingSettings.Publicize = RemapperPublicicize.Checked;
+    }
+
+    private void RenameFieldsCheckbox_CheckedChanged(object sender, EventArgs e)
+    {
+        AppSettings.Remapper.MappingSettings.RenameFields = RenameFieldsCheckbox.Checked;
+    }
+
+    private void RenamePropertiesCheckbox_CheckedChanged(object sender, EventArgs e)
+    {
+        AppSettings.Remapper.MappingSettings.RenameProperties = RenamePropertiesCheckbox.Checked;
+    }
+
+    #endregion CHECKBOX
 
     #endregion BUTTONS
 
@@ -520,37 +534,11 @@ public partial class ReCodeItForm : Form
     private void DebugLoggingCheckbox_CheckedChanged(object sender, EventArgs e)
     {
         DataProvider.Settings.AppSettings.Debug = DebugLoggingCheckbox.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     private void SilentModeCheckbox_CheckedChanged(object sender, EventArgs e)
     {
         DataProvider.Settings.AppSettings.SilentMode = SilentModeCheckbox.Checked;
-        DataProvider.SaveAppSettings();
-    }
-
-    private void RenameFieldsCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-        DataProvider.Settings.AppSettings.RenameFields = RenameFieldsCheckbox.Checked;
-        DataProvider.SaveAppSettings();
-    }
-
-    private void RenamePropertiesCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-        DataProvider.Settings.AppSettings.RenameProperties = RenamePropertiesCheckbox.Checked;
-        DataProvider.SaveAppSettings();
-    }
-
-    private void PublicizeCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-        DataProvider.Settings.Remapper.MappingSettings.Publicize = PublicizeCheckbox.Checked;
-        DataProvider.SaveAppSettings();
-    }
-
-    private void UnsealCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-        DataProvider.Settings.Remapper.MappingSettings.Unseal = UnsealCheckbox.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     #endregion CHECKBOXES
@@ -560,7 +548,6 @@ public partial class ReCodeItForm : Form
     private void AutoMapperRequiredMatchesUpDown_ValueChanged(object sender, EventArgs e)
     {
         DataProvider.Settings.AutoMapper.RequiredMatches = (int)AutoMapperRequiredMatchesUpDown.Value;
-        DataProvider.SaveAppSettings();
     }
 
     #endregion UPDOWNS
@@ -615,7 +602,6 @@ public partial class ReCodeItForm : Form
         {
             AppSettings.AutoMapper.AssemblyPath = result;
             TargetAssemblyPath.Text = result;
-            DataProvider.SaveAppSettings();
         }
     }
 
@@ -627,20 +613,17 @@ public partial class ReCodeItForm : Form
         {
             AppSettings.AutoMapper.OutputPath = result;
             RemapperOutputDirectoryPath.Text = result;
-            DataProvider.SaveAppSettings();
         }
     }
 
     private void AutoMapperRequiredMatchesUpDown_ValueChanged_1(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.RequiredMatches = (int)AutoMapperRequiredMatchesUpDown.Value;
-        DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperMinLengthUpDown_ValueChanged(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.MinLengthToMatch = (int)AutoMapperMinLengthUpDown.Value;
-        DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperTokensAddButton_Click(object sender, EventArgs e)
@@ -650,8 +633,8 @@ public partial class ReCodeItForm : Form
             AutoMapperTokensBox.Items.Add(AutoMapperTokensTextField.Text);
             AppSettings.AutoMapper.TokensToMatch.Add(AutoMapperTokensTextField.Text);
 
-            AutoMapperTokensTextField.Clear();
             DataProvider.SaveAppSettings();
+            AutoMapperTokensTextField.Clear();
         }
     }
 
@@ -659,8 +642,8 @@ public partial class ReCodeItForm : Form
     {
         if (AutoMapperTokensBox.SelectedItem != null)
         {
+            AppSettings.AutoMapper.TokensToMatch.RemoveAt(AutoMapperTokensBox.SelectedIndex);
             AutoMapperTokensBox.Items.Remove(AutoMapperTokensBox.SelectedItem);
-            AppSettings.AutoMapper.TokensToMatch.RemoveAt(AutoMapperTokensBox.SelectedIndex + 1);
             DataProvider.SaveAppSettings();
         }
     }
@@ -672,8 +655,8 @@ public partial class ReCodeItForm : Form
             AutoMapperFPBox.Items.Add(AutoMapperFPTextField.Text);
             AppSettings.AutoMapper.PropertyFieldBlackList.Add(AutoMapperFPTextField.Text);
 
-            AutoMapperFPTextField.Clear();
             DataProvider.SaveAppSettings();
+            AutoMapperFPTextField.Clear();
         }
     }
 
@@ -681,8 +664,9 @@ public partial class ReCodeItForm : Form
     {
         if (AutoMapperFPBox.SelectedItem != null)
         {
-            AutoMapperFPBox.Items.Remove(AutoMapperFPBox.SelectedItem);
             AppSettings.AutoMapper.PropertyFieldBlackList.RemoveAt(AutoMapperFPBox.SelectedIndex);
+            AutoMapperFPBox.Items.Remove(AutoMapperFPBox.SelectedItem);
+
             DataProvider.SaveAppSettings();
         }
     }
@@ -692,10 +676,11 @@ public partial class ReCodeItForm : Form
         if (!AutoMapperMethodBox.Items.Contains(AutoMapperMethodTextBox.Text))
         {
             AutoMapperMethodBox.Items.Add(AutoMapperMethodTextBox.Text);
+
             AppSettings.AutoMapper.MethodParamaterBlackList.Add(AutoMapperMethodTextBox.Text);
 
-            AutoMapperMethodTextBox.Clear();
             DataProvider.SaveAppSettings();
+            AutoMapperMethodTextBox.Clear();
         }
     }
 
@@ -703,8 +688,12 @@ public partial class ReCodeItForm : Form
     {
         if (AutoMapperMethodBox.SelectedItem != null)
         {
-            AutoMapperMethodBox.Items.Remove(AutoMapperMethodBox.SelectedItem);
-            AppSettings.AutoMapper.MethodParamaterBlackList.RemoveAt(AutoMapperMethodBox.SelectedIndex > 0 ? AutoMapperMethodBox.SelectedIndex : 0);
+            AppSettings.AutoMapper.MethodParamaterBlackList
+                .RemoveAt(AutoMapperMethodBox.SelectedIndex);
+
+            AutoMapperMethodBox.Items
+                .Remove(AutoMapperMethodBox.SelectedItem);
+
             DataProvider.SaveAppSettings();
         }
     }
@@ -712,31 +701,26 @@ public partial class ReCodeItForm : Form
     private void SearchMethodsCheckBox_CheckedChanged(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.SearchMethods = AutoMapperSearchMethodsCheckBox.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperRenameFields_CheckedChanged(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.MappingSettings.RenameFields = AutoMapperRenameFields.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperRenameProps_CheckedChanged(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.MappingSettings.RenameProperties = AutoMapperRenameProps.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperPublicize_CheckedChanged(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.MappingSettings.Publicize = AutoMapperPublicize.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     private void AutoMapperUnseal_CheckedChanged(object sender, EventArgs e)
     {
         AppSettings.AutoMapper.MappingSettings.Unseal = AutoMapperUnseal.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     #endregion AUTOMAPPER
@@ -760,7 +744,6 @@ public partial class ReCodeItForm : Form
             if (!File.Exists(ccSettings.LastLoadedProject))
             {
                 ccSettings.LastLoadedProject = string.Empty;
-                DataProvider.SaveAppSettings();
                 MessageBox.Show("Couldnt find last loaded project");
                 return;
             }
@@ -791,7 +774,6 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             CCOriginalAssemblyText.Text = result;
-            DataProvider.SaveAppSettings();
         }
     }
 
@@ -802,7 +784,6 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             CCRemappedOutputText.Text = result;
-            DataProvider.SaveAppSettings();
         }
     }
 
@@ -814,7 +795,6 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             CCVisualStudioProjDirText.Text = result;
-            DataProvider.SaveAppSettings();
         }
     }
 
@@ -825,7 +805,6 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             CCBuildDirText.Text = result;
-            DataProvider.SaveAppSettings();
         }
     }
 
@@ -885,7 +864,6 @@ public partial class ReCodeItForm : Form
     private void CCAutoLoadLastProj_CheckedChanged_1(object sender, EventArgs e)
     {
         AppSettings.CrossCompiler.AutoLoadLastActiveProject = CCAutoLoadLastProj.Checked;
-        DataProvider.SaveAppSettings();
     }
 
     // Use the projects remap list on the remap tab
@@ -1002,7 +980,6 @@ public partial class ReCodeItForm : Form
 
         DataProvider.Settings.Remapper.UseProjectMappings = true;
         ActiveProjectMappingsCheckbox.Checked = true;
-        DataProvider.SaveAppSettings();
 
         EditSelectedRemap(this, e, true);
     }
