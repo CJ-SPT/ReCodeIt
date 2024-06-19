@@ -43,6 +43,13 @@ public partial class ReCodeItForm : Form
         if (AppSettings.CrossCompiler.AutoLoadLastActiveProject
             && ActiveProjectMappingsCheckbox.Checked)
         {
+            if (CrossCompiler.ActiveProject == null)
+            {
+                DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath);
+                LoadedMappingFilePath.Text = AppSettings.Remapper.MappingPath;
+                return;
+            }
+
             LoadedMappingFilePath.Text = $"Project Mode: ({CrossCompiler.ActiveProject.SolutionName})";
 
             ReloadTreeView(CrossCompiler.ActiveProject.RemapModels);
@@ -749,6 +756,8 @@ public partial class ReCodeItForm : Form
 
             if (!File.Exists(ccSettings.LastLoadedProject))
             {
+                ccSettings.LastLoadedProject = string.Empty;
+                DataProvider.SaveAppSettings();
                 MessageBox.Show("Couldnt find last loaded project");
                 return;
             }
