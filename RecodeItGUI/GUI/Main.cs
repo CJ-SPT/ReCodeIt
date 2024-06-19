@@ -68,6 +68,10 @@ public partial class ReCodeItForm : Form
         {
             LoadedMappingFilePath.Text = $"Project Mode: ({CrossCompiler.ActiveProject.SolutionName})";
         }
+        else
+        {
+            LoadedMappingFilePath.Text = AppSettings.Remapper?.MappingPath;
+        }
 
         ReloadTreeView(remaps!);
 
