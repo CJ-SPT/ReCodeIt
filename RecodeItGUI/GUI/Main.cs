@@ -28,15 +28,123 @@ public partial class ReCodeItForm : Form
 
         CrossCompiler = new();
 
+        SubscribeToEvents();
         PopulateDomainUpDowns();
         RefreshSettingsPage();
         RefreshAutoMapperPage();
         RefreshCrossCompilerPage();
         LoadMappingFile();
+    }
 
+    private void SubscribeToEvents()
+    {
         RemapTreeView.NodeMouseDoubleClick += ManualEditSelectedRemap;
         CCMappingTreeView.NodeMouseDoubleClick += CCEditSelectedRemap;
         Remapper.OnComplete += ReloadTreeAfterMapping;
+
+        #region MANUAL_REMAPPER
+
+        IncludeMethodTextBox.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                MethodIncludeAddButton_Click(sender, e);
+            }
+        };
+
+        ExcludeMethodTextBox.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                MethodExcludeAddButton_Click(sender, e);
+            }
+        };
+
+        FieldsIncludeTextInput.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                FIeldIncludeAddButton_Click(sender, e);
+            }
+        };
+
+        FieldsExcludeTextInput.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                FieldExcludeAddButton_Click(sender, e);
+            }
+        };
+
+        PropertiesIncludeTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                PropertiesIncludeAddButton_Click(sender, e);
+            }
+        };
+
+        PropertiesExcludeTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                PropertiesExcludeAddButton_Click(sender, e);
+            }
+        };
+
+        NestedTypesIncludeTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                NestedTypesAddButton_Click(sender, e);
+            }
+        };
+
+        NestedTypesExcludeTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                NestedTypesExlcudeAddButton_Click(sender, e);
+            }
+        };
+
+        #endregion MANUAL_REMAPPER
+
+        #region AUTOMAPPER
+
+        AutoMapperTypesToIgnoreTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AutoMapperExcludeAddButton_Click(sender, e);
+            }
+        };
+
+        AutoMapperTokensTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AutoMapperTokensAddButton_Click(sender, e);
+            }
+        };
+
+        AutoMapperFPTextField.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AutoMapperFPAddButton_Click(sender, e);
+            }
+        };
+
+        AutoMapperMethodTextBox.KeyDown += (sender, e) =>
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                AutoMapperMethodAddButton_Click(sender, e);
+            }
+        };
+
+        #endregion AUTOMAPPER
     }
 
     #region MANUAL_REMAPPER
