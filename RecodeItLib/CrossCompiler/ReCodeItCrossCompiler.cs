@@ -24,7 +24,12 @@ public class ReCodeItCrossCompiler
     public void StartRemap()
     {
         ChangedTypes.Clear();
-        Remapper.InitializeRemap(ActiveProject.OriginalAssemblyPath, ActiveProject.RemappedAssemblyPath, true);
+
+        Remapper.InitializeRemap(
+            ActiveProject.RemapModels,
+            ActiveProject.OriginalAssemblyPath,
+            ActiveProject.RemappedAssemblyPath,
+            true);
 
         if (ActiveProject == null)
         {

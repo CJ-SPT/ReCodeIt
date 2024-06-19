@@ -275,6 +275,8 @@ public partial class ReCodeItForm : Form
 
         DataProvider.LoadMappingFile(result);
         AppSettings.Remapper.MappingPath = result;
+        AppSettings.Remapper.UseProjectMappings = false;
+        ActiveProjectMappingsCheckbox.Checked = false;
         DataProvider.SaveAppSettings();
 
         LoadedMappingFilePath.Text = result;
