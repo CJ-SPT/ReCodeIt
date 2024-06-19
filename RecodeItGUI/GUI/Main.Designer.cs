@@ -1536,7 +1536,7 @@ partial class ReCodeItForm
         // 
         CCVisualStudioProjDirText.Location = new Point(6, 105);
         CCVisualStudioProjDirText.Name = "CCVisualStudioProjDirText";
-        CCVisualStudioProjDirText.PlaceholderText = "Visual studio solution directory";
+        CCVisualStudioProjDirText.PlaceholderText = "Visual studio solution";
         CCVisualStudioProjDirText.ReadOnly = true;
         CCVisualStudioProjDirText.Size = new Size(501, 31);
         CCVisualStudioProjDirText.TabIndex = 27;

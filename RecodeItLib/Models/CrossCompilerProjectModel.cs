@@ -1,4 +1,6 @@
-﻿namespace ReCodeIt.Models;
+﻿using ReCodeIt.Utils;
+
+namespace ReCodeIt.Models;
 
 public class CrossCompilerProjectModel
 {
@@ -24,6 +26,23 @@ public class CrossCompilerProjectModel
     /// (Required on creation)
     /// </summary>
     public string VisualStudioSolutionPath { get; set; }
+
+    /// <summary>
+    /// The path to the working directory vs project
+    /// </summary>
+    public string VisualStudioSolutionDirectoryPath => Path.GetDirectoryName(VisualStudioSolutionPath)!;
+
+    /// <summary>
+    /// The path the the cloned solution
+    /// </summary>
+    public string VisualStudioClonedSolutionPath => Path.Combine(
+        DataProvider.ReCodeItProjectsPath,
+        SolutionName,
+        SolutionName + ".sln");
+
+    public string VisualStudioClonedSolutionDirectory => Path.Combine(
+        DataProvider.ReCodeItProjectsPath,
+        SolutionName);
 
     /// <summary>
     /// This is where the final dll is built to

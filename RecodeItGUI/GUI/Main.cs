@@ -794,7 +794,8 @@ public partial class ReCodeItForm : Form
 
     private void CCVisualStudioProjDirButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFolderDialog("Select your visual studio project directory");
+        var result = GUIHelpers.OpenFileDialog("Select a Visual Studio solution file",
+            "Solution Files (*.sln)|*.sln|All Files (*.*)|*.*");
 
         if (result != string.Empty)
         {

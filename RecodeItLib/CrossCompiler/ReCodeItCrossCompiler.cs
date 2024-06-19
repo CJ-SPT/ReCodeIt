@@ -103,38 +103,18 @@ public class ReCodeItCrossCompiler
     /// </summary>
     private void StartBuild()
     {
-        var path = Path.Combine(
-            DataProvider.ReCodeItProjectsPath,
-            ActiveProject.SolutionName);
-
-        var csProjFile = Directory.GetFiles(path, "*.csproj", SearchOption.AllDirectories)
-            .ToList()
-            .FirstOrDefault();
-
-        if (csProjFile == null || csProjFile == string.Empty)
-        {
-            Logger.Log("No project files found in the solution directory or sub directories", ConsoleColor.Red);
-            return;
-        }
-
-        var dirName = Path.GetDirectoryName(csProjFile);
-
-        var solutionName = ActiveProject.SolutionName + ".sln";
-
-        var arguements = $"build {Path.Combine(path, solutionName)} " +
+        var arguements = $"build {ActiveProject.VisualStudioClonedSolutionPath} " +
             $"/p:Configuration=Debug " +
             $"/p:Platform=\"Any CPU\"";
 
         // clean the project first
-        ExecuteDotnetCommand("clean", path);
+        ExecuteDotnetCommand("clean", ActiveProject.VisualStudioClonedSolutionDirectory);
 
         // Restore packages
-        ExecuteDotnetCommand("restore", path);
-
-        Logger.Log(path + ActiveProject.SolutionName + ".sln");
+        ExecuteDotnetCommand("restore", ActiveProject.VisualStudioClonedSolutionDirectory);
 
         // Then build the project
-        ExecuteDotnetCommand(arguements, path);
+        ExecuteDotnetCommand(arguements, ActiveProject.VisualStudioClonedSolutionDirectory);
     }
 
     private static void ExecuteDotnetCommand(string arguments, string workingDirectory)
