@@ -79,6 +79,11 @@ public class ReCodeItRemapper
 
         // We are done, write the assembly
         WriteAssembly();
+
+        if (CrossMapMode)
+        {
+            ProjectManager.SaveCrossCompilerProjectModel(_compiler.ActiveProject);
+        }
     }
 
     /// <summary>
@@ -185,7 +190,7 @@ public class ReCodeItRemapper
         if (CrossMapMode)
         {
             // Store the original types for caching
-            _compiler.ChangedTypes.Add(remap.NewTypeName, type.Name);
+            _compiler.ActiveProject.ChangedTypes.Add(remap.NewTypeName, type.Name);
         }
 
         type.Name = remap.NewTypeName;
@@ -264,7 +269,7 @@ public class ReCodeItRemapper
 
         if (CrossMapMode)
         {// Store the original types for caching
-            _compiler.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
+            _compiler.ActiveProject.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
         }
 
         // Rename type and all associated type members

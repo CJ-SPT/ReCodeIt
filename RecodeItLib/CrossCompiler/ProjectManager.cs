@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
@@ -178,23 +177,5 @@ public static class ProjectManager
             .ToList();
 
         Logger.Log($"Found {AllProjectSourceFiles.Count} source files in the project", ConsoleColor.Yellow);
-    }
-
-    private static void AnalyzeSyntaxTree(SyntaxNode root)
-    {
-        // Example: Find all method declarations
-        var methodDeclarations = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-
-        foreach (var method in methodDeclarations)
-        {
-            Logger.Log($"Method: {method.Identifier.Text}");
-            Logger.Log($"Return Type: {method.ReturnType}");
-            Logger.Log("Parameters:");
-            foreach (var parameter in method.ParameterList.Parameters)
-            {
-                Logger.Log($"  {parameter.Type} {parameter.Identifier}");
-            }
-            Logger.Log(string.Empty);
-        }
     }
 }
