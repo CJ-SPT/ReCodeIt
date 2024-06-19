@@ -60,7 +60,7 @@ public static class ProjectManager
 
     private static void CopyVisualStudioProject(CrossCompilerProjectModel proj)
     {
-        var solutionDirPath = proj.VisualStudioSolutionPath;
+        var solutionDirPath = proj.VisualStudioSolutionDirectoryPath;
         var solutionFiles = Directory.GetFiles(solutionDirPath, "*.sln", SearchOption.AllDirectories);
         var solutionFile = string.Empty;
 
@@ -129,7 +129,7 @@ public static class ProjectManager
 
     public static void SaveCrossCompilerProjectModel(CrossCompilerProjectModel model)
     {
-        var path = Path.Combine(model.VisualStudioSolutionPath, "ReCodeItProj.json");
+        var path = Path.Combine(model.VisualStudioSolutionDirectoryPath, "ReCodeItProj.json");
 
         JsonSerializerSettings settings = new()
         {

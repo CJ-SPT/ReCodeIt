@@ -1103,7 +1103,6 @@ partial class ReCodeItForm
         AutoMapperTab.Size = new Size(1336, 953);
         AutoMapperTab.TabIndex = 3;
         AutoMapperTab.Text = "Auto Mapper";
-        AutoMapperTab.Click += AutoMapperTab_Click;
         // 
         // AutoMapperUnseal
         // 
@@ -1610,7 +1609,6 @@ partial class ReCodeItForm
         SettingsTab.Size = new Size(1336, 953);
         SettingsTab.TabIndex = 2;
         SettingsTab.Text = "Settings";
-        SettingsTab.Click += SettingsTab_Click;
         // 
         // groupBox2
         // 

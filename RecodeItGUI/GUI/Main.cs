@@ -826,11 +826,23 @@ public partial class ReCodeItForm : Form
 
     private void CrossPatchRemapButton_Click(object sender, EventArgs e)
     {
+        if (CrossCompiler.ActiveProject.RemapModels.Count == 0)
+        {
+            MessageBox.Show("You cannot generate a remapped dll without creating remaps first");
+            return;
+        }
+
         CrossCompiler.StartRemap();
     }
 
     private void CrossPatchRunButton_Click(object sender, EventArgs e)
     {
+        if (CrossCompiler.ActiveProject.RemapModels.Count == 0)
+        {
+            MessageBox.Show("You cannot compile without having created remaps first");
+            return;
+        }
+
         CrossCompiler.StartCrossCompile();
     }
 
