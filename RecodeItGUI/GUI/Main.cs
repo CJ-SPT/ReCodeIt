@@ -223,6 +223,7 @@ public partial class ReCodeItForm : Form
         if (AppSettings.Remapper.UseProjectMappings)
         {
             Remapper.InitializeRemap(
+                CrossCompiler.ActiveProject.RemapModels,
                 CrossCompiler.ActiveProject.OriginalAssemblyPath,
                 CrossCompiler.ActiveProject.RemappedAssemblyPath);
 
@@ -236,7 +237,11 @@ public partial class ReCodeItForm : Form
             return;
         }
 
-        Remapper.InitializeRemap(AppSettings.Remapper.AssemblyPath, AppSettings.Remapper.OutputPath);
+        Remapper.InitializeRemap(
+            DataProvider.Remaps,
+            AppSettings.Remapper.AssemblyPath,
+            AppSettings.Remapper.OutputPath);
+
         ReloadTreeView(DataProvider.Remaps);
     }
 

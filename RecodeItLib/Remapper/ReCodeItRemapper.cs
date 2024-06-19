@@ -37,7 +37,11 @@ public class ReCodeItRemapper
     /// <summary>
     /// Start the remapping process
     /// </summary>
-    public void InitializeRemap(string assemblyPath, string outPath, bool crossMapMode = false)
+    public void InitializeRemap(
+        List<RemapModel> remapModels,
+        string assemblyPath,
+        string outPath,
+        bool crossMapMode = false)
     {
         DataProvider.LoadAssemblyDefinition(assemblyPath);
 
@@ -50,7 +54,7 @@ public class ReCodeItRemapper
 
         Stopwatch.Start();
 
-        foreach (var remap in DataProvider.Remaps)
+        foreach (var remap in remapModels)
         {
             Logger.Log($"Finding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
 
