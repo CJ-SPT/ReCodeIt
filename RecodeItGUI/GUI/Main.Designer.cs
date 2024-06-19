@@ -161,6 +161,7 @@ partial class ReCodeItForm
         CCBuildDirText = new TextBox();
         SettingsTab = new TabPage();
         groupBox2 = new GroupBox();
+        GithubLinkLabel = new LinkLabel();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
         TabPageRemapper.SuspendLayout();
@@ -1634,6 +1635,7 @@ partial class ReCodeItForm
         // 
         // groupBox2
         // 
+        groupBox2.Controls.Add(GithubLinkLabel);
         groupBox2.Controls.Add(SilentModeCheckbox);
         groupBox2.Controls.Add(DebugLoggingCheckbox);
         groupBox2.Location = new Point(13, 6);
@@ -1642,6 +1644,17 @@ partial class ReCodeItForm
         groupBox2.TabIndex = 0;
         groupBox2.TabStop = false;
         groupBox2.Text = "App Settings";
+        // 
+        // GithubLinkLabel
+        // 
+        GithubLinkLabel.AutoSize = true;
+        GithubLinkLabel.Location = new Point(6, 313);
+        GithubLinkLabel.Name = "GithubLinkLabel";
+        GithubLinkLabel.Size = new Size(301, 25);
+        GithubLinkLabel.TabIndex = 3;
+        GithubLinkLabel.TabStop = true;
+        GithubLinkLabel.Text = "https://github.com/CJ-SPT/ReCodeIt";
+        GithubLinkLabel.LinkClicked += GithubLinkLabel_LinkClicked;
         // 
         // SilentModeCheckbox
         // 
@@ -1674,7 +1687,7 @@ partial class ReCodeItForm
         Controls.Add(TabControlMain);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
-        Text = "ReCodeIt V0.1.0";
+        Text = "ReCodeIt V0.1.0 - PRC0";
         TabPageRemapper.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
@@ -1855,4 +1868,5 @@ partial class ReCodeItForm
     private CheckBox CCAutoLoadLastProj;
     private GroupBox groupBox5;
     private TextBox CCBuildConfiguration;
+    private LinkLabel GithubLinkLabel;
 }

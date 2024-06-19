@@ -6,6 +6,7 @@ using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
+using System.Diagnostics;
 
 namespace ReCodeIt.GUI;
 
@@ -1095,5 +1096,14 @@ public partial class ReCodeItForm : Form
         {
             CCMappingTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(remap, this));
         }
+    }
+
+    private void GithubLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = GithubLinkLabel.Text,
+            UseShellExecute = true
+        });
     }
 }
