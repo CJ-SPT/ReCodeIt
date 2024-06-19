@@ -182,7 +182,7 @@ public partial class ReCodeItForm : Form
                 DataProvider.SaveMapping();
             }
 
-            ResetAll();
+            ResetAllRemapFields();
             return;
         }
 
@@ -198,7 +198,7 @@ public partial class ReCodeItForm : Form
         }
 
         RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(newRemap, this));
-        ResetAll();
+        ResetAllRemapFields();
     }
 
     private void RemoveRemapButton_Click(object sender, EventArgs e)
@@ -891,7 +891,7 @@ public partial class ReCodeItForm : Form
     #endregion CROSS_COMPILER
 
     // Reset All UI elements to default
-    private void ResetAll()
+    private void ResetAllRemapFields()
     {
         PopulateDomainUpDowns();
 
@@ -950,7 +950,7 @@ public partial class ReCodeItForm : Form
 
         _selectedRemapTreeIndex = RemapTreeView.SelectedNode.Index;
 
-        ResetAll();
+        ResetAllRemapFields();
 
         var remap = AppSettings.Remapper.UseProjectMappings
             ? CrossCompiler.ActiveProject.RemapModels.ElementAt(_selectedRemapTreeIndex)
