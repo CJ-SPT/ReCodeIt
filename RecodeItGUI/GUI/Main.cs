@@ -22,6 +22,8 @@ public partial class ReCodeItForm : Form
     private int _selectedRemapTreeIndex = 0;
     private int _selectedCCRemapTreeIndex = 0;
 
+    private List<string> _cachedNewTypeNames = [];
+
     public ReCodeItForm()
     {
         InitializeComponent();
@@ -43,6 +45,11 @@ public partial class ReCodeItForm : Form
         Remapper.OnComplete += ReloadTreeAfterMapping;
 
         #region MANUAL_REMAPPER
+
+        NewTypeName.GotFocus += (sender, e) =>
+        {
+            _cachedNewTypeNames.Add(NewTypeName.Text);
+        };
 
         IncludeMethodTextBox.KeyDown += (sender, e) =>
         {
@@ -271,6 +278,13 @@ public partial class ReCodeItForm : Form
             .Where(remap => remap.NewTypeName == newRemap.NewTypeName)
             .FirstOrDefault();
 
+        if (existingRemap == null)
+        {
+            existingRemap = remaps
+                .Where(remap => _cachedNewTypeNames.Contains(remap.NewTypeName))
+                .FirstOrDefault();
+        }
+
         // Handle overwriting an existing remap
         if (existingRemap != null)
         {
@@ -291,6 +305,9 @@ public partial class ReCodeItForm : Form
                 DataProvider.SaveMapping();
             }
 
+            ReloadRemapTreeView(remaps);
+            ReloadCCRemapTreeView(remaps);
+
             ResetAllRemapFields();
             return;
         }
@@ -308,8 +325,17 @@ public partial class ReCodeItForm : Form
 
         var node = GUIHelpers.GenerateTreeNode(newRemap, this);
 
+        //RemapTreeView.Nodes.Remove(node);
         RemapTreeView.Nodes.Add(node);
+
+        //CCMappingTreeView.Nodes.Remove(node);
         CCMappingTreeView.Nodes.Add(node);
+
+        _cachedNewTypeNames.Clear();
+
+        ReloadRemapTreeView(remaps);
+        ReloadCCRemapTreeView(remaps);
+
         ResetAllRemapFields();
     }
 

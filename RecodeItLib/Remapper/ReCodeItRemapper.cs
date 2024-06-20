@@ -67,12 +67,12 @@ public class ReCodeItRemapper
         ChooseBestMatches();
 
         // Dont publicize and unseal until after the remapping so we can use those as search parameters
-        if (!Settings.MappingSettings.Publicize)
+        if (Settings.MappingSettings.Publicize)
         {
             Publicizer.Publicize();
         }
 
-        if (!Settings.MappingSettings.Unseal)
+        if (Settings.MappingSettings.Unseal)
         {
             Publicizer.Unseal();
         }
