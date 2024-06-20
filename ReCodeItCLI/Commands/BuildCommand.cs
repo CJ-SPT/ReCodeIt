@@ -2,6 +2,7 @@
 using CliFx.Attributes;
 using CliFx.Infrastructure;
 using ReCodeIt.CrossCompiler;
+using ReCodeIt.Utils;
 using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
@@ -30,9 +31,13 @@ public class BuildCommand : ICommand
         if (RegistryHelper.GetRegistryValue<string>("LastLoadedProject") != null)
         {
             CrossCompiler = new();
+
+            DataProvider.LoadAppSettings();
+
             ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
             CrossCompiler.StartCrossCompile();
 
+            DataProvider.SaveAppSettings();
             return default;
         }
 
