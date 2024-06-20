@@ -21,6 +21,7 @@ public class BuildRef : ICommand
             CrossCompiler = new();
 
             DataProvider.LoadAppSettings();
+            DataProvider.IsCli = true;
 
             ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
 

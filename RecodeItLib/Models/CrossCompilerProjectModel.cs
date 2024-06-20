@@ -29,6 +29,22 @@ public class CrossCompilerProjectModel
 
     /// <summary>
     /// The path to the working directory vs project
+    ///
+    /// (Required on creation)
+    /// </summary>
+    public string VisualStudioDependencyPath { get; set; }
+
+    /// <summary>
+    /// This is where the final dll is built to
+    ///
+    /// (Required on creation)
+    /// </summary>
+    public string BuildDirectory { get; set; }
+
+    #endregion REQUIRED_ON_CREATION
+
+    /// <summary>
+    /// The path to the working directory vs project
     /// </summary>
     public string VisualStudioSolutionDirectoryPath => Path.GetDirectoryName(VisualStudioSolutionPath)!;
 
@@ -44,28 +60,19 @@ public class CrossCompilerProjectModel
         DataProvider.ReCodeItProjectsPath,
         SolutionName);
 
+    /// <summary>
+    /// The path to the cloned solutions dependency folder
+    /// </summary>
+    public string VisualStudioClonedDependencyPath => Path.GetDirectoryName(VisualStudioDependencyPath)!;
+
     public string ProjectDllName => SolutionName + ".dll";
 
     public string OriginalAssemblyDllName => Path.GetFileName(OriginalAssemblyPath);
 
     /// <summary>
-    /// This is where the final dll is built to
-    ///
-    /// (Required on creation)
-    /// </summary>
-    public string BuildDirectory { get; set; }
-
-    #endregion REQUIRED_ON_CREATION
-
-    /// <summary>
     /// Name of the solution
     /// </summary>
     public string SolutionName { get; set; }
-
-    /// <summary>
-    /// The ReCodeIt.json path
-    /// </summary>
-    public string ReCodeItProjectPath { get; set; }
 
     /// <summary>
     /// Remapped output hash

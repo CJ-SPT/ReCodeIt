@@ -28,6 +28,7 @@ partial class ReCodeItForm
     /// </summary>
     private void InitializeComponent()
     {
+        components = new System.ComponentModel.Container();
         TabPageRemapper = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
@@ -149,21 +150,22 @@ partial class ReCodeItForm
         groupBox3 = new GroupBox();
         CCImportMappings = new Button();
         CCAutoLoadLastProj = new CheckBox();
+        CCBuildDirText = new TextBox();
+        CCBuildDirButton = new Button();
+        CCVisualStudioProjDirButton = new Button();
+        CCVisualStudioProjDirText = new TextBox();
         CCLoadProjButton = new Button();
         CCRemappedOutputButton = new Button();
-        CCRemappedOutputText = new TextBox();
+        CCProjectDepdendencyText = new TextBox();
         CCOriginalAssemblyText = new TextBox();
-        CCVisualStudioProjDirText = new TextBox();
         CrossCompilerNewProjectButton = new Button();
-        CCVisualStudioProjDirButton = new Button();
-        CCBuildDirButton = new Button();
         CCOriginalAssemblyButton = new Button();
-        CCBuildDirText = new TextBox();
         SettingsTab = new TabPage();
         groupBox2 = new GroupBox();
         GithubLinkLabel = new LinkLabel();
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
+        toolTip1 = new ToolTip(components);
         TabPageRemapper.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -265,6 +267,7 @@ partial class ReCodeItForm
         ActiveProjectMappingsCheckbox.Size = new Size(264, 29);
         ActiveProjectMappingsCheckbox.TabIndex = 39;
         ActiveProjectMappingsCheckbox.Text = "Use Active Project Mappings";
+        toolTip1.SetToolTip(ActiveProjectMappingsCheckbox, "If you have a project loaded, you can switch to its remaps here.");
         ActiveProjectMappingsCheckbox.UseVisualStyleBackColor = true;
         ActiveProjectMappingsCheckbox.CheckedChanged += UseProjectAutoMapping_Clicked;
         // 
@@ -277,6 +280,7 @@ partial class ReCodeItForm
         LoadedMappingFilePath.ReadOnly = true;
         LoadedMappingFilePath.Size = new Size(297, 31);
         LoadedMappingFilePath.TabIndex = 38;
+        toolTip1.SetToolTip(LoadedMappingFilePath, "Shows which mapping file you are working on, a standalone or a projects mappings");
         // 
         // RemapperUseForceRename
         // 
@@ -288,6 +292,7 @@ partial class ReCodeItForm
         RemapperUseForceRename.Size = new Size(149, 29);
         RemapperUseForceRename.TabIndex = 37;
         RemapperUseForceRename.Text = "Force Rename";
+        toolTip1.SetToolTip(RemapperUseForceRename, "Should we force the rename and not use a search pattern.\r\n\r\nRequires \"Original Name\" to be filled in.");
         RemapperUseForceRename.UseVisualStyleBackColor = true;
         // 
         // RemapperUnseal
@@ -300,6 +305,7 @@ partial class ReCodeItForm
         RemapperUnseal.Size = new Size(90, 29);
         RemapperUnseal.TabIndex = 36;
         RemapperUnseal.Text = "Unseal";
+        toolTip1.SetToolTip(RemapperUnseal, "Unseal all sealed classes");
         RemapperUnseal.UseVisualStyleBackColor = true;
         RemapperUnseal.CheckedChanged += RemapperUnseal_CheckedChanged;
         // 
@@ -313,6 +319,7 @@ partial class ReCodeItForm
         RemapperPublicicize.Size = new Size(106, 29);
         RemapperPublicicize.TabIndex = 35;
         RemapperPublicicize.Text = "Publicize";
+        toolTip1.SetToolTip(RemapperPublicicize, "Publicize all classes, properties and methods. Fields are excluded for technical reasons");
         RemapperPublicicize.UseVisualStyleBackColor = true;
         RemapperPublicicize.CheckedChanged += RemapperPublicicize_CheckedChanged;
         // 
@@ -346,6 +353,7 @@ partial class ReCodeItForm
         RenamePropertiesCheckbox.Size = new Size(186, 29);
         RenamePropertiesCheckbox.TabIndex = 28;
         RenamePropertiesCheckbox.Text = "Rename Properties";
+        toolTip1.SetToolTip(RenamePropertiesCheckbox, "Renames all remapped types associated properties (GClass100_0 becomes ReCodeIt_0)");
         RenamePropertiesCheckbox.UseVisualStyleBackColor = true;
         RenamePropertiesCheckbox.CheckedChanged += RenamePropertiesCheckbox_CheckedChanged;
         // 
@@ -356,6 +364,7 @@ partial class ReCodeItForm
         OutputDirectoryButton.Size = new Size(112, 34);
         OutputDirectoryButton.TabIndex = 32;
         OutputDirectoryButton.Text = "Choose";
+        toolTip1.SetToolTip(OutputDirectoryButton, "Directory where you want the remapped dll placed.");
         OutputDirectoryButton.UseVisualStyleBackColor = true;
         OutputDirectoryButton.Click += OutputDirectoryButton_Click_1;
         // 
@@ -366,6 +375,7 @@ partial class ReCodeItForm
         PickAssemblyPathButton.Size = new Size(112, 34);
         PickAssemblyPathButton.TabIndex = 31;
         PickAssemblyPathButton.Text = "Choose";
+        toolTip1.SetToolTip(PickAssemblyPathButton, "The programs original assembly you wish to remap.\r\n\r\nTarget the one in the programs install location.");
         PickAssemblyPathButton.UseVisualStyleBackColor = true;
         PickAssemblyPathButton.Click += PickAssemblyPathButton_Click_1;
         // 
@@ -387,6 +397,7 @@ partial class ReCodeItForm
         RenameFieldsCheckbox.Size = new Size(151, 29);
         RenameFieldsCheckbox.TabIndex = 26;
         RenameFieldsCheckbox.Text = "Rename Fields";
+        toolTip1.SetToolTip(RenameFieldsCheckbox, "Renames all remapped types associated fields (_gClass100_0 becomes _reCodeIt_0)");
         RenameFieldsCheckbox.UseVisualStyleBackColor = true;
         RenameFieldsCheckbox.CheckedChanged += RenameFieldsCheckbox_CheckedChanged;
         // 
@@ -408,6 +419,7 @@ partial class ReCodeItForm
         LoadMappingFileButton.Size = new Size(168, 34);
         LoadMappingFileButton.TabIndex = 18;
         LoadMappingFileButton.Text = "Load Mapping File";
+        toolTip1.SetToolTip(LoadMappingFileButton, "Load a standalone mapping file from disk");
         LoadMappingFileButton.UseVisualStyleBackColor = false;
         LoadMappingFileButton.Click += LoadMappingFileButton_Click;
         // 
@@ -419,6 +431,7 @@ partial class ReCodeItForm
         RunRemapButton.Size = new Size(168, 34);
         RunRemapButton.TabIndex = 16;
         RunRemapButton.Text = "Run Remap";
+        toolTip1.SetToolTip(RunRemapButton, "Generate a remapped dll based on the paths chosen in the top left");
         RunRemapButton.UseVisualStyleBackColor = false;
         RunRemapButton.Click += RunRemapButton_Click;
         // 
@@ -886,6 +899,7 @@ partial class ReCodeItForm
         RemoveRemapButton.Size = new Size(168, 34);
         RemoveRemapButton.TabIndex = 2;
         RemoveRemapButton.Text = "Remove Remap";
+        toolTip1.SetToolTip(RemoveRemapButton, "Remove a remap from the list");
         RemoveRemapButton.UseVisualStyleBackColor = false;
         RemoveRemapButton.Click += RemoveRemapButton_Click;
         // 
@@ -998,6 +1012,7 @@ partial class ReCodeItForm
         SaveRemapButton.Size = new Size(168, 34);
         SaveRemapButton.TabIndex = 4;
         SaveRemapButton.Text = "Add Remap";
+        toolTip1.SetToolTip(SaveRemapButton, "Add a remap to the list, if the \"New Name\" field contains a remap that already exists, it will be overwritten.");
         SaveRemapButton.UseVisualStyleBackColor = false;
         SaveRemapButton.Click += AddRemapButton_Click;
         // 
@@ -1443,7 +1458,7 @@ partial class ReCodeItForm
         // 
         groupBox5.Controls.Add(CrossPatchRemapButton);
         groupBox5.Controls.Add(CrossPatchRunButton);
-        groupBox5.Location = new Point(6, 304);
+        groupBox5.Location = new Point(6, 340);
         groupBox5.Name = "groupBox5";
         groupBox5.Size = new Size(631, 85);
         groupBox5.TabIndex = 27;
@@ -1457,6 +1472,7 @@ partial class ReCodeItForm
         CrossPatchRemapButton.Size = new Size(316, 34);
         CrossPatchRemapButton.TabIndex = 21;
         CrossPatchRemapButton.Text = "Generate Remapped Reference";
+        toolTip1.SetToolTip(CrossPatchRemapButton, "Generate or re-generate a new reference dll for your project");
         CrossPatchRemapButton.UseVisualStyleBackColor = true;
         CrossPatchRemapButton.Click += CrossPatchRemapButton_Click;
         // 
@@ -1467,6 +1483,7 @@ partial class ReCodeItForm
         CrossPatchRunButton.Size = new Size(150, 34);
         CrossPatchRunButton.TabIndex = 24;
         CrossPatchRunButton.Text = "Compile Project";
+        toolTip1.SetToolTip(CrossPatchRunButton, "Cross compile your project back to the original reference");
         CrossPatchRunButton.UseVisualStyleBackColor = true;
         CrossPatchRunButton.Click += CrossPatchRunButton_Click;
         // 
@@ -1491,19 +1508,19 @@ partial class ReCodeItForm
         // 
         groupBox3.Controls.Add(CCImportMappings);
         groupBox3.Controls.Add(CCAutoLoadLastProj);
+        groupBox3.Controls.Add(CCBuildDirText);
+        groupBox3.Controls.Add(CCBuildDirButton);
+        groupBox3.Controls.Add(CCVisualStudioProjDirButton);
+        groupBox3.Controls.Add(CCVisualStudioProjDirText);
         groupBox3.Controls.Add(CCLoadProjButton);
         groupBox3.Controls.Add(CCRemappedOutputButton);
-        groupBox3.Controls.Add(CCRemappedOutputText);
+        groupBox3.Controls.Add(CCProjectDepdendencyText);
         groupBox3.Controls.Add(CCOriginalAssemblyText);
-        groupBox3.Controls.Add(CCVisualStudioProjDirText);
         groupBox3.Controls.Add(CrossCompilerNewProjectButton);
-        groupBox3.Controls.Add(CCVisualStudioProjDirButton);
-        groupBox3.Controls.Add(CCBuildDirButton);
         groupBox3.Controls.Add(CCOriginalAssemblyButton);
-        groupBox3.Controls.Add(CCBuildDirText);
         groupBox3.Location = new Point(6, 30);
         groupBox3.Name = "groupBox3";
-        groupBox3.Size = new Size(631, 268);
+        groupBox3.Size = new Size(631, 304);
         groupBox3.TabIndex = 21;
         groupBox3.TabStop = false;
         groupBox3.Text = "ReCodeIt Proj Settings";
@@ -1516,6 +1533,7 @@ partial class ReCodeItForm
         CCImportMappings.Size = new Size(150, 34);
         CCImportMappings.TabIndex = 35;
         CCImportMappings.Text = "Import Mappings";
+        toolTip1.SetToolTip(CCImportMappings, "Import mappings to this project from a standalone mapping file");
         CCImportMappings.UseVisualStyleBackColor = true;
         CCImportMappings.Click += CCImportMappings_Click;
         // 
@@ -1524,100 +1542,14 @@ partial class ReCodeItForm
         CCAutoLoadLastProj.AutoSize = true;
         CCAutoLoadLastProj.Checked = true;
         CCAutoLoadLastProj.CheckState = CheckState.Checked;
-        CCAutoLoadLastProj.Location = new Point(318, 183);
+        CCAutoLoadLastProj.Location = new Point(318, 184);
         CCAutoLoadLastProj.Name = "CCAutoLoadLastProj";
         CCAutoLoadLastProj.Size = new Size(259, 29);
         CCAutoLoadLastProj.TabIndex = 34;
         CCAutoLoadLastProj.Text = "Auto load last active project";
+        toolTip1.SetToolTip(CCAutoLoadLastProj, "Auto load the last active project that was loaded");
         CCAutoLoadLastProj.UseVisualStyleBackColor = true;
         CCAutoLoadLastProj.CheckedChanged += CCAutoLoadLastProj_CheckedChanged_1;
-        // 
-        // CCLoadProjButton
-        // 
-        CCLoadProjButton.Location = new Point(162, 179);
-        CCLoadProjButton.Name = "CCLoadProjButton";
-        CCLoadProjButton.Size = new Size(150, 34);
-        CCLoadProjButton.TabIndex = 33;
-        CCLoadProjButton.Text = "Load Project";
-        CCLoadProjButton.UseVisualStyleBackColor = true;
-        CCLoadProjButton.Click += CCLoadProjButton_Click;
-        // 
-        // CCRemappedOutputButton
-        // 
-        CCRemappedOutputButton.Location = new Point(513, 66);
-        CCRemappedOutputButton.Name = "CCRemappedOutputButton";
-        CCRemappedOutputButton.Size = new Size(112, 34);
-        CCRemappedOutputButton.TabIndex = 32;
-        CCRemappedOutputButton.Text = "Choose";
-        CCRemappedOutputButton.UseVisualStyleBackColor = true;
-        CCRemappedOutputButton.Click += CCRemappedOutputButton_Click;
-        // 
-        // CCRemappedOutputText
-        // 
-        CCRemappedOutputText.Location = new Point(6, 68);
-        CCRemappedOutputText.Name = "CCRemappedOutputText";
-        CCRemappedOutputText.PlaceholderText = "Remapped Assembly Output (Assembly-CSharp-Remapped)";
-        CCRemappedOutputText.ReadOnly = true;
-        CCRemappedOutputText.Size = new Size(501, 31);
-        CCRemappedOutputText.TabIndex = 26;
-        // 
-        // CCOriginalAssemblyText
-        // 
-        CCOriginalAssemblyText.Location = new Point(6, 30);
-        CCOriginalAssemblyText.Name = "CCOriginalAssemblyText";
-        CCOriginalAssemblyText.PlaceholderText = "Original Input Target Assembly (Assembly-CSharp)";
-        CCOriginalAssemblyText.ReadOnly = true;
-        CCOriginalAssemblyText.Size = new Size(501, 31);
-        CCOriginalAssemblyText.TabIndex = 25;
-        // 
-        // CCVisualStudioProjDirText
-        // 
-        CCVisualStudioProjDirText.Location = new Point(6, 105);
-        CCVisualStudioProjDirText.Name = "CCVisualStudioProjDirText";
-        CCVisualStudioProjDirText.PlaceholderText = "Visual studio solution";
-        CCVisualStudioProjDirText.ReadOnly = true;
-        CCVisualStudioProjDirText.Size = new Size(501, 31);
-        CCVisualStudioProjDirText.TabIndex = 27;
-        // 
-        // CrossCompilerNewProjectButton
-        // 
-        CrossCompilerNewProjectButton.Location = new Point(6, 179);
-        CrossCompilerNewProjectButton.Name = "CrossCompilerNewProjectButton";
-        CrossCompilerNewProjectButton.Size = new Size(150, 34);
-        CrossCompilerNewProjectButton.TabIndex = 25;
-        CrossCompilerNewProjectButton.Text = "Create New";
-        CrossCompilerNewProjectButton.UseVisualStyleBackColor = true;
-        CrossCompilerNewProjectButton.Click += CrossCompilerNewProjectButton_Click;
-        // 
-        // CCVisualStudioProjDirButton
-        // 
-        CCVisualStudioProjDirButton.Location = new Point(513, 102);
-        CCVisualStudioProjDirButton.Name = "CCVisualStudioProjDirButton";
-        CCVisualStudioProjDirButton.Size = new Size(112, 34);
-        CCVisualStudioProjDirButton.TabIndex = 31;
-        CCVisualStudioProjDirButton.Text = "Choose";
-        CCVisualStudioProjDirButton.UseVisualStyleBackColor = true;
-        CCVisualStudioProjDirButton.Click += CCVisualStudioProjDirButton_Click;
-        // 
-        // CCBuildDirButton
-        // 
-        CCBuildDirButton.Location = new Point(513, 141);
-        CCBuildDirButton.Name = "CCBuildDirButton";
-        CCBuildDirButton.Size = new Size(112, 34);
-        CCBuildDirButton.TabIndex = 29;
-        CCBuildDirButton.Text = "Choose";
-        CCBuildDirButton.UseVisualStyleBackColor = true;
-        CCBuildDirButton.Click += CCBuildDirButton_Click;
-        // 
-        // CCOriginalAssemblyButton
-        // 
-        CCOriginalAssemblyButton.Location = new Point(513, 28);
-        CCOriginalAssemblyButton.Name = "CCOriginalAssemblyButton";
-        CCOriginalAssemblyButton.Size = new Size(112, 34);
-        CCOriginalAssemblyButton.TabIndex = 28;
-        CCOriginalAssemblyButton.Text = "Choose";
-        CCOriginalAssemblyButton.UseVisualStyleBackColor = true;
-        CCOriginalAssemblyButton.Click += CCOriginalAssemblyButton_Click;
         // 
         // CCBuildDirText
         // 
@@ -1627,6 +1559,99 @@ partial class ReCodeItForm
         CCBuildDirText.ReadOnly = true;
         CCBuildDirText.Size = new Size(501, 31);
         CCBuildDirText.TabIndex = 30;
+        // 
+        // CCBuildDirButton
+        // 
+        CCBuildDirButton.Location = new Point(513, 141);
+        CCBuildDirButton.Name = "CCBuildDirButton";
+        CCBuildDirButton.Size = new Size(112, 34);
+        CCBuildDirButton.TabIndex = 29;
+        CCBuildDirButton.Text = "Choose";
+        toolTip1.SetToolTip(CCBuildDirButton, "Final Cross Compiled dll output location for your project");
+        CCBuildDirButton.UseVisualStyleBackColor = true;
+        CCBuildDirButton.Click += CCBuildDirButton_Click;
+        // 
+        // CCVisualStudioProjDirButton
+        // 
+        CCVisualStudioProjDirButton.Location = new Point(513, 65);
+        CCVisualStudioProjDirButton.Name = "CCVisualStudioProjDirButton";
+        CCVisualStudioProjDirButton.Size = new Size(112, 34);
+        CCVisualStudioProjDirButton.TabIndex = 31;
+        CCVisualStudioProjDirButton.Text = "Choose";
+        toolTip1.SetToolTip(CCVisualStudioProjDirButton, "Your Visual Studio solution you wish to target");
+        CCVisualStudioProjDirButton.UseVisualStyleBackColor = true;
+        CCVisualStudioProjDirButton.Click += CCVisualStudioProjDirButton_Click;
+        // 
+        // CCVisualStudioProjDirText
+        // 
+        CCVisualStudioProjDirText.Location = new Point(6, 68);
+        CCVisualStudioProjDirText.Name = "CCVisualStudioProjDirText";
+        CCVisualStudioProjDirText.PlaceholderText = "Visual Studio Solution";
+        CCVisualStudioProjDirText.ReadOnly = true;
+        CCVisualStudioProjDirText.Size = new Size(501, 31);
+        CCVisualStudioProjDirText.TabIndex = 27;
+        // 
+        // CCLoadProjButton
+        // 
+        CCLoadProjButton.Location = new Point(162, 179);
+        CCLoadProjButton.Name = "CCLoadProjButton";
+        CCLoadProjButton.Size = new Size(150, 34);
+        CCLoadProjButton.TabIndex = 33;
+        CCLoadProjButton.Text = "Load Project";
+        toolTip1.SetToolTip(CCLoadProjButton, "Loads a project from disk");
+        CCLoadProjButton.UseVisualStyleBackColor = true;
+        CCLoadProjButton.Click += CCLoadProjButton_Click;
+        // 
+        // CCRemappedOutputButton
+        // 
+        CCRemappedOutputButton.Location = new Point(513, 103);
+        CCRemappedOutputButton.Name = "CCRemappedOutputButton";
+        CCRemappedOutputButton.Size = new Size(112, 34);
+        CCRemappedOutputButton.TabIndex = 32;
+        CCRemappedOutputButton.Text = "Choose";
+        toolTip1.SetToolTip(CCRemappedOutputButton, "The solutions dependencies folder, also where the remapped reference is generated to.");
+        CCRemappedOutputButton.UseVisualStyleBackColor = true;
+        CCRemappedOutputButton.Click += CCProjectDependencyButton_Click;
+        // 
+        // CCProjectDepdendencyText
+        // 
+        CCProjectDepdendencyText.Location = new Point(6, 105);
+        CCProjectDepdendencyText.Name = "CCProjectDepdendencyText";
+        CCProjectDepdendencyText.PlaceholderText = "Project's Dependency Path";
+        CCProjectDepdendencyText.ReadOnly = true;
+        CCProjectDepdendencyText.Size = new Size(501, 31);
+        CCProjectDepdendencyText.TabIndex = 26;
+        // 
+        // CCOriginalAssemblyText
+        // 
+        CCOriginalAssemblyText.Location = new Point(6, 30);
+        CCOriginalAssemblyText.Name = "CCOriginalAssemblyText";
+        CCOriginalAssemblyText.PlaceholderText = "Programs Original Assembly";
+        CCOriginalAssemblyText.ReadOnly = true;
+        CCOriginalAssemblyText.Size = new Size(501, 31);
+        CCOriginalAssemblyText.TabIndex = 25;
+        // 
+        // CrossCompilerNewProjectButton
+        // 
+        CrossCompilerNewProjectButton.Location = new Point(6, 179);
+        CrossCompilerNewProjectButton.Name = "CrossCompilerNewProjectButton";
+        CrossCompilerNewProjectButton.Size = new Size(150, 34);
+        CrossCompilerNewProjectButton.TabIndex = 25;
+        CrossCompilerNewProjectButton.Text = "Create New";
+        toolTip1.SetToolTip(CrossCompilerNewProjectButton, "Creates a new project, after filling in the above fields");
+        CrossCompilerNewProjectButton.UseVisualStyleBackColor = true;
+        CrossCompilerNewProjectButton.Click += CrossCompilerNewProjectButton_Click;
+        // 
+        // CCOriginalAssemblyButton
+        // 
+        CCOriginalAssemblyButton.Location = new Point(513, 28);
+        CCOriginalAssemblyButton.Name = "CCOriginalAssemblyButton";
+        CCOriginalAssemblyButton.Size = new Size(112, 34);
+        CCOriginalAssemblyButton.TabIndex = 28;
+        CCOriginalAssemblyButton.Text = "Choose";
+        toolTip1.SetToolTip(CCOriginalAssemblyButton, "Path to the programs original assembly, use the one in the programs install location.");
+        CCOriginalAssemblyButton.UseVisualStyleBackColor = true;
+        CCOriginalAssemblyButton.Click += CCOriginalAssemblyButton_Click;
         // 
         // SettingsTab
         // 
@@ -1859,7 +1884,7 @@ partial class ReCodeItForm
     private TextBox LoadedMappingFilePath;
     private Button CrossCompilerNewProjectButton;
     private Button CCRemappedOutputButton;
-    private TextBox CCRemappedOutputText;
+    private TextBox CCProjectDepdendencyText;
     private TextBox CCOriginalAssemblyText;
     private TextBox CCVisualStudioProjDirText;
     private Button CCVisualStudioProjDirButton;
@@ -1874,4 +1899,5 @@ partial class ReCodeItForm
     private GroupBox groupBox5;
     private LinkLabel GithubLinkLabel;
     private Button CCImportMappings;
+    private ToolTip toolTip1;
 }

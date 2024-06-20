@@ -32,7 +32,7 @@ public class ReCodeItCrossCompiler
             return;
         }
 
-        if (ActiveProject.ReCodeItProjectPath == string.Empty)
+        if (ActiveProject.VisualStudioClonedSolutionDirectory == string.Empty)
         {
             Logger.Log("ERROR: No ReCodeIt Project directory is set. (Project Creation Failed)", ConsoleColor.Red);
             return;
@@ -57,7 +57,8 @@ public class ReCodeItCrossCompiler
 
     public void StartCrossCompile()
     {
-        _identifiersChanged = 0;
+        ProjectManager.CopyVisualStudioProject(ActiveProject);
+        ProjectManager.MoveOriginalReference();
 
         AnalyzeSourceFiles();
 
@@ -71,16 +72,12 @@ public class ReCodeItCrossCompiler
         {
             AnalyzeSourcefile(file);
         }
-
-        var fileName = Path.GetFileName(ActiveProject.OriginalAssemblyPath);
-        var outPath = Path.Combine(ActiveProject.RemappedAssemblyPath, fileName);
-
-        Logger.Log($"Placing original reference into cloned build directory", ConsoleColor.Green);
-        File.Copy(ActiveProject.OriginalAssemblyPath, outPath, true);
     }
 
     private void AnalyzeSourcefile(string file)
     {
+        _identifiersChanged = 0;
+
         var source = File.ReadAllText(file);
         var syntaxTree = CSharpSyntaxTree.ParseText(source);
         var root = syntaxTree.GetCompilationUnitRoot();

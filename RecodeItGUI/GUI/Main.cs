@@ -325,6 +325,8 @@ public partial class ReCodeItForm : Form
 
         var node = GUIHelpers.GenerateTreeNode(newRemap, this);
 
+        node.Clone();
+
         //RemapTreeView.Nodes.Remove(node);
         RemapTreeView.Nodes.Add(node);
 
@@ -904,7 +906,7 @@ public partial class ReCodeItForm : Form
         var activeProj = CrossCompiler.ActiveProject;
 
         CCOriginalAssemblyText.Text = activeProj.OriginalAssemblyPath;
-        CCRemappedOutputText.Text = activeProj.RemappedAssemblyPath;
+        CCProjectDepdendencyText.Text = activeProj.RemappedAssemblyPath;
         CCVisualStudioProjDirText.Text = activeProj.VisualStudioSolutionPath;
         CCBuildDirText.Text = activeProj.BuildDirectory;
 
@@ -922,13 +924,13 @@ public partial class ReCodeItForm : Form
         }
     }
 
-    private void CCRemappedOutputButton_Click(object sender, EventArgs e)
+    private void CCProjectDependencyButton_Click(object sender, EventArgs e)
     {
-        var result = GUIHelpers.OpenFolderDialog("Select a Folder for the remapped reference dll");
+        var result = GUIHelpers.OpenFolderDialog("Select your projects reference folder, this is where the Re-Mapped output will be placed as well.");
 
         if (result != string.Empty)
         {
-            CCRemappedOutputText.Text = result;
+            CCProjectDepdendencyText.Text = result;
         }
     }
 
@@ -978,7 +980,7 @@ public partial class ReCodeItForm : Form
     private void CrossCompilerNewProjectButton_Click(object sender, EventArgs e)
     {
         if (CCOriginalAssemblyText.Text == string.Empty
-            || CCRemappedOutputText.Text == string.Empty
+            || CCProjectDepdendencyText.Text == string.Empty
             || CCVisualStudioProjDirText.Text == string.Empty
             || CCBuildDirText.Text == string.Empty)
         {
@@ -989,8 +991,9 @@ public partial class ReCodeItForm : Form
 
         ProjectManager.CreateProject(
             CCOriginalAssemblyText.Text,
-            CCRemappedOutputText.Text,
+            CCProjectDepdendencyText.Text,
             CCVisualStudioProjDirText.Text,
+            CCProjectDepdendencyText.Text,
             CCBuildDirText.Text);
     }
 

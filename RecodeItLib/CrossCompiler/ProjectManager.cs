@@ -18,6 +18,7 @@ public static class ProjectManager
         string OrigAssemblyPath,
         string RemappedAssemblyOutputPath,
         string VSSolutionDirPath,
+        string DependencyPath,
         string BuildPath)
     {
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
@@ -33,6 +34,7 @@ public static class ProjectManager
             OriginalAssemblyPath = OrigAssemblyPath,
             RemappedAssemblyPath = RemappedAssemblyOutputPath,
             VisualStudioSolutionPath = VSSolutionDirPath,
+            VisualStudioDependencyPath = DependencyPath,
             BuildDirectory = BuildPath,
             OriginalAssemblyHash = HashUtil.GetFileHash(OrigAssemblyPath),
             RemappedAssemblyHash = "",
@@ -55,12 +57,26 @@ public static class ProjectManager
     public static void LoadProject(string path, bool cli = false)
     {
         ActiveProject = LoadCrossCompilerProjModel(path, cli);
+
         CopyVisualStudioProject(ActiveProject);
-        LoadVSProjectFromClone();
+
+        LoadProjectSourceFiles();
         Logger.Log($"Found and Loaded ReCodeIt Project at {path}");
     }
 
-    private static void CopyVisualStudioProject(CrossCompilerProjectModel proj)
+    public static void MoveOriginalReference()
+    {
+        var outPath = Path.Combine(
+            ActiveProject.VisualStudioClonedSolutionDirectory,
+            ActiveProject.OriginalAssemblyDllName);
+
+        Logger.Log(ActiveProject.VisualStudioClonedDependencyPath, ConsoleColor.Red);
+
+        Logger.Log($"Placing original reference `{ActiveProject.OriginalAssemblyPath}` into cloned build directory `{outPath}`", ConsoleColor.Green);
+        File.Copy(ActiveProject.OriginalAssemblyPath, outPath, true);
+    }
+
+    public static void CopyVisualStudioProject(CrossCompilerProjectModel proj)
     {
         var solutionDirPath = proj.VisualStudioSolutionDirectoryPath;
         var solutionFiles = Directory.GetFiles(solutionDirPath, "*.sln", SearchOption.AllDirectories);
@@ -80,7 +96,6 @@ public static class ProjectManager
         var solutionName = Path.GetFileNameWithoutExtension(solutionFile);
         var destination = Path.Combine(DataProvider.ReCodeItProjectsPath, solutionName);
 
-        proj.ReCodeItProjectPath = destination;
         proj.SolutionName = solutionName;
 
         Logger.Log($"Copying solution: {solutionName} to {destination}", ConsoleColor.Yellow);
@@ -110,6 +125,9 @@ public static class ProjectManager
         foreach (FileInfo file in files)
         {
             string tempPath = Path.Combine(destinationDirPath, file.Name);
+
+            if (File.Exists(tempPath)) { File.Delete(tempPath); }
+
             file.CopyTo(tempPath, true);
         }
 
@@ -169,12 +187,12 @@ public static class ProjectManager
         RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
         DataProvider.SaveAppSettings();
 
-        Logger.Log($"Loaded Cross Compiler Project: {model?.RemappedAssemblyPath}");
+        Logger.Log($"Loaded Cross Compiler Project: {model?.VisualStudioSolutionDirectoryPath}");
 
         return model!;
     }
 
-    private static void LoadVSProjectFromClone()
+    private static void LoadProjectSourceFiles()
     {
         var path = Path.Combine(
             DataProvider.ReCodeItProjectsPath,

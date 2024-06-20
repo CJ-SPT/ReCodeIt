@@ -23,7 +23,7 @@ public class BuildCommand : ICommand
             ProjectManager.LoadProject(ProjectJsonPath);
             CrossCompiler.StartCrossCompile();
 
-            return default;
+            return ValueTask.CompletedTask;
         }
 
         console.Output.WriteLine(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"));
@@ -33,18 +33,19 @@ public class BuildCommand : ICommand
             CrossCompiler = new();
 
             DataProvider.LoadAppSettings();
+            DataProvider.IsCli = true;
 
             ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
 
-            if (!Validate(console)) { return default; }
+            if (!Validate(console)) { return ValueTask.CompletedTask; }
 
             CrossCompiler.StartCrossCompile();
 
             DataProvider.SaveAppSettings();
-            return default;
+            return ValueTask.CompletedTask;
         }
 
-        return default;
+        return ValueTask.CompletedTask;
     }
 
     private bool Validate(IConsole console)

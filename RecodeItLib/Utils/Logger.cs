@@ -50,11 +50,14 @@ public static class Logger
 
     private static void WriteToDisk(object message)
     {
+        if (true) { return; }
+
         try
         {
             using (StreamWriter sw = File.AppendText(_logPath))
             {
                 sw.WriteLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}");
+                sw.Close();
             }
         }
         catch (IOException ex)
