@@ -50,7 +50,7 @@ public static class Logger
 
     private static void WriteToDisk(object message)
     {
-        if (true) { return; }
+        if (DataProvider.IsCli) { return; }
 
         try
         {

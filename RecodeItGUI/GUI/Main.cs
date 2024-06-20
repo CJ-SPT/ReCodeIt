@@ -371,7 +371,7 @@ public partial class ReCodeItForm : Form
             Remapper.InitializeRemap(
                 CrossCompiler.ActiveProject.RemapModels,
                 CrossCompiler.ActiveProject.OriginalAssemblyPath,
-                CrossCompiler.ActiveProject.RemappedAssemblyPath);
+                CrossCompiler.ActiveProject.VisualStudioDependencyPath);
 
             ReloadRemapTreeView(CrossCompiler.ActiveProject.RemapModels);
             return;
@@ -906,7 +906,7 @@ public partial class ReCodeItForm : Form
         var activeProj = CrossCompiler.ActiveProject;
 
         CCOriginalAssemblyText.Text = activeProj.OriginalAssemblyPath;
-        CCProjectDepdendencyText.Text = activeProj.RemappedAssemblyPath;
+        CCProjectDepdendencyText.Text = activeProj.VisualStudioDependencyPath;
         CCVisualStudioProjDirText.Text = activeProj.VisualStudioSolutionPath;
         CCBuildDirText.Text = activeProj.BuildDirectory;
 
@@ -991,7 +991,6 @@ public partial class ReCodeItForm : Form
 
         ProjectManager.CreateProject(
             CCOriginalAssemblyText.Text,
-            CCProjectDepdendencyText.Text,
             CCVisualStudioProjDirText.Text,
             CCProjectDepdendencyText.Text,
             CCBuildDirText.Text);

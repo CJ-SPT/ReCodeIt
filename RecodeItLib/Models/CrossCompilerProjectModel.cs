@@ -14,13 +14,6 @@ public class CrossCompilerProjectModel
     public string OriginalAssemblyPath { get; set; }
 
     /// <summary>
-    /// Remapped output path
-    ///
-    /// (Required on creation)
-    /// </summary>
-    public string RemappedAssemblyPath { get; set; }
-
-    /// <summary>
     /// The path to the working directory vs project
     ///
     /// (Required on creation)
@@ -28,7 +21,8 @@ public class CrossCompilerProjectModel
     public string VisualStudioSolutionPath { get; set; }
 
     /// <summary>
-    /// The path to the working directory vs project
+    /// The path to the dependency folder for the active solution. Also where the remapped dll is
+    /// built to and replaced
     ///
     /// (Required on creation)
     /// </summary>
@@ -63,7 +57,16 @@ public class CrossCompilerProjectModel
     /// <summary>
     /// The path to the cloned solutions dependency folder
     /// </summary>
-    public string VisualStudioClonedDependencyPath => Path.GetDirectoryName(VisualStudioDependencyPath)!;
+    public string VisualStudioClonedDependencyPath
+    {
+        get
+        {
+            // Take just the folder name
+            var folderName = VisualStudioDependencyPath.Split('\\').Last();
+
+            return Path.Combine(VisualStudioClonedSolutionDirectory, folderName);
+        }
+    }
 
     public string ProjectDllName => SolutionName + ".dll";
 

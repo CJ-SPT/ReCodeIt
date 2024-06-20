@@ -16,7 +16,6 @@ public static class ProjectManager
 
     public static void CreateProject(
         string OrigAssemblyPath,
-        string RemappedAssemblyOutputPath,
         string VSSolutionDirPath,
         string DependencyPath,
         string BuildPath)
@@ -24,7 +23,7 @@ public static class ProjectManager
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
         Logger.Log($"Generating Cross Compiler project", ConsoleColor.Yellow);
         Logger.Log($"Original Assembly Path {OrigAssemblyPath}", ConsoleColor.Yellow);
-        Logger.Log($"Remapped Assembly Path: {RemappedAssemblyOutputPath}", ConsoleColor.Yellow);
+        Logger.Log($"Remapped Assembly Path: {DependencyPath}", ConsoleColor.Yellow);
         Logger.Log($"Visual Studio Solution Directory: {VSSolutionDirPath}", ConsoleColor.Yellow);
         Logger.Log($"Build Path: {BuildPath}", ConsoleColor.Yellow);
 
@@ -32,7 +31,6 @@ public static class ProjectManager
         ActiveProject = new CrossCompilerProjectModel
         {
             OriginalAssemblyPath = OrigAssemblyPath,
-            RemappedAssemblyPath = RemappedAssemblyOutputPath,
             VisualStudioSolutionPath = VSSolutionDirPath,
             VisualStudioDependencyPath = DependencyPath,
             BuildDirectory = BuildPath,
@@ -67,7 +65,7 @@ public static class ProjectManager
     public static void MoveOriginalReference()
     {
         var outPath = Path.Combine(
-            ActiveProject.VisualStudioClonedSolutionDirectory,
+            ActiveProject.VisualStudioClonedDependencyPath,
             ActiveProject.OriginalAssemblyDllName);
 
         Logger.Log(ActiveProject.VisualStudioClonedDependencyPath, ConsoleColor.Red);
