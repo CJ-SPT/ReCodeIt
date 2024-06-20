@@ -1,6 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Microsoft.Build.Locator;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Emit;
+using Microsoft.CodeAnalysis.MSBuild;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
@@ -15,12 +18,11 @@ public class ReCodeItCrossCompiler
         Remapper = new(this);
     }
 
-    private ReCodeItRemapper Remapper { get; }
-    public CrossCompilerSettings Settings => DataProvider.Settings.CrossCompiler;
-
     public CrossCompilerProjectModel ActiveProject => ProjectManager.ActiveProject;
 
-    private int _identifiersChanged = 0;
+    private CrossCompilerSettings Settings => DataProvider.Settings.CrossCompiler;
+    private ReCodeItRemapper Remapper { get; }
+    private Stopwatch SW { get; } = new();
 
     public void StartRemap()
     {
@@ -55,50 +57,117 @@ public class ReCodeItCrossCompiler
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
-    public void StartCrossCompile()
+    public async Task StartCrossCompile()
     {
         ProjectManager.LoadProjectCC(ActiveProject);
 
-        AnalyzeSourceFiles();
+        SW.Reset();
+        SW.Start();
 
-        StartBuild();
-        MoveResult();
-    }
+        var workspace = MSBuildWorkspace.Create();
 
-    private void AnalyzeSourceFiles()
-    {
-        foreach (var file in ProjectManager.AllProjectSourceFiles)
+        Logger.Log("Loading Solution...", ConsoleColor.Yellow);
+
+        var solution = await Task.Run(() => LoadSolutionAsync(workspace, ActiveProject.VisualStudioClonedSolutionPath));
+
+        Project newProject;
+
+        // Make sure we loop over the Id's instead of projects, because they are immutable
+        foreach (var projId in solution.ProjectIds)
         {
-            AnalyzeSourcefile(file);
+            newProject = solution.GetProject(projId);
+
+            // Skip the ReCodeIt project if it exists
+            if (newProject!.Name == "ReCodeIt")
+            {
+                continue;
+            }
+
+            Logger.Log("Reversing Identifier Changes...", ConsoleColor.Yellow);
+
+            foreach (var docId in newProject.DocumentIds)
+            {
+                var doc = newProject.GetDocument(docId);
+
+                // Remove the document from the project
+                newProject = newProject.RemoveDocument(docId);
+
+                // We only want C# source code
+                if (doc.SourceCodeKind != SourceCodeKind.Regular) { continue; }
+
+                var syntaxTree = await doc.GetSyntaxTreeAsync();
+                var syntaxRoot = syntaxTree!.GetCompilationUnitRoot();
+                syntaxRoot = FindAndChangeIdentifiers(syntaxRoot);
+
+                var newDoc = newProject.AddDocument(doc.Name, syntaxRoot.GetText());
+
+                newProject = newDoc.Project;
+            }
+
+            Logger.Log("Compiling Project...", ConsoleColor.Yellow);
+
+            var comp = await newProject.GetCompilationAsync();
+
+            foreach (var diag in comp.GetDiagnostics())
+            {
+                Logger.Log(diag.ToString());
+            }
+
+            using (var ms = new MemoryStream())
+            {
+                EmitResult emitResult = comp.Emit(ms);
+
+                // Check if the compilation was successful
+                if (emitResult.Success)
+                {
+                    var assemblyPath = $"{ActiveProject.BuildDirectory}\\{ActiveProject.ProjectDllName}";
+                    using (var fs = new FileStream(assemblyPath, FileMode.Create, FileAccess.Write))
+                    {
+                        ms.Seek(0, SeekOrigin.Begin);
+                        ms.CopyTo(fs);
+                    }
+
+                    Logger.Log($"Compilation succeeded. Time ({SW.Elapsed.TotalSeconds:F1}) seconds, Assembly written to: {assemblyPath}", ConsoleColor.Green);
+                    SW.Stop();
+                }
+                else
+                {
+                    Logger.Log("Compilation failed.");
+                    foreach (var diagnostic in emitResult.Diagnostics)
+                    {
+                        Logger.Log(diagnostic.ToString());
+                    }
+
+                    SW.Stop();
+                }
+            }
         }
     }
 
-    private void AnalyzeSourcefile(string file)
+    private async Task<Solution> LoadSolutionAsync(MSBuildWorkspace workspace, string solutionPath)
     {
-        _identifiersChanged = 0;
+        if (!MSBuildLocator.IsRegistered) MSBuildLocator.RegisterDefaults();
 
-        var source = File.ReadAllText(file);
-        var syntaxTree = CSharpSyntaxTree.ParseText(source);
-        var root = syntaxTree.GetCompilationUnitRoot();
+        using (var w = MSBuildWorkspace.Create())
+        {
+            return await w.OpenSolutionAsync(solutionPath);
+        }
+    }
 
+    private CompilationUnitSyntax FindAndChangeIdentifiers(CompilationUnitSyntax syntax)
+    {
         // Get the things we want to change
-        var identifiers = root.DescendantNodes()
+        var identifiers = syntax.DescendantNodes()
                 .OfType<IdentifierNameSyntax>()
                 .Where(id => ActiveProject.ChangedTypes.ContainsKey(id.Identifier.Text));
 
-        if (!identifiers.Any()) { return; }
-
-        _identifiersChanged += identifiers.Count();
-
-        Logger.Log($"changing {_identifiersChanged} identifiers in file {Path.GetFileName(file)}", ConsoleColor.Green);
-
         // Do Black Voodoo Magic
-        var newRoot = root.ReplaceNodes(identifiers, (oldNode, newNode) =>
+        var newSyntax = syntax.ReplaceNodes(identifiers, (oldNode, newNode) =>
                 SyntaxFactory.IdentifierName(ActiveProject.ChangedTypes[oldNode.Identifier.Text])
                     .WithLeadingTrivia(oldNode.GetLeadingTrivia())
                     .WithTrailingTrivia(oldNode.GetTrailingTrivia()));
 
-        File.WriteAllText(file, newRoot.ToFullString());
+        return newSyntax;
     }
 
     /// <summary>
@@ -160,7 +229,7 @@ public class ReCodeItCrossCompiler
         if (builtDll == null)
         {
             Logger.Log($"ERROR: No {ActiveProject.ProjectDllName} found at path {ActiveProject.VisualStudioClonedSolutionDirectory}, build failed.", ConsoleColor.Red);
-            CleanUp();
+            //CleanUp();
             return;
         }
 
@@ -176,7 +245,7 @@ public class ReCodeItCrossCompiler
 
         Logger.Log($"Copying {ActiveProject.ProjectDllName} to {dest}", ConsoleColor.Yellow);
         Logger.Log($"Successfully Cross Compiled Project {ActiveProject.SolutionName}", ConsoleColor.Green);
-        CleanUp();
+        //CleanUp();
     }
 
     private void CleanUp()

@@ -172,11 +172,12 @@ public static class ProjectManager
             file.CopyTo(tempPath, true);
         }
 
-        // We dont want git and vs directories they are often locked leading to problems
+        // We dont want git and vs directories they are often locked leading to problems, we also
+        // dont want the RecodeIt build project if it exists
         List<string> copyIgnoreDirectories =
         [
             ".vs",
-            ".git"
+            ".git",
         ];
 
         foreach (DirectoryInfo subdir in dirs)
