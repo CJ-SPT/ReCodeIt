@@ -153,13 +153,38 @@ public class ReCodeItCrossCompiler
 
     private void MoveResult()
     {
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        var builtDll = Directory
+            .GetFiles(ActiveProject.VisualStudioClonedSolutionDirectory, "*.dll", SearchOption.AllDirectories)
+            .FirstOrDefault(file => file.Contains(ActiveProject.ProjectDllName));
+
+        if (builtDll == null)
+        {
+            Logger.Log($"ERROR: No {ActiveProject.ProjectDllName} found at path {ActiveProject.VisualStudioClonedSolutionDirectory}, build failed.", ConsoleColor.Red);
+            CleanUp();
+            return;
+        }
+
+        var dest = Path.Combine(ActiveProject.BuildDirectory, ActiveProject.ProjectDllName);
+
+        // Create it if it doesnt exist
+        if (!Directory.Exists(ActiveProject.BuildDirectory))
+        {
+            Directory.CreateDirectory(ActiveProject.BuildDirectory);
+        }
+
+        File.Copy(builtDll, dest, true);
+
+        Logger.Log($"Copying {ActiveProject.ProjectDllName} to {dest}", ConsoleColor.Yellow);
         Logger.Log($"Successfully Cross Compiled Project {ActiveProject.SolutionName}", ConsoleColor.Green);
-        Logger.Log($"Reversed {_identifiersChanged} Remaps", ConsoleColor.Green);
-        Logger.Log($"Original assembly path: {ActiveProject.OriginalAssemblyPath}", ConsoleColor.Green);
-        Logger.Log($"Original assembly hash: {ActiveProject.OriginalAssemblyHash}", ConsoleColor.Green);
-        Logger.Log($"Final build directory: {ActiveProject.BuildDirectory}", ConsoleColor.Green);
-        //Logger.Log($"Original patched assembly hash: {ActiveProject.RemappedAssemblyHash}", ConsoleColor.Green);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        CleanUp();
+    }
+
+    private void CleanUp()
+    {
+        if (Path.Exists(ActiveProject.VisualStudioClonedSolutionDirectory))
+        {
+            Logger.Log("Cleaning up cloned project files", ConsoleColor.Yellow);
+            Directory.Delete(ActiveProject.VisualStudioClonedSolutionDirectory, true);
+        }
     }
 }

@@ -128,13 +128,6 @@ public static class ProjectManager
             return;
         }
 
-        // Make sure the project is clean
-        if (Path.Exists(proj.VisualStudioClonedSolutionPath))
-        {
-            Logger.Log("Cleaning old project files", ConsoleColor.Yellow);
-            Directory.Delete(proj.VisualStudioClonedSolutionDirectory, true);
-        }
-
         var solutionName = Path.GetFileNameWithoutExtension(solutionFiles.First());
         var destination = Path.Combine(DataProvider.ReCodeItProjectsPath, solutionName);
 
