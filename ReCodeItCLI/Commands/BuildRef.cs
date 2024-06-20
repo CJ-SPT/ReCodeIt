@@ -7,25 +7,13 @@ using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
 
-[Command("Build", Description = "Build your project and get a dll output for the original assembly. You dont need to provide a path if the last project you built is the one you want to target")]
-public class BuildCommand : ICommand
+[Command("BuildRef", Description = "Builds or rebuilds a new reference DLL for your project")]
+public class BuildRef : ICommand
 {
     private ReCodeItCrossCompiler CrossCompiler { get; set; }
 
-    [CommandParameter(0, IsRequired = false, Description = "the location of your project file")]
-    public string ProjectJsonPath { get; init; }
-
     public ValueTask ExecuteAsync(IConsole console)
     {
-        if (ProjectJsonPath is not null && ProjectJsonPath != string.Empty)
-        {
-            CrossCompiler = new();
-            ProjectManager.LoadProject(ProjectJsonPath);
-            CrossCompiler.StartCrossCompile();
-
-            return default;
-        }
-
         console.Output.WriteLine(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"));
 
         if (RegistryHelper.GetRegistryValue<string>("LastLoadedProject") != null)
@@ -38,7 +26,7 @@ public class BuildCommand : ICommand
 
             if (!Validate(console)) { return default; }
 
-            CrossCompiler.StartCrossCompile();
+            CrossCompiler.StartRemap();
 
             DataProvider.SaveAppSettings();
             return default;
@@ -51,19 +39,13 @@ public class BuildCommand : ICommand
     {
         if (ProjectManager.ActiveProject == null)
         {
-            console.Output.WriteLine("No project loaded, go create or load a project in the gui first");
+            console.Output.WriteLine("No project loaded, please load a project first");
             return false;
         }
 
         if (ProjectManager.ActiveProject.RemapModels.Count == 0)
         {
             console.Output.WriteLine("No Remaps present, go to the gui and create some first");
-            return false;
-        }
-
-        if (ProjectManager.ActiveProject.ChangedTypes.Count == 0)
-        {
-            console.Output.WriteLine("There are no changed types, have you created and used a remapped reference? \nRun the command `buildRef` to generate a project reference");
             return false;
         }
 

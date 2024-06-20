@@ -306,7 +306,10 @@ public partial class ReCodeItForm : Form
             DataProvider.SaveMapping();
         }
 
-        RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(newRemap, this));
+        var node = GUIHelpers.GenerateTreeNode(newRemap, this);
+
+        RemapTreeView.Nodes.Add(node);
+        CCMappingTreeView.Nodes.Add(node);
         ResetAllRemapFields();
     }
 
@@ -432,6 +435,7 @@ public partial class ReCodeItForm : Form
         if (!MethodIncludeBox.Items.Contains(IncludeMethodTextBox.Text))
         {
             MethodIncludeBox.Items.Add(IncludeMethodTextBox.Text);
+            IncludeMethodTextBox.Clear();
         }
     }
 
@@ -448,6 +452,7 @@ public partial class ReCodeItForm : Form
         if (!MethodExcludeBox.Items.Contains(ExcludeMethodTextBox.Text))
         {
             MethodExcludeBox.Items.Add(ExcludeMethodTextBox.Text);
+            ExcludeMethodTextBox.Clear();
         }
     }
 
@@ -464,6 +469,7 @@ public partial class ReCodeItForm : Form
         if (!FieldIncludeBox.Items.Contains(FieldsIncludeTextInput.Text))
         {
             FieldIncludeBox.Items.Add(FieldsIncludeTextInput.Text);
+            FieldsIncludeTextInput.Clear();
         }
     }
 
@@ -480,6 +486,7 @@ public partial class ReCodeItForm : Form
         if (!FieldExcludeBox.Items.Contains(FieldsExcludeTextInput.Text))
         {
             FieldExcludeBox.Items.Add(FieldsExcludeTextInput.Text);
+            FieldsExcludeTextInput.Clear();
         }
     }
 
@@ -496,6 +503,7 @@ public partial class ReCodeItForm : Form
         if (!PropertiesIncludeBox.Items.Contains(PropertiesIncludeTextField.Text))
         {
             PropertiesIncludeBox.Items.Add(PropertiesIncludeTextField.Text);
+            PropertiesIncludeTextField.Clear();
         }
     }
 
@@ -512,6 +520,7 @@ public partial class ReCodeItForm : Form
         if (!PropertiesExcludeBox.Items.Contains(PropertiesExcludeTextField.Text))
         {
             PropertiesExcludeBox.Items.Add(PropertiesExcludeTextField.Text);
+            PropertiesExcludeTextField.Clear();
         }
     }
 
@@ -528,6 +537,7 @@ public partial class ReCodeItForm : Form
         if (!NestedTypesIncludeBox.Items.Contains(NestedTypesIncludeTextField.Text))
         {
             NestedTypesIncludeBox.Items.Add(NestedTypesIncludeTextField.Text);
+            NestedTypesIncludeTextField.Clear();
         }
     }
 
@@ -544,6 +554,7 @@ public partial class ReCodeItForm : Form
         if (!NestedTypesExcludeBox.Items.Contains(NestedTypesExcludeTextField.Text))
         {
             NestedTypesExcludeBox.Items.Add(NestedTypesExcludeTextField.Text);
+            NestedTypesExcludeTextField.Clear();
         }
     }
 

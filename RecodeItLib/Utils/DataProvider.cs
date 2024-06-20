@@ -173,6 +173,8 @@ public static class DataProvider
 
         DefaultAssemblyResolver resolver = new();
 
+        Console.WriteLine(path);
+
         resolver.AddSearchDirectory(Path.GetDirectoryName(path)); // Replace with the correct path : (6/14) I have no idea what I met by that
         ReaderParameters parameters = new() { AssemblyResolver = resolver };
 

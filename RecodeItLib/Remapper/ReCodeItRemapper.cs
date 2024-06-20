@@ -296,20 +296,10 @@ public class ReCodeItRemapper
         Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
 
-        Reset();
+        DataProvider.ScoringModels = [];
+        Stopwatch.Reset();
+
         IsRunning = false;
         OnComplete?.Invoke();
-    }
-
-    private void Reset()
-    {
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-        Logger.Log("Reloading assembly definitions", ConsoleColor.Yellow);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-
-        DataProvider.LoadAssemblyDefinition(Settings.AssemblyPath);
-        DataProvider.ScoringModels = [];
-
-        Stopwatch.Reset();
     }
 }
