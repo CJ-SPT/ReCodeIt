@@ -57,8 +57,7 @@ public class ReCodeItCrossCompiler
 
     public void StartCrossCompile()
     {
-        ProjectManager.CopyVisualStudioProject(ActiveProject);
-        ProjectManager.MoveOriginalReference();
+        ProjectManager.LoadProjectCC(ActiveProject);
 
         AnalyzeSourceFiles();
 

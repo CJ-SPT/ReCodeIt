@@ -52,29 +52,71 @@ public static class ProjectManager
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
+    /// <summary>
+    /// Saves the provided project model to disk, used from the GUI
+    /// </summary>
+    /// <param name="model"></param>
+    public static void SaveCrossCompilerProjectModel(CrossCompilerProjectModel model)
+    {
+        var path = Path.Combine(model.VisualStudioSolutionDirectoryPath, "ReCodeItProj.json");
+
+        JsonSerializerSettings settings = new()
+        {
+            Formatting = Formatting.Indented
+        };
+
+        var jsonText = JsonConvert.SerializeObject(model, settings);
+
+        File.WriteAllText(path, jsonText);
+
+        DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
+
+        RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
+        DataProvider.SaveAppSettings();
+
+        Logger.Log($"Cross Compiler project json saved to {path}", ConsoleColor.Green);
+    }
+
+    /// <summary>
+    /// The "LoadProject" method only loads the project file from disk, used for initiating the GUI
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="cli"></param>
     public static void LoadProject(string path, bool cli = false)
     {
         ActiveProject = LoadCrossCompilerProjModel(path, cli);
-
-        CopyVisualStudioProject(ActiveProject);
-
-        LoadProjectSourceFiles();
         Logger.Log($"Found and Loaded ReCodeIt Project at {path}");
     }
 
-    public static void MoveOriginalReference()
+    /// <summary>
+    /// The "LoadProjectCC" method loads all the project data and loads source files
+    /// </summary>
+    /// <param name="proj"></param>
+    public static void LoadProjectCC(CrossCompilerProjectModel proj)
+    {
+        CopyVisualStudioProject(ActiveProject);
+        MoveOriginalReference();
+        LoadProjectSourceFiles();
+    }
+
+    /// <summary>
+    /// Replaces the original reference back into the cloned build directory
+    /// </summary>
+    private static void MoveOriginalReference()
     {
         var outPath = Path.Combine(
             ActiveProject.VisualStudioClonedDependencyPath,
             ActiveProject.OriginalAssemblyDllName);
 
-        Logger.Log(ActiveProject.VisualStudioClonedDependencyPath, ConsoleColor.Red);
-
         Logger.Log($"Placing original reference `{ActiveProject.OriginalAssemblyPath}` into cloned build directory `{outPath}`", ConsoleColor.Green);
         File.Copy(ActiveProject.OriginalAssemblyPath, outPath, true);
     }
 
-    public static void CopyVisualStudioProject(CrossCompilerProjectModel proj)
+    /// <summary>
+    /// Copies the visual studio project to a temporary location for changes
+    /// </summary>
+    /// <param name="proj"></param>
+    private static void CopyVisualStudioProject(CrossCompilerProjectModel proj)
     {
         var solutionDirPath = proj.VisualStudioSolutionDirectoryPath;
         var solutionFiles = Directory.GetFiles(solutionDirPath, "*.sln", SearchOption.AllDirectories);
@@ -86,12 +128,14 @@ public static class ProjectManager
             return;
         }
 
-        foreach (var file in solutionFiles)
+        // Make sure the project is clean
+        if (Path.Exists(proj.VisualStudioClonedSolutionPath))
         {
-            solutionFile = file;
+            Logger.Log("Cleaning old project files", ConsoleColor.Yellow);
+            Directory.Delete(proj.VisualStudioClonedSolutionDirectory, true);
         }
 
-        var solutionName = Path.GetFileNameWithoutExtension(solutionFile);
+        var solutionName = Path.GetFileNameWithoutExtension(solutionFiles.First());
         var destination = Path.Combine(DataProvider.ReCodeItProjectsPath, solutionName);
 
         proj.SolutionName = solutionName;
@@ -101,6 +145,12 @@ public static class ProjectManager
         CopyProjectRecursive(solutionDirPath, destination);
     }
 
+    /// <summary>
+    /// Recursively copies all children directories in the project
+    /// </summary>
+    /// <param name="sourceDirPath"></param>
+    /// <param name="destinationDirPath"></param>
+    /// <exception cref="DirectoryNotFoundException"></exception>
     private static void CopyProjectRecursive(string sourceDirPath, string destinationDirPath)
     {
         DirectoryInfo sourceDir = new DirectoryInfo(sourceDirPath);
@@ -145,27 +195,12 @@ public static class ProjectManager
         }
     }
 
-    public static void SaveCrossCompilerProjectModel(CrossCompilerProjectModel model)
-    {
-        var path = Path.Combine(model.VisualStudioSolutionDirectoryPath, "ReCodeItProj.json");
-
-        JsonSerializerSettings settings = new()
-        {
-            Formatting = Formatting.Indented
-        };
-
-        var jsonText = JsonConvert.SerializeObject(model, settings);
-
-        File.WriteAllText(path, jsonText);
-
-        DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
-
-        RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
-        DataProvider.SaveAppSettings();
-
-        Logger.Log($"Cross Compiler project json saved to {path}", ConsoleColor.Green);
-    }
-
+    /// <summary>
+    /// Loads the project model from disk
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="cli"></param>
+    /// <returns></returns>
     private static CrossCompilerProjectModel LoadCrossCompilerProjModel(string path, bool cli = false)
     {
         if (!File.Exists(path))
@@ -190,6 +225,9 @@ public static class ProjectManager
         return model!;
     }
 
+    /// <summary>
+    /// Gathers all the projects source files
+    /// </summary>
     private static void LoadProjectSourceFiles()
     {
         var path = Path.Combine(
