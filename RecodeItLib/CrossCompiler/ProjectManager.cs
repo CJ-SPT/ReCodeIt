@@ -1,7 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
+using ReCodeItLib.Utils;
 
 namespace ReCodeIt.CrossCompiler;
 
@@ -50,9 +52,9 @@ public static class ProjectManager
         Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
-    public static void LoadProject(string path)
+    public static void LoadProject(string path, bool cli = false)
     {
-        ActiveProject = LoadCrossCompilerProjModel(path);
+        ActiveProject = LoadCrossCompilerProjModel(path, cli);
         CopyVisualStudioProject(ActiveProject);
         LoadVSProjectFromClone();
         Logger.Log($"Found and Loaded ReCodeIt Project at {path}");
@@ -141,12 +143,14 @@ public static class ProjectManager
         File.WriteAllText(path, jsonText);
 
         DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
+
+        RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
         DataProvider.SaveAppSettings();
 
         Logger.Log($"Cross Compiler project json saved to {path}", ConsoleColor.Green);
     }
 
-    private static CrossCompilerProjectModel LoadCrossCompilerProjModel(string path)
+    private static CrossCompilerProjectModel LoadCrossCompilerProjModel(string path, bool cli = false)
     {
         if (!File.Exists(path))
         {
@@ -157,7 +161,12 @@ public static class ProjectManager
 
         var model = JsonConvert.DeserializeObject<CrossCompilerProjectModel>(jsonText);
 
-        DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
+        if (!cli)
+        {
+            DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
+        }
+
+        RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
         DataProvider.SaveAppSettings();
 
         Logger.Log($"Loaded Cross Compiler Project: {model?.RemappedAssemblyPath}");

@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
+using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Utils;
 
@@ -14,7 +15,12 @@ public static class DataProvider
         }
     }
 
-    public static readonly string DataPath = Path.Combine(AppContext.BaseDirectory, "Data");
+    /// <summary>
+    /// Is this running in the CLI?
+    /// </summary>
+    public static bool IsCli { get; set; } = false;
+
+    public static string DataPath => RegistryHelper.GetRegistryValue<string>("DataPath");
 
     public static readonly string ReCodeItProjectsPath = Path.Combine(AppContext.BaseDirectory, "Projects");
 
@@ -55,7 +61,7 @@ public static class DataProvider
 
     public static void SaveAppSettings()
     {
-        var settingsPath = Path.Combine(AppContext.BaseDirectory, "Data", "Settings.jsonc");
+        var settingsPath = RegistryHelper.GetRegistryValue<string>("SettingsPath");
 
         if (!File.Exists(settingsPath))
         {

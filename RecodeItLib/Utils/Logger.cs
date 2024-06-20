@@ -1,4 +1,6 @@
-﻿namespace ReCodeIt.Utils;
+﻿using ReCodeItLib.Utils;
+
+namespace ReCodeIt.Utils;
 
 public static class Logger
 {
@@ -11,7 +13,7 @@ public static class Logger
         }
     }
 
-    private static string _logPath = Path.Combine(AppContext.BaseDirectory, "Data", "Log.log");
+    private static string _logPath => RegistryHelper.GetRegistryValue<string>("LogPath");
 
     public static void ClearLog()
     {

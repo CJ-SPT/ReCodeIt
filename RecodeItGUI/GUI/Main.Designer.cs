@@ -142,7 +142,6 @@ partial class ReCodeItForm
         tabPage5 = new TabPage();
         groupBox4 = new GroupBox();
         groupBox5 = new GroupBox();
-        CCBuildConfiguration = new TextBox();
         CrossPatchRemapButton = new Button();
         CrossPatchRunButton = new Button();
         label4 = new Label();
@@ -1442,28 +1441,18 @@ partial class ReCodeItForm
         // 
         // groupBox5
         // 
-        groupBox5.Controls.Add(CCBuildConfiguration);
         groupBox5.Controls.Add(CrossPatchRemapButton);
         groupBox5.Controls.Add(CrossPatchRunButton);
         groupBox5.Location = new Point(6, 304);
         groupBox5.Name = "groupBox5";
-        groupBox5.Size = new Size(631, 215);
+        groupBox5.Size = new Size(631, 85);
         groupBox5.TabIndex = 27;
         groupBox5.TabStop = false;
         groupBox5.Text = "Generation";
         // 
-        // CCBuildConfiguration
-        // 
-        CCBuildConfiguration.Location = new Point(6, 30);
-        CCBuildConfiguration.Name = "CCBuildConfiguration";
-        CCBuildConfiguration.PlaceholderText = "Build Configuration";
-        CCBuildConfiguration.Size = new Size(150, 31);
-        CCBuildConfiguration.TabIndex = 25;
-        CCBuildConfiguration.Text = "Debug";
-        // 
         // CrossPatchRemapButton
         // 
-        CrossPatchRemapButton.Location = new Point(6, 175);
+        CrossPatchRemapButton.Location = new Point(6, 30);
         CrossPatchRemapButton.Name = "CrossPatchRemapButton";
         CrossPatchRemapButton.Size = new Size(316, 34);
         CrossPatchRemapButton.TabIndex = 21;
@@ -1473,7 +1462,7 @@ partial class ReCodeItForm
         // 
         // CrossPatchRunButton
         // 
-        CrossPatchRunButton.Location = new Point(328, 175);
+        CrossPatchRunButton.Location = new Point(328, 30);
         CrossPatchRunButton.Name = "CrossPatchRunButton";
         CrossPatchRunButton.Size = new Size(150, 34);
         CrossPatchRunButton.TabIndex = 24;
@@ -1704,7 +1693,7 @@ partial class ReCodeItForm
         Controls.Add(TabControlMain);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
-        Text = "ReCodeIt V0.1.0 - PRC0";
+        Text = "ReCodeIt V0.1.0 - RC0";
         TabPageRemapper.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
@@ -1731,7 +1720,6 @@ partial class ReCodeItForm
         groupBox4.ResumeLayout(false);
         groupBox4.PerformLayout();
         groupBox5.ResumeLayout(false);
-        groupBox5.PerformLayout();
         groupBox3.ResumeLayout(false);
         groupBox3.PerformLayout();
         SettingsTab.ResumeLayout(false);
@@ -1884,7 +1872,6 @@ partial class ReCodeItForm
     private Button CCLoadProjButton;
     private CheckBox CCAutoLoadLastProj;
     private GroupBox groupBox5;
-    private TextBox CCBuildConfiguration;
     private LinkLabel GithubLinkLabel;
     private Button CCImportMappings;
 }
