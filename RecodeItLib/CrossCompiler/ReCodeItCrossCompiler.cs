@@ -59,8 +59,6 @@ public class ReCodeItCrossCompiler
 
     public async Task StartCrossCompile()
     {
-        ProjectManager.LoadProjectCC(ActiveProject);
-
         SW.Reset();
         SW.Start();
 
@@ -168,92 +166,5 @@ public class ReCodeItCrossCompiler
                     .WithTrailingTrivia(oldNode.GetTrailingTrivia()));
 
         return newSyntax;
-    }
-
-    /// <summary>
-    /// Starts the build process for the active project.
-    /// </summary>
-    private void StartBuild()
-    {
-        var arguements = $"build {ActiveProject.VisualStudioClonedSolutionPath} " +
-            $"/p:Configuration=Debug " +
-            $"/p:Platform=\"Any CPU\"";
-
-        var path = ActiveProject.VisualStudioClonedSolutionDirectory;
-
-        // clean the project first
-        ExecuteDotnetCommand("clean", path);
-
-        // Restore packages
-        ExecuteDotnetCommand("restore", path);
-
-        // Then build the project
-        ExecuteDotnetCommand(arguements, path);
-    }
-
-    private static void ExecuteDotnetCommand(string arguments, string workingDirectory)
-    {
-        ProcessStartInfo startInfo = new ProcessStartInfo
-        {
-            FileName = "dotnet",
-            Arguments = arguments,
-            WorkingDirectory = workingDirectory,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-
-        using (Process process = new Process())
-        {
-            process.StartInfo = startInfo;
-
-            process.OutputDataReceived += (sender, e) => Logger.Log(e.Data);
-
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            process.WaitForExit();
-
-            int exitCode = process.ExitCode;
-            Logger.Log($"dotnet {arguments} exited with code {exitCode}");
-        }
-    }
-
-    private void MoveResult()
-    {
-        var builtDll = Directory
-            .GetFiles(ActiveProject.VisualStudioClonedSolutionDirectory, "*.dll", SearchOption.AllDirectories)
-            .FirstOrDefault(file => file.Contains(ActiveProject.ProjectDllName));
-
-        if (builtDll == null)
-        {
-            Logger.Log($"ERROR: No {ActiveProject.ProjectDllName} found at path {ActiveProject.VisualStudioClonedSolutionDirectory}, build failed.", ConsoleColor.Red);
-            //CleanUp();
-            return;
-        }
-
-        var dest = Path.Combine(ActiveProject.BuildDirectory, ActiveProject.ProjectDllName);
-
-        // Create it if it doesnt exist
-        if (!Directory.Exists(ActiveProject.BuildDirectory))
-        {
-            Directory.CreateDirectory(ActiveProject.BuildDirectory);
-        }
-
-        File.Copy(builtDll, dest, true);
-
-        Logger.Log($"Copying {ActiveProject.ProjectDllName} to {dest}", ConsoleColor.Yellow);
-        Logger.Log($"Successfully Cross Compiled Project {ActiveProject.SolutionName}", ConsoleColor.Green);
-        //CleanUp();
-    }
-
-    private void CleanUp()
-    {
-        if (Path.Exists(ActiveProject.VisualStudioClonedSolutionDirectory))
-        {
-            Logger.Log("Cleaning up cloned project files", ConsoleColor.Yellow);
-            Directory.Delete(ActiveProject.VisualStudioClonedSolutionDirectory, true);
-        }
     }
 }

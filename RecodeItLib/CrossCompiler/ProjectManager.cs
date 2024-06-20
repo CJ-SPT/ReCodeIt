@@ -40,9 +40,6 @@ public static class ProjectManager
             RemapModels = []
         };
 
-        // Now copy over the visual studio project
-        CopyVisualStudioProject(ActiveProject);
-
         // Now save the project json inside the original solution directory
         SaveCrossCompilerProjectModel(ActiveProject);
 
@@ -86,107 +83,6 @@ public static class ProjectManager
     {
         ActiveProject = LoadCrossCompilerProjModel(path, cli);
         Logger.Log($"Found and Loaded ReCodeIt Project at {path}");
-    }
-
-    /// <summary>
-    /// The "LoadProjectCC" method loads all the project data and loads source files
-    /// </summary>
-    /// <param name="proj"></param>
-    public static void LoadProjectCC(CrossCompilerProjectModel proj)
-    {
-        CopyVisualStudioProject(ActiveProject);
-        MoveOriginalReference();
-        LoadProjectSourceFiles();
-    }
-
-    /// <summary>
-    /// Replaces the original reference back into the cloned build directory
-    /// </summary>
-    private static void MoveOriginalReference()
-    {
-        var outPath = Path.Combine(
-            ActiveProject.VisualStudioClonedDependencyPath,
-            ActiveProject.OriginalAssemblyDllName);
-
-        Logger.Log($"Placing original reference `{ActiveProject.OriginalAssemblyPath}` into cloned build directory `{outPath}`", ConsoleColor.Green);
-        File.Copy(ActiveProject.OriginalAssemblyPath, outPath, true);
-    }
-
-    /// <summary>
-    /// Copies the visual studio project to a temporary location for changes
-    /// </summary>
-    /// <param name="proj"></param>
-    private static void CopyVisualStudioProject(CrossCompilerProjectModel proj)
-    {
-        var solutionDirPath = proj.VisualStudioSolutionDirectoryPath;
-        var solutionFiles = Directory.GetFiles(solutionDirPath, "*.sln", SearchOption.AllDirectories);
-        var solutionFile = string.Empty;
-
-        if (solutionFiles.Length > 1)
-        {
-            Logger.Log("ERROR More than one solution in a directory is not supported, Why tho?", ConsoleColor.Red);
-            return;
-        }
-
-        var solutionName = Path.GetFileNameWithoutExtension(solutionFiles.First());
-        var destination = Path.Combine(DataProvider.ReCodeItProjectsPath, solutionName);
-
-        proj.SolutionName = solutionName;
-
-        Logger.Log($"Copying solution: {solutionName} to {destination}", ConsoleColor.Yellow);
-
-        CopyProjectRecursive(solutionDirPath, destination);
-    }
-
-    /// <summary>
-    /// Recursively copies all children directories in the project
-    /// </summary>
-    /// <param name="sourceDirPath"></param>
-    /// <param name="destinationDirPath"></param>
-    /// <exception cref="DirectoryNotFoundException"></exception>
-    private static void CopyProjectRecursive(string sourceDirPath, string destinationDirPath)
-    {
-        DirectoryInfo sourceDir = new DirectoryInfo(sourceDirPath);
-
-        if (!sourceDir.Exists)
-        {
-            throw new DirectoryNotFoundException(
-                "Solution directory does not exist or could not be found: "
-                + sourceDirPath);
-        }
-
-        DirectoryInfo[] dirs = sourceDir.GetDirectories();
-
-        // If the destination directory doesn't exist, create it.
-        Directory.CreateDirectory(destinationDirPath);
-
-        // Get the files in the directory and copy them to the new location.
-        FileInfo[] files = sourceDir.GetFiles();
-
-        foreach (FileInfo file in files)
-        {
-            string tempPath = Path.Combine(destinationDirPath, file.Name);
-
-            if (File.Exists(tempPath)) { File.Delete(tempPath); }
-
-            file.CopyTo(tempPath, true);
-        }
-
-        // We dont want git and vs directories they are often locked leading to problems, we also
-        // dont want the RecodeIt build project if it exists
-        List<string> copyIgnoreDirectories =
-        [
-            ".vs",
-            ".git",
-        ];
-
-        foreach (DirectoryInfo subdir in dirs)
-        {
-            if (copyIgnoreDirectories.Contains(subdir.Name)) { continue; }
-
-            string tempPath = Path.Combine(destinationDirPath, subdir.Name);
-            CopyProjectRecursive(subdir.FullName, tempPath);
-        }
     }
 
     /// <summary>
