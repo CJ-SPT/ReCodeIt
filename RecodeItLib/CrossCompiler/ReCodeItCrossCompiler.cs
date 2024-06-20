@@ -102,42 +102,52 @@ public class ReCodeItCrossCompiler
                 newProject = newDoc.Project;
             }
 
-            Logger.Log("Compiling Project...", ConsoleColor.Yellow);
+            await CompileProject(newProject);
+        }
+    }
 
-            var comp = await newProject.GetCompilationAsync();
+    private async Task CompileProject(Project project)
+    {
+        Logger.Log("Compiling Project...", ConsoleColor.Yellow);
 
-            foreach (var diag in comp.GetDiagnostics())
+        var comp = await project.GetCompilationAsync();
+
+        foreach (var diag in comp.GetDiagnostics())
+        {
+            Logger.Log(diag.ToString());
+        }
+
+        WriteAssembly(comp);
+    }
+
+    private void WriteAssembly(Compilation comp)
+    {
+        using (var ms = new MemoryStream())
+        {
+            EmitResult emitResult = comp.Emit(ms);
+
+            // Check if the compilation was successful
+            if (emitResult.Success)
             {
-                Logger.Log(diag.ToString());
+                var assemblyPath = $"{ActiveProject.BuildDirectory}\\{ActiveProject.ProjectDllName}";
+                using (var fs = new FileStream(assemblyPath, FileMode.Create, FileAccess.Write))
+                {
+                    ms.Seek(0, SeekOrigin.Begin);
+                    ms.CopyTo(fs);
+                }
+
+                Logger.Log($"Compilation succeeded. Time ({SW.Elapsed.TotalSeconds:F1}) seconds, Assembly written to: {assemblyPath}", ConsoleColor.Green);
+                SW.Stop();
             }
-
-            using (var ms = new MemoryStream())
+            else
             {
-                EmitResult emitResult = comp.Emit(ms);
-
-                // Check if the compilation was successful
-                if (emitResult.Success)
+                Logger.Log("Compilation failed.");
+                foreach (var diagnostic in emitResult.Diagnostics)
                 {
-                    var assemblyPath = $"{ActiveProject.BuildDirectory}\\{ActiveProject.ProjectDllName}";
-                    using (var fs = new FileStream(assemblyPath, FileMode.Create, FileAccess.Write))
-                    {
-                        ms.Seek(0, SeekOrigin.Begin);
-                        ms.CopyTo(fs);
-                    }
-
-                    Logger.Log($"Compilation succeeded. Time ({SW.Elapsed.TotalSeconds:F1}) seconds, Assembly written to: {assemblyPath}", ConsoleColor.Green);
-                    SW.Stop();
+                    Logger.Log(diagnostic.ToString());
                 }
-                else
-                {
-                    Logger.Log("Compilation failed.");
-                    foreach (var diagnostic in emitResult.Diagnostics)
-                    {
-                        Logger.Log(diagnostic.ToString());
-                    }
 
-                    SW.Stop();
-                }
+                SW.Stop();
             }
         }
     }
