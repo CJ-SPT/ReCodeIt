@@ -15,7 +15,7 @@ public class BuildCommand : ICommand
     [CommandParameter(0, IsRequired = false, Description = "the location of your project file")]
     public string ProjectJsonPath { get; init; }
 
-    public ValueTask ExecuteAsync(IConsole console)
+    public async ValueTask ExecuteAsync(IConsole console)
     {
         if (ProjectJsonPath is not null && ProjectJsonPath != string.Empty)
         {
@@ -23,7 +23,7 @@ public class BuildCommand : ICommand
             ProjectManager.LoadProject(ProjectJsonPath);
             CrossCompiler.StartCrossCompile();
 
-            return ValueTask.CompletedTask;
+            return;
         }
 
         console.Output.WriteLine(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"));
@@ -37,15 +37,15 @@ public class BuildCommand : ICommand
 
             ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
 
-            if (!Validate(console)) { return ValueTask.CompletedTask; }
+            if (!Validate(console)) { return; }
 
-            CrossCompiler.StartCrossCompile();
+            await CrossCompiler.StartCrossCompile();
 
             DataProvider.SaveAppSettings();
-            return ValueTask.CompletedTask;
+            return;
         }
 
-        return ValueTask.CompletedTask;
+        return;
     }
 
     private bool Validate(IConsole console)
