@@ -1439,7 +1439,7 @@ partial class ReCodeItForm
         tabPage5.Padding = new Padding(3);
         tabPage5.Size = new Size(1336, 953);
         tabPage5.TabIndex = 4;
-        tabPage5.Text = "Cross Compiler";
+        tabPage5.Text = "ReCodeIt Compiler";
         // 
         // groupBox4
         // 
@@ -1452,7 +1452,7 @@ partial class ReCodeItForm
         groupBox4.Size = new Size(1273, 901);
         groupBox4.TabIndex = 22;
         groupBox4.TabStop = false;
-        groupBox4.Text = "Cross Compiler";
+        groupBox4.Text = "ReCodeIt Compiler Project Setup";
         // 
         // groupBox5
         // 
@@ -1718,7 +1718,7 @@ partial class ReCodeItForm
         Controls.Add(TabControlMain);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
-        Text = "ReCodeIt V0.1.0 - RC0";
+        Text = "ReCodeIt V0.1.0 - RC1";
         TabPageRemapper.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
