@@ -129,6 +129,8 @@ public class ReCodeItRemapper
 
         foreach (var nestedType in type.NestedTypes)
         {
+            if (remap.SearchParams.IsNested is false) { return; }
+
             FindMatch(nestedType, remap);
         }
 
@@ -165,7 +167,10 @@ public class ReCodeItRemapper
             return;
         }
 
-        var match = matches.Where(x => x.Equals(EMatchResult.Match)).Any();
+        var match = matches
+            .Where(x => x.Equals(EMatchResult.Match))
+            .Where(x => !x.Equals(EMatchResult.Disabled))
+            .Any();
 
         if (match)
         {
@@ -244,7 +249,9 @@ public class ReCodeItRemapper
         if (scores.Count == 0) { return; }
 
         var filteredScores = scores
-            .OrderByDescending(score => score.Score);
+            .Where(score => score.Score > 0)
+            .OrderByDescending(score => score.Score)
+            .Take(5);
 
         var highestScore = filteredScores.FirstOrDefault();
 
@@ -252,13 +259,11 @@ public class ReCodeItRemapper
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
-        Logger.Log($"Max possible score: {highestScore.ReMap.SearchParams.CalculateMaxScore()}", ConsoleColor.Green);
         Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
 
-        if (scores.Count > 1)
+        if (filteredScores.Count() > 1)
         {
-            Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
-            Logger.Log($"Only showing first 5.", ConsoleColor.Yellow);
+            Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Considering adding more search parameters, Only showing first 5.", ConsoleColor.Yellow);
 
             foreach (var score in filteredScores.Skip(1).Take(5))
             {

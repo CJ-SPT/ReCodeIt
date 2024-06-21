@@ -19,12 +19,14 @@ internal static class Fields
         if (parms.IncludeFields is null || parms.IncludeFields.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Fields
-            .Where(field => parms.IncludeFields.Contains(field.Name));
-        score.Score += matches.Count();
+            .Where(field => parms.IncludeFields.Contains(field.Name))
+            .Count();
 
-        score.FailureReason = matches.Any() ? EFailureReason.None : EFailureReason.FieldsInclude;
+        score.Score += matches;
 
-        return matches.Any()
+        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.FieldsInclude;
+
+        return matches > 0
             ? EMatchResult.Match
             : EMatchResult.NoMatch;
     }
@@ -44,9 +46,9 @@ internal static class Fields
             .Where(field => parms.ExcludeFields.Contains(field.Name))
             .Count();
 
-        score.Score += matches;
+        score.Score -= matches;
 
-        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.FieldsExclude;
+        score.FailureReason = matches > 0 ? EFailureReason.FieldsExclude : EFailureReason.None;
 
         return matches > 0
             ? EMatchResult.NoMatch

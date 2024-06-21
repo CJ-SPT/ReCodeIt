@@ -31,9 +31,9 @@ namespace ReCodeIt.ReMapper.Search
                 .Where(property => parms.ExcludeProperties.Contains(property.Name))
                 .Count();
 
-            score.Score += matches;
+            score.Score -= matches;
 
-            score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.PropertiesExclude;
+            score.FailureReason = matches > 0 ? EFailureReason.PropertiesExclude : EFailureReason.None;
 
             return matches > 0
                 ? EMatchResult.NoMatch

@@ -46,9 +46,9 @@ internal static class Methods
             .Where(method => parms.ExcludeMethods.Contains(method.Name))
             .Count();
 
-        score.Score += matches;
+        score.Score -= matches;
 
-        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.MethodsExclude;
+        score.FailureReason = matches > 0 ? EFailureReason.MethodsExclude : EFailureReason.None;
 
         return matches > 0
             ? EMatchResult.NoMatch
