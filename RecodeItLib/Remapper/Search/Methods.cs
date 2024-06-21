@@ -22,7 +22,7 @@ internal static class Methods
             .Where(method => parms.IncludeMethods.Any(include => method.Name.Contains(include)))
             .Count();
 
-        score.Score += matches;
+        score.Score += matches > 0 ? matches : -matches;
 
         score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.MethodsInclude;
 
@@ -46,7 +46,7 @@ internal static class Methods
             .Where(method => parms.ExcludeMethods.Contains(method.Name))
             .Count();
 
-        score.Score -= matches;
+        score.Score += matches > 0 ? -matches : 1;
 
         score.FailureReason = matches > 0 ? EFailureReason.MethodsExclude : EFailureReason.None;
 
@@ -69,7 +69,7 @@ internal static class Methods
         var numMethods = type.Methods.Count - type.GetConstructors().Count();
         bool match = numMethods == parms.MethodCount;
 
-        if (match) { score.Score++; }
+        score.Score += match ? (int)parms.MethodCount : -(int)parms.MethodCount;
 
         score.FailureReason = match ? EFailureReason.None : EFailureReason.MethodsCount;
 

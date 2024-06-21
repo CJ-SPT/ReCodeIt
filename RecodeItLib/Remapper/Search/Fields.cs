@@ -22,7 +22,7 @@ internal static class Fields
             .Where(field => parms.IncludeFields.Contains(field.Name))
             .Count();
 
-        score.Score += matches;
+        score.Score += matches > 0 ? matches : -matches;
 
         score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.FieldsInclude;
 
@@ -46,7 +46,7 @@ internal static class Fields
             .Where(field => parms.ExcludeFields.Contains(field.Name))
             .Count();
 
-        score.Score -= matches;
+        score.Score += matches > 0 ? -matches : 1;
 
         score.FailureReason = matches > 0 ? EFailureReason.FieldsExclude : EFailureReason.None;
 
@@ -68,7 +68,7 @@ internal static class Fields
 
         var match = type.Fields.Exactly((int)parms.FieldCount);
 
-        if (match) { score.Score++; }
+        score.Score += match ? (int)parms.FieldCount : -(int)parms.FieldCount;
 
         score.FailureReason = match ? EFailureReason.None : EFailureReason.FieldsCount;
 

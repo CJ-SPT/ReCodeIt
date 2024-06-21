@@ -127,6 +127,13 @@ public class ReCodeItRemapper
             return;
         }
 
+        var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
+
+        if (tokens.Where(token => !tokens.Any(token => type.Name.StartsWith(token))).Any())
+        {
+            return;
+        }
+
         foreach (var nestedType in type.NestedTypes)
         {
             if (remap.SearchParams.IsNested is false) { return; }

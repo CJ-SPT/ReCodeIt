@@ -14,7 +14,8 @@ internal class NestedTypes
         var matches = type.NestedTypes
             .Where(nt => parms.IncludeNestedTypes.Contains(nt.Name))
             .Count();
-        score.Score += matches;
+
+        score.Score += matches > 0 ? matches : -matches;
 
         score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.NestedTypeInclude;
 
@@ -31,9 +32,9 @@ internal class NestedTypes
             .Where(nt => parms.ExcludeNestedTypes.Contains(nt.Name))
             .Count();
 
-        score.Score += matches;
+        score.Score += matches > 0 ? -matches : 1;
 
-        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.NestedTypeExclude;
+        score.FailureReason = matches > 0 ? EFailureReason.NestedTypeExclude : EFailureReason.None;
 
         return matches > 0
             ? EMatchResult.NoMatch
@@ -46,7 +47,7 @@ internal class NestedTypes
 
         var match = type.NestedTypes.Exactly((int)parms.NestedTypeCount);
 
-        if (match) { score.Score++; }
+        score.Score += match ? type.NestedTypes.Count : -type.NestedTypes.Count - 1;
 
         score.FailureReason = match ? EFailureReason.None : EFailureReason.NestedTypeCount;
 

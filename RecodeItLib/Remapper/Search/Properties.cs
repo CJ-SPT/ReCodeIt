@@ -14,7 +14,8 @@ namespace ReCodeIt.ReMapper.Search
             var matches = type.Properties
                 .Where(property => parms.IncludeProperties.Contains(property.Name))
                 .Count();
-            score.Score += matches;
+
+            score.Score += matches > 0 ? matches : -matches;
 
             score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.PropertiesInclude;
 
@@ -31,7 +32,7 @@ namespace ReCodeIt.ReMapper.Search
                 .Where(property => parms.ExcludeProperties.Contains(property.Name))
                 .Count();
 
-            score.Score -= matches;
+            score.Score += matches > 0 ? -matches : 1;
 
             score.FailureReason = matches > 0 ? EFailureReason.PropertiesExclude : EFailureReason.None;
 
@@ -46,9 +47,7 @@ namespace ReCodeIt.ReMapper.Search
 
             var match = type.Properties.Exactly((int)parms.PropertyCount);
 
-            if (match) { score.Score++; }
-
-            score.FailureReason = match ? EFailureReason.None : EFailureReason.PropertiesCount;
+            score.Score += match ? (int)parms.PropertyCount : -(int)parms.PropertyCount;
 
             return match
                 ? EMatchResult.Match
