@@ -36,6 +36,12 @@ public partial class ReCodeItForm : Form
         RefreshAutoMapperPage();
         RefreshCrossCompilerPage();
         LoadMappingFile();
+
+        var remaps = AppSettings.Remapper.UseProjectMappings
+           ? CrossCompiler.ActiveProject.RemapModels
+           : DataProvider.Remaps;
+
+        ReloadRemapTreeView(remaps);
     }
 
     private void SubscribeToEvents()
@@ -306,7 +312,6 @@ public partial class ReCodeItForm : Form
             }
 
             ReloadRemapTreeView(remaps);
-            ReloadCCRemapTreeView(remaps);
 
             ResetAllRemapFields();
             return;
@@ -330,13 +335,9 @@ public partial class ReCodeItForm : Form
         //RemapTreeView.Nodes.Remove(node);
         RemapTreeView.Nodes.Add(node);
 
-        //CCMappingTreeView.Nodes.Remove(node);
-        CCMappingTreeView.Nodes.Add(node);
-
         _cachedNewTypeNames.Clear();
 
         ReloadRemapTreeView(remaps);
-        ReloadCCRemapTreeView(remaps);
 
         ResetAllRemapFields();
     }
@@ -873,6 +874,11 @@ public partial class ReCodeItForm : Form
     #endregion AUTOMAPPER
 
     #region CROSS_COMPILER
+
+    private void OnCCTabPageValidate(object sender, EventArgs e)
+    {
+        RefreshCrossCompilerPage();
+    }
 
     private void RefreshCrossCompilerPage()
     {

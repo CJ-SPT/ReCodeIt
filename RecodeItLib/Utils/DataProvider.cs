@@ -185,19 +185,8 @@ public static class DataProvider
 
         var fileName = Path.GetFileName(path);
 
-        foreach (var module in assemblyDefinition.Modules.ToArray())
-        {
-            if (module.Name == fileName)
-            {
-                Logger.Log($"Module definition {module.Name} found");
-
-                AssemblyDefinition = assemblyDefinition;
-                ModuleDefinition = module;
-                return;
-            }
-        }
-
-        Logger.Log($"Module {fileName} not found in assembly {fileName}");
+        AssemblyDefinition = assemblyDefinition;
+        ModuleDefinition = assemblyDefinition.Modules.First();
     }
 
     public static string WriteAssemblyDefinition(string path)

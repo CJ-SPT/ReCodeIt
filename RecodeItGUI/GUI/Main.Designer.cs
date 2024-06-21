@@ -29,7 +29,7 @@ partial class ReCodeItForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
-        TabPageRemapper = new TabPage();
+        RemapperTabPage = new TabPage();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
         ActiveProjectMappingsCheckbox = new CheckBox();
@@ -140,7 +140,7 @@ partial class ReCodeItForm
         AutoMapperExcludeTypesRemoveButton = new Button();
         AutoMapperExcludeTypesAddButton = new Button();
         AutoMapperTypesExcludeBox = new ListBox();
-        tabPage5 = new TabPage();
+        CCTabPage = new TabPage();
         groupBox4 = new GroupBox();
         groupBox5 = new GroupBox();
         CrossPatchRemapButton = new Button();
@@ -166,7 +166,7 @@ partial class ReCodeItForm
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
         toolTip1 = new ToolTip(components);
-        TabPageRemapper.SuspendLayout();
+        RemapperTabPage.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
         Inclusions.SuspendLayout();
@@ -182,7 +182,7 @@ partial class ReCodeItForm
         AutoMapperTab.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)AutoMapperMinLengthUpDown).BeginInit();
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).BeginInit();
-        tabPage5.SuspendLayout();
+        CCTabPage.SuspendLayout();
         groupBox4.SuspendLayout();
         groupBox5.SuspendLayout();
         groupBox3.SuspendLayout();
@@ -190,17 +190,17 @@ partial class ReCodeItForm
         groupBox2.SuspendLayout();
         SuspendLayout();
         // 
-        // TabPageRemapper
+        // RemapperTabPage
         // 
-        TabPageRemapper.BackColor = SystemColors.ControlDarkDark;
-        TabPageRemapper.Controls.Add(RemapTreeView);
-        TabPageRemapper.Controls.Add(groupBox1);
-        TabPageRemapper.Location = new Point(4, 34);
-        TabPageRemapper.Name = "TabPageRemapper";
-        TabPageRemapper.Padding = new Padding(3);
-        TabPageRemapper.Size = new Size(1336, 953);
-        TabPageRemapper.TabIndex = 1;
-        TabPageRemapper.Text = "Remapper";
+        RemapperTabPage.BackColor = SystemColors.ControlDarkDark;
+        RemapperTabPage.Controls.Add(RemapTreeView);
+        RemapperTabPage.Controls.Add(groupBox1);
+        RemapperTabPage.Location = new Point(4, 34);
+        RemapperTabPage.Name = "RemapperTabPage";
+        RemapperTabPage.Padding = new Padding(3);
+        RemapperTabPage.Size = new Size(1336, 953);
+        RemapperTabPage.TabIndex = 1;
+        RemapperTabPage.Text = "Remapper";
         // 
         // RemapTreeView
         // 
@@ -1077,9 +1077,9 @@ partial class ReCodeItForm
         // 
         // TabControlMain
         // 
-        TabControlMain.Controls.Add(TabPageRemapper);
+        TabControlMain.Controls.Add(RemapperTabPage);
         TabControlMain.Controls.Add(AutoMapperTab);
-        TabControlMain.Controls.Add(tabPage5);
+        TabControlMain.Controls.Add(CCTabPage);
         TabControlMain.Controls.Add(SettingsTab);
         TabControlMain.Location = new Point(-5, 1);
         TabControlMain.Name = "TabControlMain";
@@ -1430,16 +1430,17 @@ partial class ReCodeItForm
         AutoMapperTypesExcludeBox.Size = new Size(353, 229);
         AutoMapperTypesExcludeBox.TabIndex = 21;
         // 
-        // tabPage5
+        // CCTabPage
         // 
-        tabPage5.BackColor = SystemColors.ControlDarkDark;
-        tabPage5.Controls.Add(groupBox4);
-        tabPage5.Location = new Point(4, 34);
-        tabPage5.Name = "tabPage5";
-        tabPage5.Padding = new Padding(3);
-        tabPage5.Size = new Size(1336, 953);
-        tabPage5.TabIndex = 4;
-        tabPage5.Text = "ReCodeIt Compiler";
+        CCTabPage.BackColor = SystemColors.ControlDarkDark;
+        CCTabPage.Controls.Add(groupBox4);
+        CCTabPage.Location = new Point(4, 34);
+        CCTabPage.Name = "CCTabPage";
+        CCTabPage.Padding = new Padding(3);
+        CCTabPage.Size = new Size(1336, 953);
+        CCTabPage.TabIndex = 4;
+        CCTabPage.Text = "ReCodeIt Compiler";
+        CCTabPage.Validated += OnCCTabPageValidate;
         // 
         // groupBox4
         // 
@@ -1719,7 +1720,7 @@ partial class ReCodeItForm
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
         Text = "ReCodeIt V0.1.0 - RC1";
-        TabPageRemapper.ResumeLayout(false);
+        RemapperTabPage.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).EndInit();
@@ -1741,7 +1742,7 @@ partial class ReCodeItForm
         AutoMapperTab.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)AutoMapperMinLengthUpDown).EndInit();
         ((System.ComponentModel.ISupportInitialize)AutoMapperRequiredMatchesUpDown).EndInit();
-        tabPage5.ResumeLayout(false);
+        CCTabPage.ResumeLayout(false);
         groupBox4.ResumeLayout(false);
         groupBox4.PerformLayout();
         groupBox5.ResumeLayout(false);
@@ -1754,7 +1755,7 @@ partial class ReCodeItForm
     }
 
     #endregion
-    private TabPage TabPageRemapper;
+    private TabPage RemapperTabPage;
     private GroupBox groupBox1;
     private TabControl Inclusions;
     private TabPage tabPage1;
@@ -1852,7 +1853,7 @@ partial class ReCodeItForm
     private Button AutoMapperMethodRemoveButton;
     private Button AutoMapperMethodAddButton;
     private ListBox AutoMapperMethodBox;
-    private TabPage tabPage5;
+    private TabPage CCTabPage;
     private Button PickNameMangledPathButton;
     private TextBox NameMangledAssemblyTextBox;
     private GroupBox groupBox3;
