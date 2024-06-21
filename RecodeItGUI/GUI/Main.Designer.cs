@@ -285,8 +285,6 @@ partial class ReCodeItForm
         // RemapperUseForceRename
         // 
         RemapperUseForceRename.AutoSize = true;
-        RemapperUseForceRename.Checked = true;
-        RemapperUseForceRename.CheckState = CheckState.Checked;
         RemapperUseForceRename.Location = new Point(577, 190);
         RemapperUseForceRename.Name = "RemapperUseForceRename";
         RemapperUseForceRename.Size = new Size(149, 29);
