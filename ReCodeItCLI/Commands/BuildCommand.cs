@@ -7,29 +7,82 @@ using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
 
-[Command("Build", Description = "Build your project and get a dll output for the original assembly. You dont need to provide a path if the last project you built is the one you want to target")]
+[Command("Build", Description = "Build your project and get a dll output for the original assembly. You dont need to provide a path if the last project you built is the one you want to target, or you are running this command from inside a directory where a project file exists.")]
 public class BuildCommand : ICommand
 {
     private ReCodeItCrossCompiler CrossCompiler { get; set; }
 
-    [CommandParameter(0, IsRequired = false, Description = "the location of your project file")]
+    [CommandParameter(0, IsRequired = false, Description = "the location of your project file (ReCodeItProj.json)")]
     public string ProjectJsonPath { get; init; }
 
     public async ValueTask ExecuteAsync(IConsole console)
     {
-        if (ProjectJsonPath is not null && ProjectJsonPath != string.Empty)
-        {
-            CrossCompiler = new();
-            ProjectManager.LoadProject(ProjectJsonPath);
-            CrossCompiler.StartCrossCompile();
+        var isLocal = await UseLocalProject(console);
 
-            return;
+        if (isLocal) { return; }
+
+        var isRemote = await UseRemoteProject(console);
+
+        if (isRemote) { return; }
+
+        await UseLastLoadedProject(console);
+    }
+
+    private async Task<bool> UseLocalProject(IConsole console)
+    {
+        var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "ReCodeItProj.json");
+
+        if (File.Exists(jsonPath))
+        {
+            Logger.Log("Found a project file in the current directory, loading it", ConsoleColor.Yellow);
+
+            CrossCompiler = new();
+
+            DataProvider.LoadAppSettings();
+            DataProvider.IsCli = true;
+
+            ProjectManager.LoadProject(jsonPath);
+            await CrossCompiler.StartCrossCompile();
+
+            return true;
         }
 
-        console.Output.WriteLine(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"));
+        return false;
+    }
 
+    private async Task<bool> UseRemoteProject(IConsole console)
+    {
+        if (ProjectJsonPath is not null && ProjectJsonPath != string.Empty)
+        {
+            if (!File.Exists(ProjectJsonPath))
+            {
+                console.Output.WriteLine("The project file you provided does not exist");
+                return false;
+            }
+
+            CrossCompiler = new();
+
+            DataProvider.LoadAppSettings();
+            DataProvider.IsCli = true;
+
+            ProjectManager.LoadProject(ProjectJsonPath);
+            await CrossCompiler.StartCrossCompile();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task<bool> UseLastLoadedProject(IConsole console)
+    {
         if (RegistryHelper.GetRegistryValue<string>("LastLoadedProject") != null)
         {
+            string currentDirectory = Directory.GetCurrentDirectory();
+
+            console.Output.WriteLine($"Project: {RegistryHelper.GetRegistryValue<string>("LastLoadedProject")}");
+            console.Output.WriteLine($"Working Dir: {currentDirectory}");
+
             CrossCompiler = new();
 
             DataProvider.LoadAppSettings();
@@ -37,15 +90,16 @@ public class BuildCommand : ICommand
 
             ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
 
-            if (!Validate(console)) { return; }
+            if (!Validate(console)) { return false; }
 
             await CrossCompiler.StartCrossCompile();
 
             DataProvider.SaveAppSettings();
-            return;
+
+            return true;
         }
 
-        return;
+        return false;
     }
 
     private bool Validate(IConsole console)
