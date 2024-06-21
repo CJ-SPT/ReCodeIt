@@ -18,8 +18,15 @@ internal static class RenameHelper
         var types = DataProvider.ModuleDefinition.Types;
 
         // Rename all fields and properties first
-        RenameAllFields(score.Definition.Name, score.ReMap.NewTypeName, types);
-        RenameAllProperties(score.Definition.Name, score.ReMap.NewTypeName, types);
+        if (DataProvider.Settings.Remapper.MappingSettings.RenameFields)
+        {
+            RenameAllFields(score.Definition.Name, score.ReMap.NewTypeName, types);
+        }
+
+        if (DataProvider.Settings.Remapper.MappingSettings.RenameProperties)
+        {
+            RenameAllProperties(score.Definition.Name, score.ReMap.NewTypeName, types);
+        }
 
         if (!direct)
         {

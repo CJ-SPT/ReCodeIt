@@ -286,6 +286,7 @@ public class ReCodeItRemapper
         }
 
         // Rename type and all associated type members
+
         RenameHelper.RenameAll(highestScore);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
@@ -296,10 +297,7 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
-        var fileName = Path.GetFileName(AssemblyPath);
-        var path = Path.Combine(OutPath, fileName);
-
-        path = DataProvider.WriteAssemblyDefinition(path);
+        var path = DataProvider.WriteAssemblyDefinition(OutPath);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);

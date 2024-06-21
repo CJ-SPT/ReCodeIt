@@ -1,5 +1,4 @@
 ﻿using Mono.Cecil;
-using Mono.Cecil.Rocks;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
@@ -15,8 +14,8 @@ internal static class TypeDefExtensions
             return EMatchResult.Disabled;
         }
 
-        // Interfaces cannot be abstract, and abstract cannot be static
-        if (type.IsInterface || type.GetStaticConstructor() is not null)
+        // Interfaces cannot be abstract
+        if (type.IsInterface)
         {
             score.FailureReason = EFailureReason.IsAbstract;
             return EMatchResult.NoMatch;
