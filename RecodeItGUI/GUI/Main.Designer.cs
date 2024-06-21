@@ -878,9 +878,9 @@ partial class ReCodeItForm
         NestedTypeCountEnabled.AutoSize = true;
         NestedTypeCountEnabled.Location = new Point(287, 407);
         NestedTypeCountEnabled.Name = "NestedTypeCountEnabled";
-        NestedTypeCountEnabled.Size = new Size(276, 29);
+        NestedTypeCountEnabled.Size = new Size(189, 29);
         NestedTypeCountEnabled.TabIndex = 12;
-        NestedTypeCountEnabled.Text = "Nested OriginalTypeRef Count";
+        NestedTypeCountEnabled.Text = "Nested Type Count";
         NestedTypeCountEnabled.UseVisualStyleBackColor = true;
         // 
         // PropertyCountUpDown
