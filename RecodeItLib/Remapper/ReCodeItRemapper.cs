@@ -292,8 +292,6 @@ public class ReCodeItRemapper
         var fileName = Path.GetFileName(AssemblyPath);
         var path = Path.Combine(OutPath, fileName);
 
-        Logger.Log(fileName);
-
         path = DataProvider.WriteAssemblyDefinition(path);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
