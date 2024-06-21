@@ -95,6 +95,10 @@ internal static class TypeDefExtensions
 
         if (type.BaseType is not null && (bool)parms.IsDerived is true)
         {
+            if (type.BaseType.Name.Contains("Object")) { return EMatchResult.NoMatch; }
+
+            Logger.Log($"Match {type.Name} : {type.BaseType}", ConsoleColor.Red);
+
             score.Score++;
             return EMatchResult.Match;
         }
