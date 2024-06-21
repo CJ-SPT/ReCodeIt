@@ -258,8 +258,9 @@ public class ReCodeItRemapper
         if (scores.Count > 1)
         {
             Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Considering adding more search parameters", ConsoleColor.Yellow);
+            Logger.Log($"Only showing first 5.", ConsoleColor.Yellow);
 
-            foreach (var score in filteredScores.Skip(1))
+            foreach (var score in filteredScores.Skip(1).Take(5))
             {
                 Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
             }

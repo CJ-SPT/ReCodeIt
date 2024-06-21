@@ -2,7 +2,6 @@
 using Mono.Collections.Generic;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
-using ReCodeIt.Utils;
 
 namespace ReCodeIt.ReMapper;
 
@@ -166,8 +165,6 @@ internal static class RenameHelper
             {
                 var oldName = type.FullName.ToString();
                 type.Name = score.ProposedNewName;
-
-                Logger.Log($"Renamed Type {oldName} to {type.FullName}");
             }
         }
     }
