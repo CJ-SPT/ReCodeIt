@@ -71,7 +71,7 @@ internal static class GUIHelpers
         var isInterface = model.SearchParams.IsInterface == null ? null : model.SearchParams.IsInterface;
         var isEnum = model.SearchParams.IsEnum == null ? null : model.SearchParams.IsEnum;
         var isNested = model.SearchParams.IsNested == null ? null : model.SearchParams.IsNested;
-        var IsSealed = model.SearchParams.IsSealed == null ? null : model.SearchParams.IsSealed;
+        var isSealed = model.SearchParams.IsSealed == null ? null : model.SearchParams.IsSealed;
         var HasAttribute = model.SearchParams.HasAttribute == null ? null : model.SearchParams.HasAttribute;
         var IsDerived = model.SearchParams.IsDerived == null ? null : model.SearchParams.IsDerived;
         var HasGenericParameters = model.SearchParams.HasGenericParameters == null ? null : model.SearchParams.HasGenericParameters;
@@ -80,62 +80,82 @@ internal static class GUIHelpers
 
         var originalTypeName = new TreeNode($"Original Name: {model.OriginalTypeName}");
 
-        var forceRenameNode = new TreeNode($"Force Rename: {(model.UseForceRename ? model.UseForceRename : "Disabled")}");
+        remapTreeItem.Nodes.Add(originalTypeName);
 
-        var ispublicNode = new TreeNode($"IsPublic: {(isPublic != null ? isPublic : "Disabled")}");
+        if (model.UseForceRename)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"Force Rename: {model.UseForceRename}"));
+        }
 
-        var isAbstractNode = new TreeNode($"IsAbstract: {(isAbstract != null ? isAbstract : "Disabled")}");
+        if (isPublic is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsPublic: {isPublic}"));
+        }
 
-        var isInterfaceNode = new TreeNode($"IsInterface: {(isInterface != null ? isInterface : "Disabled")}");
+        if (isAbstract is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsAbstract: {isAbstract}"));
+        }
 
-        var IsEnumNode = new TreeNode($"IsEnum: {(isEnum != null ? isEnum : "Disabled")}");
+        if (isInterface is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsInterface: {isInterface}"));
+        }
 
-        var IsNestedNode = new TreeNode($"IsNested: {(isNested != null ? isNested : "Disabled")}");
+        if (isEnum is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"isEnum: {isEnum}"));
+        }
 
-        var IsSealedNode = new TreeNode($"IsSealed: {(IsSealed != null ? IsSealed : "Disabled")}");
+        if (isNested is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsNested: {isEnum}"));
+        }
 
-        var HasAttrNode = new TreeNode($"HasAttribute: {(HasAttribute != null ? HasAttribute : "Disabled")}");
+        if (isSealed is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsSealed: {isSealed}"));
+        }
 
-        var IsDerivedNode = new TreeNode($"IsDerived: {(IsDerived != null ? IsDerived : "Disabled")}");
+        if (HasAttribute is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"HasAttribute: {HasAttribute}"));
+        }
 
-        var HasGenericsNode = new TreeNode($"HasGenericParameters: {(HasGenericParameters != null ? HasGenericParameters : "Disabled")}");
+        if (IsDerived is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsDerived: {IsDerived}"));
+        }
+
+        if (HasGenericParameters is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"HasGenericParameters: {HasGenericParameters}"));
+        }
 
         if (model.SearchParams.ConstructorParameterCount > 0)
         {
             remapTreeItem.Nodes.Add(new TreeNode($"Constructor Parameter Count: {model.SearchParams.ConstructorParameterCount}"));
         }
 
-        if (model.SearchParams.MethodCount > 0)
+        if (model.SearchParams.MethodCount is not null)
         {
             remapTreeItem.Nodes.Add(new TreeNode($"Method Count: {model.SearchParams.MethodCount}"));
         }
 
-        if (model.SearchParams.FieldCount > 0)
+        if (model.SearchParams.FieldCount is not null)
         {
             remapTreeItem.Nodes.Add(new TreeNode($"Field Count: {model.SearchParams.FieldCount}"));
         }
 
-        if (model.SearchParams.PropertyCount > 0)
+        if (model.SearchParams.PropertyCount is not null)
         {
             remapTreeItem.Nodes.Add(new TreeNode($"Property Count: {model.SearchParams.PropertyCount}"));
         }
 
-        if (model.SearchParams.NestedTypeCount > 0)
+        if (model.SearchParams.NestedTypeCount is not null)
         {
             remapTreeItem.Nodes.Add(new TreeNode($"Nested OriginalTypeRef Count: {model.SearchParams.NestedTypeCount}"));
         }
-
-        remapTreeItem.Nodes.Add(originalTypeName);
-        remapTreeItem.Nodes.Add(forceRenameNode);
-        remapTreeItem.Nodes.Add(ispublicNode);
-        remapTreeItem.Nodes.Add(isAbstractNode);
-        remapTreeItem.Nodes.Add(isInterfaceNode);
-        remapTreeItem.Nodes.Add(IsEnumNode);
-        remapTreeItem.Nodes.Add(IsNestedNode);
-        remapTreeItem.Nodes.Add(IsSealedNode);
-        remapTreeItem.Nodes.Add(HasAttrNode);
-        remapTreeItem.Nodes.Add(IsDerivedNode);
-        remapTreeItem.Nodes.Add(HasGenericsNode);
 
         if (model.SearchParams.IncludeMethods?.Count > 0)
         {
