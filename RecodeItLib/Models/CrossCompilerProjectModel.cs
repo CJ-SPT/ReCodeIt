@@ -1,6 +1,4 @@
-﻿using ReCodeIt.Utils;
-
-namespace ReCodeIt.Models;
+﻿namespace ReCodeIt.Models;
 
 public class CrossCompilerProjectModel
 {
@@ -42,40 +40,14 @@ public class CrossCompilerProjectModel
     /// </summary>
     public string VisualStudioSolutionDirectoryPath => Path.GetDirectoryName(VisualStudioSolutionPath)!;
 
-    /// <summary>
-    /// The path the the cloned solution
-    /// </summary>
-    public string VisualStudioClonedSolutionPath => Path.Combine(
-        DataProvider.ReCodeItProjectsPath,
-        SolutionName,
-        SolutionName + ".sln");
-
-    public string VisualStudioClonedSolutionDirectory => Path.Combine(
-        DataProvider.ReCodeItProjectsPath,
-        SolutionName);
-
-    /// <summary>
-    /// The path to the cloned solutions dependency folder
-    /// </summary>
-    public string VisualStudioClonedDependencyPath
-    {
-        get
-        {
-            // Take just the folder name
-            var folderName = VisualStudioDependencyPath.Split('\\').Last();
-
-            return Path.Combine(VisualStudioClonedSolutionDirectory, folderName);
-        }
-    }
-
-    public string ProjectDllName => SolutionName + ".dll";
+    public string ProjectDllName => SolutionName.Replace(".sln", ".dll");
 
     public string OriginalAssemblyDllName => Path.GetFileName(OriginalAssemblyPath);
 
     /// <summary>
     /// Name of the solution
     /// </summary>
-    public string SolutionName { get; set; }
+    public string SolutionName => Path.GetFileName(VisualStudioSolutionPath);
 
     /// <summary>
     /// Remapped output hash

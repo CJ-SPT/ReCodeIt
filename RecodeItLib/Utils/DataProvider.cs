@@ -20,7 +20,7 @@ public static class DataProvider
     /// </summary>
     public static bool IsCli { get; set; } = false;
 
-    public static string DataPath => RegistryHelper.GetRegistryValue<string>("DataPath");
+    public static string DataPath => RegistryHelper.GetRegistryValue<string>("DataPath") ?? Path.Combine(AppContext.BaseDirectory, "Data");
 
     public static readonly string ReCodeItProjectsPath = Path.Combine(AppContext.BaseDirectory, "Projects");
 
@@ -32,11 +32,7 @@ public static class DataProvider
 
     public static AssemblyDefinition AssemblyDefinition { get; private set; }
 
-    public static AssemblyDefinition NameMangledAssemblyDefinition { get; private set; }
-
     public static ModuleDefinition ModuleDefinition { get; private set; }
-
-    public static ModuleDefinition NameMangledModuleDefinition { get; private set; }
 
     public static void LoadAppSettings()
     {

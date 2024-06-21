@@ -34,12 +34,6 @@ public class ReCodeItCrossCompiler
             return;
         }
 
-        if (ActiveProject.VisualStudioClonedSolutionDirectory == string.Empty)
-        {
-            Logger.Log("ERROR: No ReCodeIt Project directory is set. (Project Creation Failed)", ConsoleColor.Red);
-            return;
-        }
-
         Remapper.InitializeRemap(
             ActiveProject.RemapModels,
             ActiveProject.OriginalAssemblyPath,
@@ -66,7 +60,7 @@ public class ReCodeItCrossCompiler
 
         Logger.Log("Loading Solution...", ConsoleColor.Yellow);
 
-        var solution = await Task.Run(() => LoadSolutionAsync(workspace, ActiveProject.VisualStudioClonedSolutionPath));
+        var solution = await Task.Run(() => LoadSolutionAsync(workspace, ActiveProject.VisualStudioSolutionPath));
 
         Project newProject;
 
