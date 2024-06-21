@@ -1,0 +1,60 @@
+﻿<Window x:Class="ReCodeItWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReCodeItWPF"
+        mc:Ignorable="d"
+        Title="ReCodeIt V0.1.0 WPF - EXPERIEMENTAL" Height="800" Width="1200" Background="#FF495057">
+
+    <Grid x:Name="MainGrid" Margin="10,5,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="625*" />
+            <RowDefinition Height="144*" />
+        </Grid.RowDefinitions>
+        <Menu x:Name="MenuBar" Height="20" VerticalAlignment="Top" Background="#FF495057">
+            <MenuItem Header="File" />
+        </Menu>
+        <TabControl Margin="0,25,0,0" Background="#FF6D6767" Grid.RowSpan="3">
+            <TabItem x:Name="RMTabItem" Header="ReMapper">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0" />
+                        <GradientStop Color="#FFADB5BD" Offset="1" />
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <Grid x:Name="RMGrid" Background="#FF495057">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="42*" />
+                        <RowDefinition Height="137*" />
+                    </Grid.RowDefinitions>
+                    <TreeView x:Name="RMTreeView" Width="295" Margin="879,0,0,0" Grid.RowSpan="2" Background="#FF6C757D" />
+                    <GroupBox x:Name="RMProjectControlGroupBox" Header="Project Control" Margin="10,10,872,480" Grid.RowSpan="2">
+
+                        <Canvas>
+                            <Button x:Name="RMTargetAssemblyButton" Content="Choose" Canvas.Left="193" Canvas.Top="10" HorizontalAlignment="Center" VerticalAlignment="Top" Width="63" ToolTip="Choose the target location of the assembly you wish to ReMap." Background="#FFADB5BD" Height="18" />
+                            <TextBox x:Name="RMTargetAssemblyTextBox" Canvas.Left="7" TextWrapping="Wrap" Canvas.Top="10" Width="181" HorizontalAlignment="Left" VerticalAlignment="Center" ToolTip="The target assembly you wish to ReMap. Use the one in the programs folder typically." IsReadOnly="True" Background="#FFCED4DA" />
+                            <Button x:Name="RMOutputLocationButton" Content="Choose" Canvas.Left="193" Canvas.Top="33" Width="63" ToolTip="The location you want the remapped dll placed." HorizontalAlignment="Center" VerticalAlignment="Top" Background="#FFADB5BD" Height="18" />
+                            <TextBox x:Name="RMOutputLocationTextBox" Canvas.Left="7" TextWrapping="Wrap" Canvas.Top="33" Width="181" ToolTip="The output location of the remap process" IsReadOnly="True" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#FFCED4DA" />
+                            <Button x:Name="RMMappingPathButton" Content="Choose" Canvas.Left="193" Canvas.Top="56" Width="63" ToolTip="Load an existing mapping file from disk." HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FFADB5BD" Height="18" />
+                            <CheckBox x:Name="RMRenameFieldsCheckbox" Content="Rename Fields" HorizontalAlignment="Left" Canvas.Left="7" Canvas.Top="79" VerticalAlignment="Top" Width="122" Background="#FFADB5BD" />
+                            <TextBox x:Name="RMMappingPathTextbox" Canvas.Left="7" TextWrapping="Wrap" Canvas.Top="56" Width="181" ToolTip="The output location of the remap process" IsReadOnly="True" Background="#FFCED4DA" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                            <CheckBox x:Name="RMRenamePropertiesCheckbox" Content="Rename Properties" Canvas.Left="7" Canvas.Top="99" Width="122" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#FFADB5BD" />
+                            <CheckBox x:Name="RMPublicizeCheckbox" Content="Publicize" Canvas.Left="134" Canvas.Top="79" Width="122" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FFADB5BD" />
+                            <CheckBox x:Name="RMUnsealCheckbox" Content="Unseal" Canvas.Left="134" Canvas.Top="99" Width="122" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#FFADB5BD" />
+                        </Canvas>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="CCTabItem" Header="ReCodeIt Compiler">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#FFF0F0F0" />
+                        <GradientStop Color="#FFADB5BD" Offset="1" />
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <Grid x:Name="CCGrid" Background="#FF495057" />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
