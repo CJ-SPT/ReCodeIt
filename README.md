@@ -14,10 +14,6 @@ ReCodeIt is a .net assembly tool for working with obfuscated assemblies. It allo
 # Using
 See the [wiki](https://github.com/CJ-SPT/ReCodeIt/wiki)
 
-# Planned Features
-- Cross Mapping - The ability to code in a de-obfuscated state and then convert your code back to a state the original assembly understands once your done. This provide the ability to rename things to whatever you want and use them.
-- De-Obfuscation - Taking a obfuscated dll and de-obfuscating it
-
 # Support me
 
 If you want to support the project you [buy me a coffee!](https://ko-fi.com/dirtbikercj)
