@@ -221,6 +221,8 @@ internal static class GUIHelpers
             remapTreeItem.Nodes.Add(excludeNestedTypes);
         }
 
+        ReCodeItForm.RemapNodes.Add(remapTreeItem, model);
+
         return remapTreeItem;
     }
 

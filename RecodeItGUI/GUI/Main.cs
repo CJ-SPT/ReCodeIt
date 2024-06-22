@@ -19,6 +19,9 @@ public partial class ReCodeItForm : Form
 
     private static Settings AppSettings => DataProvider.Settings;
 
+    private bool _isSearched = false;
+    public static Dictionary<TreeNode, RemapModel> RemapNodes = [];
+
     private int _selectedRemapTreeIndex = 0;
     private int _selectedCCRemapTreeIndex = 0;
 
@@ -211,6 +214,48 @@ public partial class ReCodeItForm : Form
 
     #region MAIN_BUTTONS
 
+    private void SearchTreeView(object sender, EventArgs e)
+    {
+        if (RemapTreeView.Nodes.Count == 0) { return; }
+        if (RMSearchBox.Text == string.Empty) { return; }
+
+        bool projectMode = AppSettings.Remapper.UseProjectMappings;
+
+        var remaps = projectMode
+            ? CrossCompiler.ActiveProject.RemapModels
+            : DataProvider.Remaps;
+
+        var matches = remaps
+            .Where(x => x.NewTypeName == RMSearchBox.Text
+            || x.NewTypeName.StartsWith(RMSearchBox.Text));
+
+        if (!matches.Any()) { return; }
+
+        RemapTreeView.Nodes.Clear();
+
+        foreach (var match in matches)
+        {
+            RemapTreeView.Nodes.Add(GUIHelpers.GenerateTreeNode(match, this));
+        }
+
+        _isSearched = true;
+    }
+
+    private void ResetSearchButton_Click(object sender, EventArgs e)
+    {
+        bool projectMode = AppSettings.Remapper.UseProjectMappings;
+
+        var remaps = projectMode
+            ? CrossCompiler.ActiveProject.RemapModels
+            : DataProvider.Remaps;
+
+        RemapTreeView.Nodes.Clear();
+        ReloadRemapTreeView(remaps);
+
+        RMSearchBox.Clear();
+        _isSearched = false;
+    }
+
     /// <summary>
     /// Construct a new remap when the button is pressed
     /// </summary>
@@ -342,22 +387,30 @@ public partial class ReCodeItForm : Form
 
     private void RemoveRemapButton_Click(object sender, EventArgs e)
     {
+        foreach (var node in RemapNodes.ToArray())
+        {
+            if (node.Key == RemapTreeView.SelectedNode)
+            {
+                bool projectMode = AppSettings.Remapper.UseProjectMappings;
+
+                var remaps = projectMode
+                    ? CrossCompiler.ActiveProject.RemapModels
+                    : DataProvider.Remaps;
+
+                remaps.Remove(node.Value);
+                RemapNodes.Remove(node.Key);
+                RemapTreeView.Nodes.Remove(node.Key);
+            }
+        }
+
+        ResetAllRemapFields();
+
         if (AppSettings.Remapper.UseProjectMappings)
         {
-            CrossCompiler.ActiveProject.RemapModels.RemoveAt(RemapTreeView.SelectedNode.Index);
             ProjectManager.SaveCrossCompilerProjectModel(CrossCompiler.ActiveProject);
-        }
-        else
-        {
-            DataProvider.Remaps?.RemoveAt(RemapTreeView.SelectedNode.Index);
+            return;
         }
 
-        RemapTreeView.SelectedNode?.Remove();
-    }
-
-    private void EditRemapButton_Click(object sender, EventArgs e)
-    {
-        EditSelectedRemap(this, null);
         DataProvider.SaveMapping();
     }
 
@@ -1150,13 +1203,32 @@ public partial class ReCodeItForm : Form
             return;
         }
 
+        RemapModel remap = null;
+
+        foreach (var node in RemapNodes.ToArray())
+        {
+            if (node.Key == RemapTreeView.SelectedNode)
+            {
+                bool projectMode = AppSettings.Remapper.UseProjectMappings;
+
+                var remaps = projectMode
+                    ? CrossCompiler.ActiveProject.RemapModels
+                    : DataProvider.Remaps;
+
+                remap = remaps.FirstOrDefault(x => x.NewTypeName == node.Value.NewTypeName);
+
+                break;
+            }
+        }
+
+        if (remap == null)
+        {
+            return;
+        }
+
         _selectedRemapTreeIndex = RemapTreeView.SelectedNode.Index;
 
         ResetAllRemapFields();
-
-        var remap = AppSettings.Remapper.UseProjectMappings
-            ? CrossCompiler.ActiveProject.RemapModels.ElementAt(isComingFromOtherTab ? _selectedCCRemapTreeIndex : _selectedRemapTreeIndex)
-            : DataProvider.Remaps.ElementAt(_selectedRemapTreeIndex);
 
         NewTypeName.Text = remap.NewTypeName;
         OriginalTypeName.Text = remap.OriginalTypeName;
@@ -1250,6 +1322,7 @@ public partial class ReCodeItForm : Form
     private void ReloadRemapTreeView(List<RemapModel> remaps)
     {
         RemapTreeView.Nodes.Clear();
+        RemapNodes.Clear();
 
         foreach (var remap in remaps)
         {
@@ -1260,6 +1333,7 @@ public partial class ReCodeItForm : Form
     private void ReloadCCRemapTreeView(List<RemapModel> remaps)
     {
         CCMappingTreeView.Nodes.Clear();
+        RemapNodes.Clear();
 
         foreach (var remap in remaps)
         {
