@@ -8,7 +8,7 @@ using ReCodeItLib.Utils;
 namespace ReCodeIt.Commands;
 
 [Command("Build", Description = "(Compile Time Reflection) Build your project and get a dll output for the original assembly.")]
-public class BuildCommand : ICommand
+public class Build : ICommand
 {
     private ReCodeItCrossCompiler CrossCompiler { get; set; }
 

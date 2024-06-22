@@ -1742,7 +1742,7 @@ partial class ReCodeItForm
         Controls.Add(TabControlMain);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
-        Text = "ReCodeIt V0.1.0 - RC1";
+        Text = "ReCodeIt V0.1.0";
         RemapperTabPage.ResumeLayout(false);
         groupBox1.ResumeLayout(false);
         groupBox1.PerformLayout();

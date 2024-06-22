@@ -7,7 +7,7 @@ using ReCodeIt.Utils;
 namespace ReCodeIt.Commands;
 
 [Command("ReMap", Description = "Generates a re-mapped dll provided a mapping file and de-obfuscated dll")]
-public class ReMapCommand : ICommand
+public class ReMap : ICommand
 {
     private ReCodeItRemapper _remapper { get; set; } = new();
 
