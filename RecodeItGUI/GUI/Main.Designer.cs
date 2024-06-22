@@ -384,6 +384,7 @@ partial class ReCodeItForm
         ConstuctorCountUpDown.Name = "ConstuctorCountUpDown";
         ConstuctorCountUpDown.Size = new Size(55, 31);
         ConstuctorCountUpDown.TabIndex = 19;
+        toolTip1.SetToolTip(ConstuctorCountUpDown, "How many parameters is the constructor take?");
         // 
         // RenameFieldsCheckbox
         // 
@@ -850,6 +851,7 @@ partial class ReCodeItForm
         NewTypeName.PlaceholderText = "New Name";
         NewTypeName.Size = new Size(208, 31);
         NewTypeName.TabIndex = 0;
+        toolTip1.SetToolTip(NewTypeName, "The new name of the type you wish to remap");
         // 
         // PropertyCountEnabled
         // 
@@ -870,6 +872,7 @@ partial class ReCodeItForm
         IsInterfaceUpDown.Sorted = true;
         IsInterfaceUpDown.TabIndex = 15;
         IsInterfaceUpDown.Text = "IsInterface";
+        toolTip1.SetToolTip(IsInterfaceUpDown, "Is the type an interface?");
         // 
         // NestedTypeCountEnabled
         // 
@@ -888,6 +891,7 @@ partial class ReCodeItForm
         PropertyCountUpDown.Name = "PropertyCountUpDown";
         PropertyCountUpDown.Size = new Size(55, 31);
         PropertyCountUpDown.TabIndex = 5;
+        toolTip1.SetToolTip(PropertyCountUpDown, "How many properties are there?");
         // 
         // RemoveRemapButton
         // 
@@ -908,6 +912,7 @@ partial class ReCodeItForm
         FieldCountUpDown.Name = "FieldCountUpDown";
         FieldCountUpDown.Size = new Size(55, 31);
         FieldCountUpDown.TabIndex = 3;
+        toolTip1.SetToolTip(FieldCountUpDown, "How many fields are there?");
         // 
         // IsPublicUpDown
         // 
@@ -918,6 +923,7 @@ partial class ReCodeItForm
         IsPublicUpDown.Sorted = true;
         IsPublicUpDown.TabIndex = 0;
         IsPublicUpDown.Text = "IsPublic";
+        toolTip1.SetToolTip(IsPublicUpDown, "Is the type public? Note: Only public counts as public all other access modifiers fall under false.");
         // 
         // FieldCountEnabled
         // 
@@ -932,11 +938,12 @@ partial class ReCodeItForm
         // NestedTypeParentName
         // 
         NestedTypeParentName.BackColor = SystemColors.ScrollBar;
-        NestedTypeParentName.Location = new Point(224, 226);
+        NestedTypeParentName.Location = new Point(224, 148);
         NestedTypeParentName.Name = "NestedTypeParentName";
         NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
         NestedTypeParentName.Size = new Size(208, 31);
         NestedTypeParentName.TabIndex = 0;
+        toolTip1.SetToolTip(NestedTypeParentName, "The name of the parent class if it is nested. Requires IsNested to be true.");
         // 
         // MethodCountUpDown
         // 
@@ -945,6 +952,7 @@ partial class ReCodeItForm
         MethodCountUpDown.Name = "MethodCountUpDown";
         MethodCountUpDown.Size = new Size(55, 31);
         MethodCountUpDown.TabIndex = 6;
+        toolTip1.SetToolTip(MethodCountUpDown, "How many methods are there?");
         // 
         // IsAbstractUpDown
         // 
@@ -955,15 +963,17 @@ partial class ReCodeItForm
         IsAbstractUpDown.Sorted = true;
         IsAbstractUpDown.TabIndex = 1;
         IsAbstractUpDown.Text = "IsAbstract";
+        toolTip1.SetToolTip(IsAbstractUpDown, "Is the class an abstract class?");
         // 
         // BaseClassIncludeTextFIeld
         // 
         BaseClassIncludeTextFIeld.BackColor = SystemColors.ScrollBar;
-        BaseClassIncludeTextFIeld.Location = new Point(224, 148);
+        BaseClassIncludeTextFIeld.Location = new Point(224, 188);
         BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
         BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
         BaseClassIncludeTextFIeld.Size = new Size(208, 31);
         BaseClassIncludeTextFIeld.TabIndex = 2;
+        toolTip1.SetToolTip(BaseClassIncludeTextFIeld, "Inclusive base class");
         // 
         // OriginalTypeName
         // 
@@ -973,6 +983,7 @@ partial class ReCodeItForm
         OriginalTypeName.PlaceholderText = "Original Name";
         OriginalTypeName.Size = new Size(208, 31);
         OriginalTypeName.TabIndex = 1;
+        toolTip1.SetToolTip(OriginalTypeName, "The original name of the type, you can leave this blank if not using force rename.");
         // 
         // HasGenericParametersUpDown
         // 
@@ -983,6 +994,7 @@ partial class ReCodeItForm
         HasGenericParametersUpDown.Sorted = true;
         HasGenericParametersUpDown.TabIndex = 7;
         HasGenericParametersUpDown.Text = "HasGenericParameters";
+        toolTip1.SetToolTip(HasGenericParametersUpDown, "Does the type have generic parameters? class Foo<T>");
         // 
         // IsEnumUpDown
         // 
@@ -993,6 +1005,7 @@ partial class ReCodeItForm
         IsEnumUpDown.Sorted = true;
         IsEnumUpDown.TabIndex = 2;
         IsEnumUpDown.Text = "IsEnum";
+        toolTip1.SetToolTip(IsEnumUpDown, "Is the type an enum?");
         // 
         // NestedTypeCountUpDown
         // 
@@ -1001,6 +1014,7 @@ partial class ReCodeItForm
         NestedTypeCountUpDown.Name = "NestedTypeCountUpDown";
         NestedTypeCountUpDown.Size = new Size(55, 31);
         NestedTypeCountUpDown.TabIndex = 4;
+        toolTip1.SetToolTip(NestedTypeCountUpDown, "How many nested types are there?");
         // 
         // SaveRemapButton
         // 
@@ -1023,6 +1037,7 @@ partial class ReCodeItForm
         IsDerivedUpDown.Sorted = true;
         IsDerivedUpDown.TabIndex = 6;
         IsDerivedUpDown.Text = "IsDerived";
+        toolTip1.SetToolTip(IsDerivedUpDown, "Does the type inherit from another type explicitly?");
         // 
         // IsNestedUpDown
         // 
@@ -1033,6 +1048,7 @@ partial class ReCodeItForm
         IsNestedUpDown.Sorted = true;
         IsNestedUpDown.TabIndex = 3;
         IsNestedUpDown.Text = "IsNested";
+        toolTip1.SetToolTip(IsNestedUpDown, "Is the type nested within another type?");
         // 
         // HasAttributeUpDown
         // 
@@ -1043,15 +1059,17 @@ partial class ReCodeItForm
         HasAttributeUpDown.Sorted = true;
         HasAttributeUpDown.TabIndex = 5;
         HasAttributeUpDown.Text = "HasAttribute";
+        toolTip1.SetToolTip(HasAttributeUpDown, "Does the type have an attribute?");
         // 
         // BaseClassExcludeTextField
         // 
         BaseClassExcludeTextField.BackColor = SystemColors.ScrollBar;
-        BaseClassExcludeTextField.Location = new Point(224, 188);
+        BaseClassExcludeTextField.Location = new Point(224, 225);
         BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
         BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
         BaseClassExcludeTextField.Size = new Size(208, 31);
         BaseClassExcludeTextField.TabIndex = 1;
+        toolTip1.SetToolTip(BaseClassExcludeTextField, "Exclusive base class");
         // 
         // MethodCountEnabled
         // 
@@ -1072,6 +1090,7 @@ partial class ReCodeItForm
         IsSealedUpDown.Sorted = true;
         IsSealedUpDown.TabIndex = 4;
         IsSealedUpDown.Text = "IsSealed";
+        toolTip1.SetToolTip(IsSealedUpDown, "Is the type sealed? Note that unsealing and publicization does not happen until after the remap so they can be used as parameters");
         // 
         // TabControlMain
         // 
@@ -1360,6 +1379,7 @@ partial class ReCodeItForm
         AutoMapperMinLengthUpDown.Name = "AutoMapperMinLengthUpDown";
         AutoMapperMinLengthUpDown.Size = new Size(57, 31);
         AutoMapperMinLengthUpDown.TabIndex = 29;
+        toolTip1.SetToolTip(AutoMapperMinLengthUpDown, "Minimum length of the fields name that is required for it to be considered");
         AutoMapperMinLengthUpDown.ValueChanged += AutoMapperMinLengthUpDown_ValueChanged;
         // 
         // RunAutoRemapButton
@@ -1369,6 +1389,7 @@ partial class ReCodeItForm
         RunAutoRemapButton.Size = new Size(168, 34);
         RunAutoRemapButton.TabIndex = 28;
         RunAutoRemapButton.Text = "Run Auto Remap";
+        toolTip1.SetToolTip(RunAutoRemapButton, "Run the automatic mapping");
         RunAutoRemapButton.UseVisualStyleBackColor = true;
         RunAutoRemapButton.Click += RunAutoRemapButton_Click;
         // 
@@ -1387,6 +1408,7 @@ partial class ReCodeItForm
         AutoMapperRequiredMatchesUpDown.Name = "AutoMapperRequiredMatchesUpDown";
         AutoMapperRequiredMatchesUpDown.Size = new Size(57, 31);
         AutoMapperRequiredMatchesUpDown.TabIndex = 26;
+        toolTip1.SetToolTip(AutoMapperRequiredMatchesUpDown, "The number of times a type must be paired with a name in code to be considered for renaming");
         AutoMapperRequiredMatchesUpDown.ValueChanged += AutoMapperRequiredMatchesUpDown_ValueChanged_1;
         // 
         // AutoMapperTypesToIgnoreTextField
@@ -1684,6 +1706,7 @@ partial class ReCodeItForm
         GithubLinkLabel.TabIndex = 3;
         GithubLinkLabel.TabStop = true;
         GithubLinkLabel.Text = "https://github.com/CJ-SPT/ReCodeIt";
+        toolTip1.SetToolTip(GithubLinkLabel, "Be sure to report issues here!");
         GithubLinkLabel.LinkClicked += GithubLinkLabel_LinkClicked;
         // 
         // SilentModeCheckbox
@@ -1694,6 +1717,7 @@ partial class ReCodeItForm
         SilentModeCheckbox.Size = new Size(133, 29);
         SilentModeCheckbox.TabIndex = 2;
         SilentModeCheckbox.Text = "Silent Mode";
+        toolTip1.SetToolTip(SilentModeCheckbox, "Silent mode stops the ReMapper from prompting you if its okay to continue at every selection");
         SilentModeCheckbox.UseVisualStyleBackColor = true;
         SilentModeCheckbox.CheckedChanged += SilentModeCheckbox_CheckedChanged;
         // 
@@ -1705,6 +1729,7 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.Size = new Size(159, 29);
         DebugLoggingCheckbox.TabIndex = 0;
         DebugLoggingCheckbox.Text = "Debug logging";
+        toolTip1.SetToolTip(DebugLoggingCheckbox, "Enables debug logging for the appliaction");
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
