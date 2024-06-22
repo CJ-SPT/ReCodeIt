@@ -281,14 +281,12 @@ public partial class ReCodeItForm : Form
             : DataProvider.Remaps;
 
         var existingRemap = remaps
-            .Where(remap => remap.NewTypeName == newRemap.NewTypeName)
-            .FirstOrDefault();
+            .FirstOrDefault(remap => remap.NewTypeName == newRemap.NewTypeName);
 
         if (existingRemap == null)
         {
             existingRemap = remaps
-                .Where(remap => _cachedNewTypeNames.Contains(remap.NewTypeName))
-                .FirstOrDefault();
+                .FirstOrDefault(remap => _cachedNewTypeNames.Contains(remap.NewTypeName));
         }
 
         // Handle overwriting an existing remap

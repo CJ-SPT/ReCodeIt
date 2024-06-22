@@ -148,22 +148,22 @@ public class ReCodeItRemapper
             Definition = type,
         };
 
-        var matches = new HashSet<EMatchResult>
+        var matches = new List<EMatchResult>
         {
-            type.MatchIsAbstract(remap.SearchParams, score),
-            type.MatchIsEnum(remap.SearchParams, score) ,
-            type.MatchIsNested(remap.SearchParams, score),
-            type.MatchIsSealed(remap.SearchParams, score) ,
-            type.MatchIsDerived(remap.SearchParams, score) ,
-            type.MatchIsInterface(remap.SearchParams, score),
-            type.MatchHasGenericParameters(remap.SearchParams, score),
-            type.MatchIsPublic(remap.SearchParams, score) ,
-            type.MatchHasAttribute(remap.SearchParams, score),
             type.MatchConstructors(remap.SearchParams, score),
             type.MatchMethods(remap.SearchParams, score),
             type.MatchFields(remap.SearchParams, score),
             type.MatchProperties(remap.SearchParams, score),
-            type.MatchNestedTypes(remap.SearchParams, score)
+            type.MatchNestedTypes(remap.SearchParams, score),
+            type.MatchIsPublic(remap.SearchParams, score) ,
+            type.MatchIsInterface(remap.SearchParams, score),
+            type.MatchIsAbstract(remap.SearchParams, score),
+            type.MatchIsSealed(remap.SearchParams, score) ,
+            type.MatchIsEnum(remap.SearchParams, score) ,
+            type.MatchIsNested(remap.SearchParams, score),
+            type.MatchIsDerived(remap.SearchParams, score) ,
+            type.MatchHasGenericParameters(remap.SearchParams, score),
+            type.MatchHasAttribute(remap.SearchParams, score),
         };
 
         var NoMatch = matches.Where(x => x.Equals(EMatchResult.NoMatch)).FirstOrDefault();
@@ -268,7 +268,7 @@ public class ReCodeItRemapper
         Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
         Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
 
-        if (filteredScores.Count() > 1)
+        if (filteredScores.Count() > 1 && filteredScores.Skip(1).Any(score => score.Score == highestScore.Score))
         {
             Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Considering adding more search parameters, Only showing first 5.", ConsoleColor.Yellow);
 

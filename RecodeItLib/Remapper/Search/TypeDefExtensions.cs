@@ -156,13 +156,15 @@ internal static class TypeDefExtensions
             return EMatchResult.Disabled;
         }
 
-        if (parms.IsPublic == false && type.IsNotPublic)
+        if ((bool)!parms.IsPublic && type.IsNotPublic)
         {
+            Logger.Log($"Match {type.Name}");
             score.Score++;
 
             return EMatchResult.Match;
         }
-        else if ((bool)parms.IsPublic && type.IsPublic)
+
+        if ((bool)parms.IsPublic && type.IsPublic)
         {
             score.Score++;
             return EMatchResult.Match;

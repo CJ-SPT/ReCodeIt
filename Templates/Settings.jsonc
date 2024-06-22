@@ -50,6 +50,7 @@
             "Class",
             "GClass",
             "GStruct",
+            "Interface",
             "GInterface"
         ],
         "PropertyFieldBlackList": [                                     // Property or fields names to ignore in the automap, these are case sanitized so case does not matter
