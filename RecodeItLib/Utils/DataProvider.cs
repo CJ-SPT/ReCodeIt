@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeItLib.Utils;
@@ -29,7 +28,7 @@ public static class DataProvider
 
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
-    public static Settings Settings { get; set; }
+    public static Settings Settings { get; private set; }
 
     public static AssemblyDefinition AssemblyDefinition { get; private set; }
 
@@ -37,19 +36,13 @@ public static class DataProvider
 
     public static void LoadAppSettings()
     {
-        var settingsPath = Path.Combine(DataPath, "Settings.jsonc");
-
-        if (!File.Exists(settingsPath))
+        if (IsCli)
         {
-            Logger.Log($"Could not find settings path `{settingsPath}`, loading defaults");
             Settings = CreateFakeSettings();
-
-            RegistryHelper.SetRegistryValue("SettingsPath", Path.Combine(DataPath, "Settings.json"), RegistryValueKind.String);
-            RegistryHelper.SetRegistryValue("LogPath", Path.Combine(DataPath, "Log.log"), RegistryValueKind.String);
-
-            SaveAppSettings();
             return;
         }
+
+        var settingsPath = Path.Combine(DataPath, "Settings.jsonc");
 
         var jsonText = File.ReadAllText(settingsPath);
 
@@ -65,11 +58,14 @@ public static class DataProvider
 
     public static void SaveAppSettings()
     {
+        if (IsCli) { return; }
+
         var settingsPath = RegistryHelper.GetRegistryValue<string>("SettingsPath");
 
         if (!File.Exists(settingsPath))
         {
             Logger.Log($"path `{settingsPath}` does not exist. Could not save settings", ConsoleColor.Red);
+            return;
         }
 
         JsonSerializerSettings settings = new()

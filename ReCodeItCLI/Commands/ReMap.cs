@@ -25,8 +25,8 @@ public class ReMap : ICommand
 
     public ValueTask ExecuteAsync(IConsole console)
     {
-        DataProvider.LoadAppSettings();
         DataProvider.IsCli = true;
+        DataProvider.LoadAppSettings();
 
         var remapperSettings = DataProvider.Settings.Remapper.MappingSettings;
 
