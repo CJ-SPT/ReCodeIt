@@ -135,15 +135,17 @@ public class ReCodeItRemapper
 
         var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
 
-        if (tokens.Where(token => !tokens.Any(token => type.Name.StartsWith(token))).Any())
+        bool ignore = tokens
+            .Where(token => !tokens
+                .Any(token => type.Name.StartsWith(token))).Any();
+
+        if (ignore && remap.SearchParams.IsNested is null)
         {
             return;
         }
 
         foreach (var nestedType in type.NestedTypes)
         {
-            if (remap.SearchParams.IsNested is false) { return; }
-
             FindMatch(nestedType, remap);
         }
 
@@ -188,8 +190,8 @@ public class ReCodeItRemapper
         if (match)
         {
             // Set the original type name to be used later
-            score.ReMap.OriginalTypeName = type.Name;
-            remap.OriginalTypeName = type.Name;
+            score.ReMap.OriginalTypeName = type.FullName;
+            remap.OriginalTypeName = type.FullName;
             remap.Succeeded = true;
             remap.FailureReason = EFailureReason.None;
             score.AddScoreToResult();
@@ -271,7 +273,7 @@ public class ReCodeItRemapper
         if (highestScore is null) { return; }
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Renaming {highestScore.Definition.Name} to {highestScore.ProposedNewName}", ConsoleColor.Green);
+        Logger.Log($"Renaming {highestScore.Definition.FullName} to {highestScore.ProposedNewName}", ConsoleColor.Green);
         Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
 
         if (filteredScores.Count() > 1 && filteredScores.Skip(1).Any(score => score.Score == highestScore.Score))
@@ -284,7 +286,7 @@ public class ReCodeItRemapper
             }
         }
 
-        // highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
+        highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
 
         if (CrossMapMode)
         {// Store the original types for caching

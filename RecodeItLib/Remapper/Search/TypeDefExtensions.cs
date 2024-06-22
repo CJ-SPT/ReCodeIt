@@ -55,6 +55,16 @@ internal static class TypeDefExtensions
             return EMatchResult.Disabled;
         }
 
+        if (parms.ParentName is not null)
+        {
+            if (type.Name == parms.ParentName)
+            {
+                Logger.Log($"Match! {type.Name} : {score.ProposedNewName}");
+                score.Score++;
+                return EMatchResult.Match;
+            }
+        }
+
         if (type.IsNested == parms.IsNested)
         {
             score.Score++;

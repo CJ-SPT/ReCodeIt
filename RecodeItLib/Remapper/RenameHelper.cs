@@ -166,7 +166,13 @@ internal static class RenameHelper
                 RenameType(type.NestedTypes, score);
             }
 
-            if (score.Definition.Name == null) { continue; }
+            if (score.Definition.Name is null) { continue; }
+
+            if (score.ReMap.SearchParams.IsNested is true &&
+                type.IsNested && type.Name == score.Definition.Name)
+            {
+                type.Name = score.ProposedNewName;
+            }
 
             if (type.FullName == score.Definition.Name)
             {
