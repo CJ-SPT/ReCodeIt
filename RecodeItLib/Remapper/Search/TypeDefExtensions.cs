@@ -59,7 +59,6 @@ internal static class TypeDefExtensions
         {
             if (type.Name == parms.ParentName)
             {
-                Logger.Log($"Match! {type.Name} : {score.ProposedNewName}");
                 score.Score++;
                 return EMatchResult.Match;
             }

@@ -176,7 +176,6 @@ internal static class RenameHelper
 
             if (type.FullName == score.Definition.Name)
             {
-                var oldName = type.FullName.ToString();
                 type.Name = score.ProposedNewName;
             }
         }
