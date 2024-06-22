@@ -305,17 +305,14 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
-        if (!OutPath.EndsWith(".dll"))
-        {
-            var moduleName = DataProvider.AssemblyDefinition.MainModule.Name;
-            moduleName = moduleName.Replace(".dll", "-Remapped.dll");
+        var moduleName = DataProvider.AssemblyDefinition.MainModule.Name;
+        moduleName = moduleName.Replace(".dll", "-Remapped.dll");
 
-            OutPath = Path.Combine(OutPath, moduleName);
-        }
+        OutPath = Path.Combine(OutPath, moduleName);
 
         var path = DataProvider.WriteAssemblyDefinition(OutPath);
 
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log("Creating Hollow...", ConsoleColor.Yellow);
         Hollow();
 
         var hollowedDir = Path.GetDirectoryName(OutPath);

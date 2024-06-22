@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using Microsoft.Win32;
+using Mono.Cecil;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeItLib.Utils;
@@ -28,7 +29,7 @@ public static class DataProvider
 
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
-    public static Settings Settings { get; private set; }
+    public static Settings Settings { get; set; }
 
     public static AssemblyDefinition AssemblyDefinition { get; private set; }
 
@@ -40,7 +41,14 @@ public static class DataProvider
 
         if (!File.Exists(settingsPath))
         {
-            throw new FileNotFoundException($"path `{settingsPath}` does not exist...");
+            Logger.Log($"Could not find settings path `{settingsPath}`, loading defaults");
+            Settings = CreateFakeSettings();
+
+            RegistryHelper.SetRegistryValue("SettingsPath", Path.Combine(DataPath, "Settings.json"), RegistryValueKind.String);
+            RegistryHelper.SetRegistryValue("LogPath", Path.Combine(DataPath, "Log.log"), RegistryValueKind.String);
+
+            SaveAppSettings();
+            return;
         }
 
         var jsonText = File.ReadAllText(settingsPath);
@@ -61,7 +69,7 @@ public static class DataProvider
 
         if (!File.Exists(settingsPath))
         {
-            Logger.Log($"path `{settingsPath}` does not exist...", ConsoleColor.Red);
+            Logger.Log($"path `{settingsPath}` does not exist. Could not save settings", ConsoleColor.Red);
         }
 
         JsonSerializerSettings settings = new()
@@ -80,7 +88,7 @@ public static class DataProvider
     {
         if (!File.Exists(path))
         {
-            Logger.Log($"Error loading mapping.json from `{path}`, First time running? Please select a mapping path");
+            Logger.Log($"Error loading mapping.json from `{path}`, First time running? Please select a mapping path in the gui", ConsoleColor.Red);
         }
 
         var jsonText = File.ReadAllText(path);
@@ -194,5 +202,92 @@ public static class DataProvider
         AssemblyDefinition.Write(path);
 
         return path;
+    }
+
+    private static Settings CreateFakeSettings()
+    {
+        var settings = new Settings
+        {
+            AppSettings = new AppSettings
+            {
+                Debug = false,
+                SilentMode = true
+            },
+            Remapper = new RemapperSettings
+            {
+                MappingPath = string.Empty,
+                OutputPath = string.Empty,
+                UseProjectMappings = false,
+                MappingSettings = new MappingSettings
+                {
+                    RenameFields = false,
+                    RenameProperties = false,
+                    Publicize = false,
+                    Unseal = false,
+                }
+            },
+            AutoMapper = new AutoMapperSettings
+            {
+                AssemblyPath = string.Empty,
+                OutputPath = string.Empty,
+                RequiredMatches = 5,
+                MinLengthToMatch = 7,
+                SearchMethods = true,
+                MappingSettings = new MappingSettings
+                {
+                    RenameFields = false,
+                    RenameProperties = false,
+                    Publicize = false,
+                    Unseal = false,
+                },
+                TypesToIgnore = [
+                    "Boolean",
+                    "List",
+                    "Dictionary",
+                    "Byte",
+                    "Int16",
+                    "Int32",
+                    "Func",
+                    "Action",
+                    "Object",
+                    "String",
+                    "Vector2",
+                    "Vector3",
+                    "Vector4",
+                    "Stream",
+                    "HashSet",
+                    "Double",
+                    "IEnumerator"
+                ],
+                TokensToMatch = [
+                    "Class",
+                    "GClass",
+                    "GStruct",
+                    "Interface",
+                    "GInterface"
+                ],
+                PropertyFieldBlackList = [
+                    "Columns",
+                    "mColumns",
+                    "Template",
+                    "Condition",
+                    "Conditions",
+                    "Counter",
+                    "Instance",
+                    "Command",
+                    "_template"
+                ],
+                MethodParamaterBlackList = [
+
+                ],
+            },
+            CrossCompiler = new CrossCompilerSettings
+            {
+                LastLoadedProject = string.Empty,
+                AutoLoadLastActiveProject = true
+            }
+        };
+
+        return settings;
     }
 }

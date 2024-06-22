@@ -7,7 +7,7 @@ using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
 
-[Command("BuildRef", Description = "Builds or rebuilds a new reference DLL for your project")]
+[Command("BuildRef", Description = "(Compile Time Reflection) Builds or rebuilds a new reference DLL for your project")]
 public class BuildRef : ICommand
 {
     private ReCodeItCrossCompiler CrossCompiler { get; set; }

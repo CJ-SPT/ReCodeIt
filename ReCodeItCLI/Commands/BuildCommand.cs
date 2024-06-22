@@ -7,12 +7,12 @@ using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
 
-[Command("Build", Description = "Build your project and get a dll output for the original assembly. You dont need to provide a path if the last project you built is the one you want to target, or you are running this command from inside a directory where a project file exists.")]
+[Command("Build", Description = "(Compile Time Reflection) Build your project and get a dll output for the original assembly.")]
 public class BuildCommand : ICommand
 {
     private ReCodeItCrossCompiler CrossCompiler { get; set; }
 
-    [CommandParameter(0, IsRequired = false, Description = "the location of your project file (ReCodeItProj.json)")]
+    [CommandParameter(0, IsRequired = false, Description = "the location of your project file (ReCodeItProj.json). You don't need to provide a path if the last project you built is the one you want to target, or you are running this command from inside a directory where a project file exists.")]
     public string ProjectJsonPath { get; init; }
 
     public async ValueTask ExecuteAsync(IConsole console)
