@@ -1,6 +1,9 @@
 # ReCodeIt
 
-ReCodeIt is a .net assembly remapper, it can take an assembly which has been de-obfuscated and remap classes to more usable names based on patterns. It ***requires*** a de-obfuscated dll to work.
+![image](https://github.com/CJ-SPT/ReCodeIt/assets/161484149/3bdec51c-ca48-4678-a492-5cfd0595f980)
+
+
+ReCodeIt is a .net assembly tool for working with obfuscated assemblies. It allows you to deobfuscate using de4dot, create remaps for types and generated a re-mapped reference for your project. It has two main components. The GUI pictured above and a CLI companion that can be placed on the system path for access anywhere on your machine at any given time.
 
 # Building
 - fork or clone the project to a local directory
@@ -9,7 +12,7 @@ ReCodeIt is a .net assembly remapper, it can take an assembly which has been de-
 - Run the project from visual studio or the build folder.
 
 # Using
-- Start the application, go to the settings page and set the directories and options to your liking. I will provide further documentation down the line when the project is in a less chaotic state. For now using it works, there may be a GUI bug here or there.
+See the [wiki](https://github.com/CJ-SPT/ReCodeIt/wiki)
 
 # Planned Features
 - Cross Mapping - The ability to code in a de-obfuscated state and then convert your code back to a state the original assembly understands once your done. This provide the ability to rename things to whatever you want and use them.
