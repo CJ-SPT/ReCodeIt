@@ -58,9 +58,6 @@ internal static class TypeDefExtensions
         if (type.IsNested == parms.IsNested)
         {
             score.Score++;
-            Logger.Log($"Match {type.Name}");
-            Logger.Log($"Match {parms.IsNested}");
-            Logger.Log($"type: {type.IsNested} \n");
             return EMatchResult.Match;
         }
 
@@ -158,7 +155,6 @@ internal static class TypeDefExtensions
 
         if ((bool)!parms.IsPublic && type.IsNotPublic)
         {
-            Logger.Log($"Match {type.Name}");
             score.Score++;
 
             return EMatchResult.Match;
