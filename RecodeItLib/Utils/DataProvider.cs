@@ -53,6 +53,13 @@ public static class DataProvider
 
         Settings = JsonConvert.DeserializeObject<Settings>(jsonText, settings);
 
+        if (Settings is null)
+        {
+            Logger.Log("Settings were null, creating new settings", ConsoleColor.Red);
+            Settings = CreateFakeSettings();
+            SaveAppSettings();
+        }
+
         Logger.Log($"Settings loaded from '{settingsPath}'");
     }
 
@@ -85,6 +92,7 @@ public static class DataProvider
         if (!File.Exists(path))
         {
             Logger.Log($"Error loading mapping.json from `{path}`, First time running? Please select a mapping path in the gui", ConsoleColor.Red);
+            return [];
         }
 
         var jsonText = File.ReadAllText(path);

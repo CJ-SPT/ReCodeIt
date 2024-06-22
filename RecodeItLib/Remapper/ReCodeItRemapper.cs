@@ -1,5 +1,4 @@
 ﻿using Mono.Cecil;
-using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using ReCodeIt.CrossCompiler;
 using ReCodeIt.Enums;
@@ -346,28 +345,6 @@ public class ReCodeItRemapper
 
                 // Remove existing instructions
                 ilProcessor.Clear();
-
-                if (method.ReturnType.FullName != "System.Void")
-                {
-                    // Return appropriate default value based on return type
-                    if (method.ReturnType.IsValueType)
-                    {
-                        // Load 0 onto the stack (works for most value types)
-                        ilProcessor.Emit(OpCodes.Ldc_I4_0);
-
-                        // Convert to Int64 if needed
-                        if (method.ReturnType.FullName == "System.Int64")
-                            ilProcessor.Emit(OpCodes.Conv_I8);
-                    }
-                    else
-                    {
-                        // Load null for reference types
-                        ilProcessor.Emit(OpCodes.Ldnull);
-                    }
-                }
-
-                // Add a return instruction
-                ilProcessor.Emit(OpCodes.Ret);
             }
         }
     }
