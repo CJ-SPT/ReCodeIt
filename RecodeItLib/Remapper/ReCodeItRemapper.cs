@@ -1,4 +1,6 @@
 ﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 using ReCodeIt.CrossCompiler;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
@@ -66,15 +68,19 @@ public class ReCodeItRemapper
 
         ChooseBestMatches();
 
-        // Dont publicize and unseal until after the remapping so we can use those as search parameters
+        // Don't publicize and unseal until after the remapping, so we can use those as search parameters
         if (Settings.MappingSettings.Publicize)
         {
-            Publicizer.Publicize();
+            //Publicizer.Publicize();
+
+            Logger.Log("Publicizing classes...", ConsoleColor.Green);
+
+            SPTPublicizer.PublicizeClasses(DataProvider.ModuleDefinition);
         }
 
         if (Settings.MappingSettings.Unseal)
         {
-            Publicizer.Unseal();
+            //Publicizer.Unseal();
         }
 
         // We are done, write the assembly
@@ -297,10 +303,26 @@ public class ReCodeItRemapper
     /// </summary>
     private void WriteAssembly()
     {
+        if (!OutPath.EndsWith(".dll"))
+        {
+            var moduleName = DataProvider.AssemblyDefinition.MainModule.Name;
+            moduleName = moduleName.Replace(".dll", "-Remapped.dll");
+
+            OutPath = Path.Combine(OutPath, moduleName);
+        }
+
         var path = DataProvider.WriteAssemblyDefinition(OutPath);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Hollow();
+
+        var hollowedDir = Path.GetDirectoryName(OutPath);
+        var hollowedPath = Path.Combine(hollowedDir, "Hollowed.dll");
+        DataProvider.WriteAssemblyDefinition(hollowedPath);
+
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
+        Logger.Log($"Complete: Hollowed written to `{hollowedPath}`", ConsoleColor.Green);
         Logger.Log("Original type names updated on mapping file.", ConsoleColor.Green);
         Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
@@ -310,5 +332,44 @@ public class ReCodeItRemapper
 
         IsRunning = false;
         OnComplete?.Invoke();
+    }
+
+    /// <summary>
+    /// Hollows out all logic from the dll
+    /// </summary>
+    private void Hollow()
+    {
+        foreach (var type in DataProvider.ModuleDefinition.GetAllTypes())
+        {
+            foreach (var method in type.Methods.Where(m => m.HasBody))
+            {
+                var ilProcessor = method.Body.GetILProcessor();
+
+                // Remove existing instructions
+                ilProcessor.Clear();
+
+                if (method.ReturnType.FullName != "System.Void")
+                {
+                    // Return appropriate default value based on return type
+                    if (method.ReturnType.IsValueType)
+                    {
+                        // Load 0 onto the stack (works for most value types)
+                        ilProcessor.Emit(OpCodes.Ldc_I4_0);
+
+                        // Convert to Int64 if needed
+                        if (method.ReturnType.FullName == "System.Int64")
+                            ilProcessor.Emit(OpCodes.Conv_I8);
+                    }
+                    else
+                    {
+                        // Load null for reference types
+                        ilProcessor.Emit(OpCodes.Ldnull);
+                    }
+                }
+
+                // Add a return instruction
+                ilProcessor.Emit(OpCodes.Ret);
+            }
+        }
     }
 }

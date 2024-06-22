@@ -424,7 +424,7 @@ public class MappingSettings
         get { return _publicize; }
         set
         {
-            _unseal = value;
+            _publicize = value;
             Save();
         }
     }
