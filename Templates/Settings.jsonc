@@ -4,9 +4,9 @@
         "SilentMode": true                                              // The tool will stop and prompt you to continue on every remapping if disable   
     },
     "Remapper": {
-        "AssemblyPath": "./Data/Managed/Assembly-CSharp.dll",           // Path to the assembly we want to remap
-        "OutputPath": "./Data/Assembly-CSharp-Remapped.dll",            // Path including the filename and extension we want to write the changes to
-        "MappingPath": "./Data/Mappings.jsonc",                         // Path to the mapping file 
+        "AssemblyPath": "",                                             // Path to the assembly we want to remap
+        "OutputPath": "",                                               // Path including the filename and extension we want to write the changes to
+        "MappingPath": "",                                              // Path to the mapping file 
         "UseProjectMappings": true,                                     // Use the active cross compiler projects mappings     
         "MappingSettings": {
             "RenameFields": true,                                       // Names of fields of the matched type will be renamed to the type name with approproiate convention
@@ -16,8 +16,8 @@
         }
     },
     "AutoMapper": {
-        "AssemblyPath": "./Data/Managed/Assembly-CSharp.dll",           // Path to the assembly we want to remap
-        "OutputPath": "./Data/Assembly-CSharp-Remapped.dll",            // Path including the filename and extension we want to write the changes to
+        "AssemblyPath": "",                                             // Path to the assembly we want to remap
+        "OutputPath": "",                                               // Path including the filename and extension we want to write the changes to
         "RequiredMatches": 5,                                           // Minimum number of times a member must have this name in the assembly before considering it for remapping
         "MinLengthToMatch": 7,                                          // Minimum length of the field/property name in code before it will be considered for a rename
         "SearchMethods": true,                                          // Will attempt to map types from method meta data and parameters
@@ -69,6 +69,6 @@
     },
     "CrossCompiler": {
         "AutoLoadLastActiveProject": true,                              // Autoload last active project
-        "LastLoadedProject": "G:\\development\\SPT-MODS\\StashSearch\\ReCodeItProj.json"                                         // Last loaded project path
+        "LastLoadedProject": ""                                         // Last loaded project path
     }
 }
