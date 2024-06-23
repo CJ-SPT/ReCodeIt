@@ -1,5 +1,5 @@
 ﻿using Mono.Cecil;
-using Mono.Collections.Generic;
+using Mono.Cecil.Rocks;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
 
@@ -15,7 +15,7 @@ internal static class RenameHelper
     /// <param name="score"></param>
     public static void RenameAll(ScoringModel score, bool direct = false)
     {
-        var types = DataProvider.ModuleDefinition.Types;
+        var types = DataProvider.ModuleDefinition.GetAllTypes();
 
         // Rename all fields and properties first
         if (DataProvider.Settings.Remapper.MappingSettings.RenameFields)
@@ -60,7 +60,7 @@ internal static class RenameHelper
     public static int RenameAllFields(
         string oldTypeName,
         string newTypeName,
-        Collection<TypeDefinition> typesToCheck,
+        IEnumerable<TypeDefinition> typesToCheck,
         int overAllCount = 0)
     {
         foreach (var type in typesToCheck)
@@ -108,7 +108,7 @@ internal static class RenameHelper
     public static int RenameAllProperties(
         string oldTypeName,
         string newTypeName,
-        Collection<TypeDefinition> typesToCheck,
+        IEnumerable<TypeDefinition> typesToCheck,
         int overAllCount = 0)
     {
         foreach (var type in typesToCheck)
@@ -157,7 +157,7 @@ internal static class RenameHelper
         return propertyCount > 0 ? $"{newName}_{propertyCount}" : newName;
     }
 
-    private static void RenameType(Collection<TypeDefinition> typesToCheck, ScoringModel score)
+    private static void RenameType(IEnumerable<TypeDefinition> typesToCheck, ScoringModel score)
     {
         foreach (var type in typesToCheck)
         {

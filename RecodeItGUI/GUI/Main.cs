@@ -41,7 +41,7 @@ public partial class ReCodeItForm : Form
         LoadMappingFile();
 
         var remaps = AppSettings.Remapper.UseProjectMappings
-           ? CrossCompiler.ActiveProject.RemapModels
+           ? CrossCompiler.ActiveProject?.RemapModels
            : DataProvider.Remaps;
 
         ReloadRemapTreeView(remaps);
@@ -1319,10 +1319,15 @@ public partial class ReCodeItForm : Form
     /// Subscribes the the remappers OnComplete event
     /// </summary>
     /// <param name="remaps"></param>
-    private void ReloadRemapTreeView(List<RemapModel> remaps)
+    private void ReloadRemapTreeView(List<RemapModel>? remaps)
     {
         RemapTreeView.Nodes.Clear();
         RemapNodes.Clear();
+
+        if (remaps is null)
+        {
+            return;
+        }
 
         foreach (var remap in remaps)
         {
