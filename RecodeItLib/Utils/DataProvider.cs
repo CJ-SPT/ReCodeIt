@@ -198,7 +198,7 @@ public static class DataProvider
         var fileName = Path.GetFileName(path);
 
         AssemblyDefinition = assemblyDefinition;
-        ModuleDefinition = assemblyDefinition.Modules.First();
+        ModuleDefinition = assemblyDefinition.MainModule;
     }
 
     public static string WriteAssemblyDefinition(string path)
