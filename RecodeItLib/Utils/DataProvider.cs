@@ -20,7 +20,7 @@ public static class DataProvider
     /// </summary>
     public static bool IsCli { get; set; } = false;
 
-    public static string DataPath => RegistryHelper.GetRegistryValue<string>("DataPath") ?? Path.Combine(AppContext.BaseDirectory, "Data");
+    public static string DataPath => Path.Combine(AppContext.BaseDirectory, "Data");
 
     public static readonly string ReCodeItProjectsPath = Path.Combine(AppContext.BaseDirectory, "Projects");
 
