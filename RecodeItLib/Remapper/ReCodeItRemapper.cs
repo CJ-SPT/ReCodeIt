@@ -108,7 +108,7 @@ public class ReCodeItRemapper
     /// Loop over all types in the assembly and score them
     /// </summary>
     /// <param name="mapping">Mapping to score</param>
-    public void ScoreMapping(RemapModel mapping)
+    private void ScoreMapping(RemapModel mapping)
     {
         foreach (var type in DataProvider.ModuleDefinition.Types)
         {
