@@ -1,5 +1,4 @@
 ﻿using dnlib.DotNet;
-using MoreLinq;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 
@@ -11,39 +10,43 @@ internal class NestedTypes
     {
         if (parms.IncludeNestedTypes is null || parms.IncludeNestedTypes.Count == 0) return EMatchResult.Disabled;
 
-        var matches = type.NestedTypes
-            .Count(nt => parms.IncludeNestedTypes.Contains(nt.Name));
+        foreach (var nt in type.NestedTypes)
+        {
+            var ntName = nt.Name.String;
 
-        score.Score += matches > 0 ? matches : -matches;
+            if (!parms.IncludeNestedTypes.Contains(ntName)) { continue; }
 
-        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.NestedTypeInclude;
+            score.Score++;
 
-        return matches > 0
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+            return EMatchResult.Match;
+        }
+
+        score.FailureReason = EFailureReason.NestedTypeInclude;
+        return EMatchResult.NoMatch;
     }
 
     public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.ExcludeNestedTypes is null || parms.ExcludeNestedTypes.Count == 0) return EMatchResult.Disabled;
 
-        var matches = type.NestedTypes
-            .Count(nt => parms.ExcludeNestedTypes.Contains(nt.Name));
+        foreach (var nt in type.NestedTypes)
+        {
+            if (!parms.ExcludeNestedTypes.Contains(nt.Name)) continue;
 
-        score.Score += matches > 0 ? -matches : 1;
+            score.Score--;
+            score.FailureReason = EFailureReason.NestedTypeExclude;
+            return EMatchResult.NoMatch;
+        }
 
-        score.FailureReason = matches > 0 ? EFailureReason.NestedTypeExclude : EFailureReason.None;
-
-        return matches > 0
-            ? EMatchResult.NoMatch
-            : EMatchResult.Match;
+        score.Score++;
+        return EMatchResult.Match;
     }
 
     public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.NestedTypeCount is null) return EMatchResult.Disabled;
 
-        var match = type.NestedTypes.Exactly((int)parms.NestedTypeCount);
+        var match = type.NestedTypes.Count() == parms.NestedTypeCount;
 
         score.Score += match ? type.NestedTypes.Count : -type.NestedTypes.Count - 1;
 

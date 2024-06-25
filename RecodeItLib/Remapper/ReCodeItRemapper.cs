@@ -136,11 +136,7 @@ public class ReCodeItRemapper
 
         var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
 
-        bool ignore = tokens
-            .Where(token => !tokens
-                .Any(token => type.Name.StartsWith(token))).Any();
-
-        if (ignore && remap.SearchParams.IsNested is null)
+        if (!tokens.Any(token => type.Name.Contains(token)))
         {
             return;
         }
@@ -156,6 +152,11 @@ public class ReCodeItRemapper
             ReMap = remap,
             Definition = type,
         };
+
+        if (score.ProposedNewName == "GameServerClass")
+        {
+            //Console.WriteLine("BreakPoint!");
+        }
 
         var matches = new List<EMatchResult>
         {
@@ -175,18 +176,14 @@ public class ReCodeItRemapper
             type.MatchHasAttribute(remap.SearchParams, score),
         };
 
-        var NoMatch = matches.FirstOrDefault(x => x.Equals(EMatchResult.NoMatch));
-
-        if (NoMatch == EMatchResult.NoMatch)
+        if (matches.Any(x => x.Equals(EMatchResult.NoMatch)))
         {
             remap.FailureReason = score.FailureReason;
             return;
         }
 
         var match = matches
-            .Where(x => x.Equals(EMatchResult.Match))
-            .Where(x => !x.Equals(EMatchResult.Disabled))
-            .Any();
+            .Any(x => x.Equals(EMatchResult.Match));
 
         if (match)
         {

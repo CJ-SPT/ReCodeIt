@@ -17,7 +17,11 @@ internal static class Constructors
         if (parms.ConstructorParameterCount is null) return EMatchResult.Disabled;
 
         var match = type.FindConstructors()
-            .Any(c => c.Parameters.Count == parms.ConstructorParameterCount);
+            .Any(c => c.Parameters.Count() == parms.ConstructorParameterCount);
+
+        score.FailureReason = match
+            ? EFailureReason.None
+            : EFailureReason.ConstructorParameterCount;
 
         return match
             ? EMatchResult.Match

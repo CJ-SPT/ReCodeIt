@@ -13,7 +13,7 @@ public enum EFailureReason
     HasGenericParameters,
     HasAttribute,
     IsAttribute,
-    Constructor,
+    ConstructorParameterCount,
     MethodsInclude,
     MethodsExclude,
     MethodsCount,

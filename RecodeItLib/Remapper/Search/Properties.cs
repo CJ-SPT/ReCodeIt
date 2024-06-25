@@ -1,5 +1,4 @@
 ﻿using dnlib.DotNet;
-using MoreLinq;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 
@@ -11,41 +10,47 @@ namespace ReCodeIt.ReMapper.Search
         {
             if (parms.IncludeProperties is null || parms.IncludeProperties.Count == 0) return EMatchResult.Disabled;
 
-            var matches = type.Properties
-                .Count(property => parms.IncludeProperties.Contains(property.Name));
+            foreach (var prop in type.Properties)
+            {
+                if (!parms.IncludeProperties.Contains(prop.Name)) continue;
 
-            score.Score += matches > 0 ? matches : -matches;
+                score.Score++;
+                return EMatchResult.Match;
+            }
 
-            score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.PropertiesInclude;
-
-            return matches > 0
-                ? EMatchResult.Match
-                : EMatchResult.NoMatch;
+            score.Score--;
+            score.FailureReason = EFailureReason.PropertiesInclude;
+            return EMatchResult.NoMatch;
         }
 
         public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
         {
             if (parms.ExcludeProperties is null || parms.ExcludeProperties.Count == 0) return EMatchResult.Disabled;
 
-            var matches = type.Properties
-                .Count(property => parms.ExcludeProperties.Contains(property.Name));
+            foreach (var prop in type.Properties)
+            {
+                if (!parms.ExcludeProperties.Contains(prop.Name)) continue;
 
-            score.Score += matches > 0 ? -matches : 1;
+                score.Score--;
+                score.FailureReason = EFailureReason.PropertiesExclude;
+                return EMatchResult.NoMatch;
+            }
 
-            score.FailureReason = matches > 0 ? EFailureReason.PropertiesExclude : EFailureReason.None;
-
-            return matches > 0
-                ? EMatchResult.NoMatch
-                : EMatchResult.Match;
+            score.Score++;
+            return EMatchResult.Match;
         }
 
         public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
         {
             if (parms.PropertyCount is null) return EMatchResult.Disabled;
 
-            var match = type.Properties.Exactly((int)parms.PropertyCount);
+            var match = type.Properties.Count() == parms.PropertyCount;
 
             score.Score += match ? (int)parms.PropertyCount : -(int)parms.PropertyCount;
+
+            score.FailureReason = match
+                ? EFailureReason.None
+                : EFailureReason.PropertiesCount;
 
             return match
                 ? EMatchResult.Match

@@ -17,16 +17,17 @@ internal static class Methods
     {
         if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return EMatchResult.Disabled;
 
-        var matches = type.Methods
-            .Count(method => parms.IncludeMethods.Any(include => method.Name.Contains(include)));
+        foreach (var method in type.Methods)
+        {
+            if (!parms.IncludeMethods.Contains(method.Name)) continue;
 
-        score.Score += matches > 0 ? matches : -matches;
+            score.Score++;
+            return EMatchResult.Match;
+        }
 
-        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.MethodsInclude;
-
-        return matches > 0
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+        score.Score--;
+        score.FailureReason = EFailureReason.MethodsInclude;
+        return EMatchResult.NoMatch;
     }
 
     /// <summary>
@@ -40,16 +41,17 @@ internal static class Methods
     {
         if (parms.ExcludeMethods is null || parms.ExcludeMethods.Count == 0) return EMatchResult.Disabled;
 
-        var matches = type.Methods
-            .Count(method => parms.ExcludeMethods.Contains(method.Name));
+        foreach (var method in type.Methods)
+        {
+            if (!parms.ExcludeMethods.Contains(method.Name)) continue;
 
-        score.Score += matches > 0 ? -matches : 1;
+            score.Score--;
+            score.FailureReason = EFailureReason.MethodsExclude;
+            return EMatchResult.NoMatch;
+        }
 
-        score.FailureReason = matches > 0 ? EFailureReason.MethodsExclude : EFailureReason.None;
-
-        return matches > 0
-            ? EMatchResult.NoMatch
-            : EMatchResult.Match;
+        score.Score++;
+        return EMatchResult.Match;
     }
 
     /// <summary>

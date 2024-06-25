@@ -1,7 +1,6 @@
 ﻿using dnlib.DotNet;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
-using ReCodeIt.Utils;
 
 namespace ReCodeIt.ReMapper.Search;
 
@@ -12,13 +11,6 @@ internal static class TypeDefExtensions
         if (parms.IsAbstract is null)
         {
             return EMatchResult.Disabled;
-        }
-
-        // Interfaces cannot be abstract
-        if (type.IsInterface)
-        {
-            score.FailureReason = EFailureReason.IsAbstract;
-            return EMatchResult.NoMatch;
         }
 
         if (type.IsAbstract == parms.IsAbstract)
@@ -198,14 +190,19 @@ internal static class TypeDefExtensions
 
     public static EMatchResult MatchConstructors(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var matches = new List<EMatchResult> { };
+        var count = Constructors.GetTypeByParameterCount(type, parms, score);
 
-        if (parms.ConstructorParameterCount is not null)
+        if (count == EMatchResult.Match)
         {
-            matches.Add(Constructors.GetTypeByParameterCount(type, parms, score));
+            return EMatchResult.Match;
         }
 
-        return matches.GetMatch();
+        if (count == EMatchResult.NoMatch)
+        {
+            return EMatchResult.NoMatch;
+        }
+
+        return EMatchResult.Disabled;
     }
 
     /// <summary>
@@ -214,53 +211,126 @@ internal static class TypeDefExtensions
     /// <returns>Match if any search criteria met</returns>
     public static EMatchResult MatchMethods(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var matches = new List<EMatchResult>
+        var include = Methods.Include(type, parms, score);
+
+        if (include is EMatchResult.Match)
         {
-            Methods.Include(type, parms, score),
-            Methods.Exclude(type, parms, score),
-            Methods.Count(type, parms, score)
-        };
+            return EMatchResult.Match;
+        }
+
+        var exclude = Methods.Exclude(type, parms, score);
+
+        if (exclude is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var count = Methods.Count(type, parms, score);
+
+        if (count == EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
+        {
+            return EMatchResult.NoMatch;
+        }
 
         // return match if any condition matched
-        return matches.GetMatch();
+        return EMatchResult.Disabled;
     }
 
     public static EMatchResult MatchFields(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var matches = new List<EMatchResult>
-        {
-            Fields.Include(type, parms, score),
-            Fields.Exclude(type, parms, score),
-            Fields.Count(type, parms, score)
-        };
+        var include = Fields.Include(type, parms, score);
 
-        // return match if any condition matched
-        return matches.GetMatch();
+        if (include is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var exclude = Fields.Exclude(type, parms, score);
+
+        if (exclude is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var count = Fields.Count(type, parms, score);
+
+        if (count == EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
+        {
+            return EMatchResult.NoMatch;
+        }
+
+        return EMatchResult.Disabled;
     }
 
     public static EMatchResult MatchProperties(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var matches = new List<EMatchResult>
-        {
-            Properties.Include(type, parms, score),
-            Properties.Exclude(type, parms, score),
-            Properties.Count(type, parms, score)
-        };
+        var include = Properties.Include(type, parms, score);
 
-        // return match if any condition matched
-        return matches.GetMatch();
+        if (include is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var exclude = Properties.Exclude(type, parms, score);
+
+        if (exclude is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var count = Properties.Count(type, parms, score);
+
+        if (count == EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
+        {
+            return EMatchResult.NoMatch;
+        }
+
+        return EMatchResult.Disabled;
     }
 
     public static EMatchResult MatchNestedTypes(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var matches = new List<EMatchResult>
-        {
-            NestedTypes.Include(type, parms, score),
-            NestedTypes.Exclude(type, parms, score),
-            NestedTypes.Count(type, parms, score)
-        };
+        var include = NestedTypes.Include(type, parms, score);
 
-        // return match if any condition matched
-        return matches.GetMatch();
+        if (include is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var exclude = NestedTypes.Exclude(type, parms, score);
+
+        if (exclude is EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        var count = NestedTypes.Count(type, parms, score);
+
+        if (count == EMatchResult.Match)
+        {
+            return EMatchResult.Match;
+        }
+
+        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
+        {
+            return EMatchResult.NoMatch;
+        }
+
+        return EMatchResult.Disabled;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using dnlib.DotNet;
-using MoreLinq;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 
@@ -18,16 +17,17 @@ internal static class Fields
     {
         if (parms.IncludeFields is null || parms.IncludeFields.Count == 0) return EMatchResult.Disabled;
 
-        var matches = type.Fields
-            .Count(field => parms.IncludeFields.Contains(field.Name));
+        foreach (var field in type.Fields)
+        {
+            if (!parms.IncludeFields.Contains(field.Name)) continue;
 
-        score.Score += matches > 0 ? matches : -matches;
+            score.Score++;
+            return EMatchResult.Match;
+        }
 
-        score.FailureReason = matches > 0 ? EFailureReason.None : EFailureReason.FieldsInclude;
-
-        return matches > 0
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+        score.Score--;
+        score.FailureReason = EFailureReason.FieldsInclude;
+        return EMatchResult.NoMatch;
     }
 
     /// <summary>
@@ -41,16 +41,17 @@ internal static class Fields
     {
         if (parms.ExcludeFields is null || parms.ExcludeFields.Count == 0) return EMatchResult.Disabled;
 
-        var matches = type.Fields
-            .Count(field => parms.ExcludeFields.Contains(field.Name));
+        foreach (var field in type.Fields)
+        {
+            if (!parms.ExcludeFields.Contains(field.Name)) continue;
 
-        score.Score += matches > 0 ? -matches : 1;
+            score.Score--;
+            score.FailureReason = EFailureReason.FieldsExclude;
+            return EMatchResult.NoMatch;
+        }
 
-        score.FailureReason = matches > 0 ? EFailureReason.FieldsExclude : EFailureReason.None;
-
-        return matches > 0
-            ? EMatchResult.NoMatch
-            : EMatchResult.Match;
+        score.Score++;
+        return EMatchResult.Match;
     }
 
     /// <summary>
@@ -64,7 +65,7 @@ internal static class Fields
     {
         if (parms.FieldCount is null) return EMatchResult.Disabled;
 
-        var match = type.Fields.Exactly((int)parms.FieldCount);
+        var match = type.Fields.Count() == parms.FieldCount;
 
         score.Score += match ? (int)parms.FieldCount : -(int)parms.FieldCount;
 
