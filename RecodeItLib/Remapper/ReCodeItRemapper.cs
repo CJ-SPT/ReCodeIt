@@ -127,6 +127,12 @@ public class ReCodeItRemapper
 
         types = TypeFilters.FilterPublic(types, mapping.SearchParams);
 
+        types = TypeFilters.FilterPublic(types, mapping.SearchParams);
+        if (!types.Any())
+        {
+            Logger.Log($"All types filtered out after public filter for: {mapping.NewTypeName}", ConsoleColor.Red);
+        }
+
         types = TypeFilters.FilterAbstract(types, mapping.SearchParams);
 
         types = TypeFilters.FilterInterface(types, mapping.SearchParams);
