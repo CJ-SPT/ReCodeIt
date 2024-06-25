@@ -16,7 +16,7 @@ internal static class TypeFilters
     public static IEnumerable<TypeDef> FilterPublic(IEnumerable<TypeDef> types, SearchParams parms)
     {
         // REQUIRED PROPERTY
-        if (parms.IsPublic is true)
+        if (parms.IsPublic)
         {
             if (parms.IsNested is true)
             {
@@ -24,10 +24,7 @@ internal static class TypeFilters
 
                 types = types.Where(t => t.IsNestedPublic);
 
-                if (parms.NTParentName is not null or "")
-                {
-                    types = types.Where(t => t.DeclaringType.Name.String == parms.NTParentName);
-                }
+                types = FilterNestedByName(types, parms);
             }
             else
             {
@@ -35,7 +32,7 @@ internal static class TypeFilters
                 types = types.Where(t => t.IsPublic);
             }
         }
-        else if (parms.IsPublic is false)
+        else
         {
             if (parms.IsNested is true)
             {
@@ -46,10 +43,7 @@ internal static class TypeFilters
                                          || t.IsNestedFamilyAndAssembly
                                          || t.IsNestedAssembly);
 
-                if (parms.NTParentName is not null or "")
-                {
-                    types = types.Where(t => t.DeclaringType.Name.String == parms.NTParentName);
-                }
+                types = FilterNestedByName(types, parms);
             }
             else
             {
@@ -57,17 +51,18 @@ internal static class TypeFilters
                 types = types.Where(t => t.IsNotPublic);
             }
         }
-        else
-        {
-            Logger.Log("ERROR: IsPublic is null, skipping...", ConsoleColor.Red);
-            return [];
-        }
 
         return types;
     }
 
     private static IEnumerable<TypeDef> FilterNestedByName(IEnumerable<TypeDef> types, SearchParams parms)
     {
+        if (parms.NTParentName is not null)
+        {
+            Logger.Log($"NT Parent: {parms.NTParentName}", ConsoleColor.Yellow);
+            types = types.Where(t => t.DeclaringType.Name.String == parms.NTParentName);
+        }
+
         return types;
     }
 
