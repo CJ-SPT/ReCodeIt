@@ -191,7 +191,7 @@ public partial class ReCodeItRemapper
         score.ReMap.OriginalTypeName = type.FullName;
         remap.OriginalTypeName = type.FullName;
         remap.Succeeded = true;
-        remap.NoMatchReason.Clear();
+        remap.NoMatchReasons = score.NoMatchReasons;
         score.AddScoreToResult();
     }
 
@@ -201,7 +201,7 @@ public partial class ReCodeItRemapper
 
         var oldName = type.Name;
         remap.OriginalTypeName = type.Name;
-        remap.NoMatchReason.Clear();
+        remap.NoMatchReasons.Clear();
         remap.Succeeded = true;
 
         if (CrossMapMode)
@@ -238,7 +238,7 @@ public partial class ReCodeItRemapper
             if (remap.Succeeded is false)
             {
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
-                Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.NoMatchReason}", ConsoleColor.Red);
+                Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.NoMatchReasons}", ConsoleColor.Red);
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
                 failures++;
                 continue;

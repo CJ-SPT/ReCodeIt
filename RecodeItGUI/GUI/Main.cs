@@ -271,7 +271,7 @@ public partial class ReCodeItForm : Form
         var newRemap = new RemapModel
         {
             Succeeded = false,
-            NoMatchReason = [],
+            NoMatchReasons = [],
             NewTypeName = NewTypeName.Text,
             OriginalTypeName = OriginalTypeName.Text == string.Empty ? null : OriginalTypeName.Text,
             UseForceRename = RemapperUseForceRename.Checked,

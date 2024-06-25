@@ -1,5 +1,5 @@
-﻿using ReCodeIt.Enums;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using ReCodeIt.Enums;
 
 namespace ReCodeIt.Models;
 
@@ -12,7 +12,7 @@ public class RemapModel
     public bool Succeeded { get; set; } = false;
 
     [JsonIgnore]
-    public List<ENoMatchReason> NoMatchReason { get; set; } = [];
+    public List<ENoMatchReason> NoMatchReasons { get; set; } = [];
 
     public string NewTypeName { get; set; } = string.Empty;
 
