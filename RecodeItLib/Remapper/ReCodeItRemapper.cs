@@ -140,6 +140,8 @@ public class ReCodeItRemapper
 
         types = TypeFilters.FilterAbstract(types, mapping.SearchParams);
 
+        types = TypeFilters.FilterSealed(types, mapping.SearchParams);
+
         types = TypeFilters.FilterInterface(types, mapping.SearchParams);
 
         types = TypeFilters.FilterStruct(types, mapping.SearchParams);
@@ -149,6 +151,14 @@ public class ReCodeItRemapper
         types = TypeFilters.FilterAttributes(types, mapping.SearchParams);
 
         types = TypeFilters.FilterDerived(types, mapping.SearchParams);
+
+        types = TypeFilters.FilterByGenericParameters(types, mapping.SearchParams);
+
+        types = TypeFilters.FilterByMethodCount(types, mapping.SearchParams);
+
+        types = TypeFilters.FilterByFieldCount(types, mapping.SearchParams);
+
+        types = TypeFilters.FilterByPropCount(types, mapping.SearchParams);
 
         foreach (var type in types)
         {

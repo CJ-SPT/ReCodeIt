@@ -63,26 +63,4 @@ internal static class Methods
 
         score.Score++;
     }
-
-    /// <summary>
-    /// Returns a match if the type has the provided number of methods
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="parms"></param>
-    /// <param name="score"></param>
-    /// <returns></returns>
-    public static void Count(TypeDef type, SearchParams parms, ScoringModel score)
-    {
-        if (parms.MethodCount is null) return;
-
-        var numMethods = type.Methods.Count - type.FindConstructors().Count();
-        bool match = numMethods == parms.MethodCount;
-
-        score.Score += match ? (int)parms.MethodCount : 0;
-
-        if (!match)
-        {
-            score.NoMatchReasons.Add(ENoMatchReason.MethodsCount);
-        }
-    }
 }

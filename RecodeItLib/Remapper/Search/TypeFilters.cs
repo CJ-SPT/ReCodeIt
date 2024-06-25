@@ -90,6 +90,29 @@ internal static class TypeFilters
     }
 
     /// <summary>
+    /// Filters based on IsAbstract
+    /// </summary>
+    /// <param name="types"></param>
+    /// <param name="parms"></param>
+    /// <returns>Filtered list</returns>
+    public static IEnumerable<TypeDef> FilterSealed(IEnumerable<TypeDef> types, SearchParams parms)
+    {
+        // Filter based on abstract or not
+        if (parms.IsSealed is true)
+        {
+            Logger.Log("IsSealed is true", ConsoleColor.Yellow);
+            types = types.Where(t => t.IsSealed);
+        }
+        else if (parms.IsSealed is false)
+        {
+            Logger.Log("IsSealed is false", ConsoleColor.Yellow);
+            types = types.Where(t => !t.IsSealed);
+        }
+
+        return types;
+    }
+
+    /// <summary>
     /// Filters based on IsInterface
     /// </summary>
     /// <param name="types"></param>
@@ -123,7 +146,7 @@ internal static class TypeFilters
         if (parms.IsStruct is true)
         {
             Logger.Log("IsStruct is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsValueType && !t.IsEnum && !t.IsClass || !t.IsInterface);
+            types = types.Where(t => t.IsValueType && !t.IsEnum && !t.IsClass && !t.IsInterface);
         }
         else if (parms.IsStruct is false)
         {
@@ -210,6 +233,97 @@ internal static class TypeFilters
         {
             Logger.Log("IsDerived is false", ConsoleColor.Yellow);
             types = types.Where(t => t.GetBaseType()?.Name?.String is "Object");
+        }
+
+        return types;
+    }
+
+    /// <summary>
+    /// Filters based on method count
+    /// </summary>
+    /// <param name="types"></param>
+    /// <param name="parms"></param>
+    /// <returns>Filtered list</returns>
+    public static IEnumerable<TypeDef> FilterByGenericParameters(IEnumerable<TypeDef> types, SearchParams parms)
+    {
+        if (parms.HasGenericParameters is null) return types;
+
+        Logger.Log("Matching generic parameters", ConsoleColor.Yellow);
+        types = types.Where(t => t.HasGenericParameters == parms.HasGenericParameters);
+
+        return types;
+    }
+
+    /// <summary>
+    /// Filters based on method count
+    /// </summary>
+    /// <param name="types"></param>
+    /// <param name="parms"></param>
+    /// <returns>Filtered list</returns>
+    public static IEnumerable<TypeDef> FilterByMethodCount(IEnumerable<TypeDef> types, SearchParams parms)
+    {
+        if (parms.MethodCount is null) return types;
+
+        if (parms.MethodCount >= 0)
+        {
+            Logger.Log("Matching method count", ConsoleColor.Yellow);
+            types = types.Where(t => GetMethodCountExcludingConstructors(t) == parms.MethodCount);
+        }
+
+        return types;
+    }
+
+    /// <summary>
+    /// We don't want the constructors included in the count
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    private static int GetMethodCountExcludingConstructors(TypeDef type)
+    {
+        int count = 0;
+        foreach (var method in type.Methods)
+        {
+            if (!method.IsConstructor)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /// <summary>
+    /// Filters based on method count
+    /// </summary>
+    /// <param name="types"></param>
+    /// <param name="parms"></param>
+    /// <returns>Filtered list</returns>
+    public static IEnumerable<TypeDef> FilterByFieldCount(IEnumerable<TypeDef> types, SearchParams parms)
+    {
+        if (parms.FieldCount is null) return types;
+
+        if (parms.FieldCount >= 0)
+        {
+            Logger.Log("Matching field count", ConsoleColor.Yellow);
+            types = types.Where(t => t.Fields.Count == parms.FieldCount);
+        }
+
+        return types;
+    }
+
+    /// <summary>
+    /// Filters based on method count
+    /// </summary>
+    /// <param name="types"></param>
+    /// <param name="parms"></param>
+    /// <returns>Filtered list</returns>
+    public static IEnumerable<TypeDef> FilterByPropCount(IEnumerable<TypeDef> types, SearchParams parms)
+    {
+        if (parms.PropertyCount is null) return types;
+
+        if (parms.PropertyCount >= 0)
+        {
+            Logger.Log("Matching property count", ConsoleColor.Yellow);
+            types = types.Where(t => t.Properties.Count == parms.PropertyCount);
         }
 
         return types;

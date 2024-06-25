@@ -49,25 +49,4 @@ internal static class Fields
 
         score.Score++;
     }
-
-    /// <summary>
-    /// Returns a match on any type with a matching number of fields
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="parms"></param>
-    /// <param name="score"></param>
-    /// <returns></returns>
-    public static void Count(TypeDef type, SearchParams parms, ScoringModel score)
-    {
-        if (parms.FieldCount is null) return;
-
-        var match = type.Fields.Count() == parms.FieldCount;
-
-        score.Score += match ? (int)parms.FieldCount : 0;
-
-        if (!match)
-        {
-            score.NoMatchReasons.Add(ENoMatchReason.FieldsCount);
-        }
-    }
 }

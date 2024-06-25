@@ -18,21 +18,18 @@ internal static class TypeDefExtensions
     {
         Methods.Include(type, parms, score);
         Methods.Exclude(type, parms, score);
-        Methods.Count(type, parms, score);
     }
 
     public static void MatchFields(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         Fields.Include(type, parms, score);
         Fields.Exclude(type, parms, score);
-        Fields.Count(type, parms, score);
     }
 
     public static void MatchProperties(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         Properties.Include(type, parms, score);
         Properties.Exclude(type, parms, score);
-        Properties.Count(type, parms, score);
     }
 
     public static void MatchNestedTypes(this TypeDef type, SearchParams parms, ScoringModel score)
