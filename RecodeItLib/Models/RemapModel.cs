@@ -30,7 +30,11 @@ public class SearchParams
 {
     #region BOOL_PARAMS
 
-    public bool IsPublic { get; set; }
+    /// <summary>
+    /// Default to true, most types are public
+    /// </summary>
+    public bool IsPublic { get; set; } = true;
+
     public bool? IsAbstract { get; set; } = null;
     public bool? IsInterface { get; set; } = null;
     public bool? IsStruct { get; set; } = null;
