@@ -30,9 +30,12 @@ public class BuildRef : ICommand
             CrossCompiler.StartRemap();
 
             DataProvider.SaveAppSettings();
-            return default;
         }
 
+        // Wait for log termination
+        Logger.Terminate();
+        while(Logger.IsRunning()) {}
+        
         return default;
     }
 

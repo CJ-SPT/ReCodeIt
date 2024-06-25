@@ -23,6 +23,10 @@ public class DeObfuscate : ICommand
 
         Logger.Log("Complete", ConsoleColor.Green);
 
+        // Wait for log termination
+        Logger.Terminate();
+        while(Logger.IsRunning()) {}
+        
         return default;
     }
 }

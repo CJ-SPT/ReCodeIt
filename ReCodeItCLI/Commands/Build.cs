@@ -26,6 +26,10 @@ public class Build : ICommand
         if (isRemote) { return; }
 
         await UseLastLoadedProject(console);
+        
+        // Wait for log termination
+        Logger.Terminate();
+        while(Logger.IsRunning()) {}
     }
 
     private async Task<bool> UseLocalProject(IConsole console)
