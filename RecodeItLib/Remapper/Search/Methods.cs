@@ -12,24 +12,20 @@ internal static class Methods
     /// <param name="type"></param>
     /// <param name="parms"></param>
     /// <param name="score"></param>
-    /// <returns>Match if type contains any supplied methods</returns>
-    public static EMatchResult Include(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Include(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return EMatchResult.Disabled;
+        if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return;
 
         foreach (var method in type.Methods)
         {
-            if (!parms.IncludeMethods.Contains(method.ResolveMethodDef().Name)) continue;
-
-
+            if (!parms.IncludeMethods.Contains(method.Name)) continue;
 
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
         score.Score--;
-        score.FailureReason = EFailureReason.MethodsInclude;
-        return EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.MethodsInclude);
     }
 
     /// <summary>
@@ -39,21 +35,20 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type has no methods</returns>
-    public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.ExcludeMethods is null || parms.ExcludeMethods.Count == 0) return EMatchResult.Disabled;
+        if (parms.ExcludeMethods is null || parms.ExcludeMethods.Count == 0) return;
 
         foreach (var method in type.Methods)
         {
             if (!parms.ExcludeMethods.Contains(method.ResolveMethodDef().Name)) continue;
 
             score.Score--;
-            score.FailureReason = EFailureReason.MethodsExclude;
-            return EMatchResult.NoMatch;
+            score.NoMatchReasons.Add(ENoMatchReason.MethodsExclude);
+            return;
         }
 
         score.Score++;
-        return EMatchResult.Match;
     }
 
     /// <summary>
@@ -63,19 +58,18 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.MethodCount is null) return EMatchResult.Disabled;
+        if (parms.MethodCount is null) return;
 
         var numMethods = type.Methods.Count - type.FindConstructors().Count();
         bool match = numMethods == parms.MethodCount;
 
         score.Score += match ? (int)parms.MethodCount : -(int)parms.MethodCount;
 
-        score.FailureReason = match ? EFailureReason.None : EFailureReason.MethodsCount;
-
-        return match
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+        if (!match)
+        {
+            score.NoMatchReasons.Add(ENoMatchReason.MethodsCount);
+        }
     }
 }

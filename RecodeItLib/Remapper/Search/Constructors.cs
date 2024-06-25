@@ -12,19 +12,19 @@ internal static class Constructors
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if constructor parameters matches</returns>
-    public static EMatchResult GetTypeByParameterCount(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void GetTypeByParameterCount(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.ConstructorParameterCount is null) return EMatchResult.Disabled;
+        if (parms.ConstructorParameterCount is null) return;
 
         var match = type.FindConstructors()
             .Any(c => c.Parameters.Count() == parms.ConstructorParameterCount);
 
-        score.FailureReason = match
-            ? EFailureReason.None
-            : EFailureReason.ConstructorParameterCount;
+        if (match)
+        {
+            score.Score++;
+            return;
+        }
 
-        return match
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.ConstructorParameterCount);
     }
 }

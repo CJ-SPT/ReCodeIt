@@ -1,7 +1,6 @@
 ﻿using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using ReCodeIt.CrossCompiler;
-using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper.Search;
 using ReCodeIt.Utils;
@@ -114,6 +113,10 @@ public partial class ReCodeItRemapper
     {
         var types = Module.GetTypes();
 
+        var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
+
+        types = types.Where(type => tokens.Any(token => type.Name.StartsWith(token)));
+
         if (mapping.SearchParams.IsPublic is true)
         {
             types = FilterToPublic(types);
@@ -155,13 +158,6 @@ public partial class ReCodeItRemapper
             return;
         }
 
-        var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
-
-        if (!tokens.Any(token => type.Name.Contains(token)))
-        {
-            return;
-        }
-
         foreach (var nestedType in type.NestedTypes)
         {
             FindMatch(nestedType, remap);
@@ -179,39 +175,24 @@ public partial class ReCodeItRemapper
             //Console.WriteLine("BreakPoint!");
         }
 
-        var matches = new List<EMatchResult>
-        {
-            type.MatchConstructors(remap.SearchParams, score),
-            type.MatchMethods(remap.SearchParams, score),
-            type.MatchFields(remap.SearchParams, score),
-            type.MatchProperties(remap.SearchParams, score),
-            type.MatchNestedTypes(remap.SearchParams, score),
-            type.MatchIsSealed(remap.SearchParams, score) ,
-            type.MatchIsEnum(remap.SearchParams, score) ,
-            type.MatchIsNested(remap.SearchParams, score),
-            type.MatchIsDerived(remap.SearchParams, score) ,
-            type.MatchHasGenericParameters(remap.SearchParams, score),
-            type.MatchHasAttribute(remap.SearchParams, score),
-        };
+        type.MatchConstructors(remap.SearchParams, score);
+        type.MatchMethods(remap.SearchParams, score);
+        type.MatchFields(remap.SearchParams, score);
+        type.MatchProperties(remap.SearchParams, score);
+        type.MatchNestedTypes(remap.SearchParams, score);
+        type.MatchIsSealed(remap.SearchParams, score);
+        type.MatchIsEnum(remap.SearchParams, score);
+        type.MatchIsNested(remap.SearchParams, score);
+        type.MatchIsDerived(remap.SearchParams, score);
+        type.MatchHasGenericParameters(remap.SearchParams, score);
+        type.MatchHasAttribute(remap.SearchParams, score);
 
-        if (matches.Any(x => x.Equals(EMatchResult.NoMatch)))
-        {
-            remap.FailureReason = score.FailureReason;
-            return;
-        }
-
-        var match = matches
-            .Any(x => x.Equals(EMatchResult.Match));
-
-        if (match)
-        {
-            // Set the original type name to be used later
-            score.ReMap.OriginalTypeName = type.FullName;
-            remap.OriginalTypeName = type.FullName;
-            remap.Succeeded = true;
-            remap.FailureReason = EFailureReason.None;
-            score.AddScoreToResult();
-        }
+        // Set the original type name to be used later
+        score.ReMap.OriginalTypeName = type.FullName;
+        remap.OriginalTypeName = type.FullName;
+        remap.Succeeded = true;
+        remap.NoMatchReason.Clear();
+        score.AddScoreToResult();
     }
 
     private void HandleByDirectName(TypeDef type, RemapModel remap)
@@ -220,7 +201,7 @@ public partial class ReCodeItRemapper
 
         var oldName = type.Name;
         remap.OriginalTypeName = type.Name;
-        remap.FailureReason = EFailureReason.None;
+        remap.NoMatchReason.Clear();
         remap.Succeeded = true;
 
         if (CrossMapMode)
@@ -257,7 +238,7 @@ public partial class ReCodeItRemapper
             if (remap.Succeeded is false)
             {
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
-                Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.FailureReason}", ConsoleColor.Red);
+                Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.NoMatchReason}", ConsoleColor.Red);
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
                 failures++;
                 continue;

@@ -1,6 +1,6 @@
 ﻿namespace ReCodeIt.Enums;
 
-public enum EFailureReason
+public enum ENoMatchReason
 {
     None,
     IsAbstract,

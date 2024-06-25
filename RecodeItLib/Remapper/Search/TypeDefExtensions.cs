@@ -6,28 +6,28 @@ namespace ReCodeIt.ReMapper.Search;
 
 internal static class TypeDefExtensions
 {
-    public static EMatchResult MatchIsEnum(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchIsEnum(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsEnum is null)
         {
-            return EMatchResult.Disabled;
+            return;
         }
 
         if (type.IsEnum == parms.IsEnum)
         {
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
-        score.FailureReason = EFailureReason.IsEnum;
-        return EMatchResult.NoMatch;
+        score.Score--;
+        score.NoMatchReasons.Add(ENoMatchReason.IsEnum);
     }
 
-    public static EMatchResult MatchIsNested(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchIsNested(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsNested is null)
         {
-            return EMatchResult.Disabled;
+            return;
         }
 
         if (parms.ParentName is not null)
@@ -35,244 +35,133 @@ internal static class TypeDefExtensions
             if (type.Name == parms.ParentName)
             {
                 score.Score++;
-                return EMatchResult.Match;
+                return;
             }
         }
 
         if (type.IsNested == parms.IsNested)
         {
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
-        score.FailureReason = EFailureReason.IsNested;
-        return EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.IsNested);
     }
 
-    public static EMatchResult MatchIsSealed(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchIsSealed(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsSealed is null)
         {
-            return EMatchResult.Disabled;
+            return;
         }
 
         if (type.IsSealed == parms.IsSealed)
         {
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
-        score.FailureReason = EFailureReason.IsSealed;
-        return EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.IsSealed);
     }
 
-    public static EMatchResult MatchIsDerived(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchIsDerived(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsDerived is null)
         {
-            return EMatchResult.Disabled;
+            return;
         }
 
-        if (type.BaseType is not null && (bool)parms.IsDerived is true)
+        if (type.BaseType is not null && (bool)parms.IsDerived)
         {
-            if (type.BaseType.Name.Contains("Object")) { return EMatchResult.NoMatch; }
+            if (type.BaseType.Name.Contains("Object")) { return; }
+
+            if (type.BaseType?.Name == parms.IgnoreBaseClass)
+            {
+                score.NoMatchReasons.Add(ENoMatchReason.IsDerived);
+                score.Score--;
+                return;
+            }
+
+            if (type.BaseType?.Name == parms.MatchBaseClass)
+            {
+                score.Score++;
+            }
 
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
-        if (type.BaseType?.Name == parms.MatchBaseClass)
-        {
-            return EMatchResult.Match;
-        }
-
-        if (type.BaseType?.Name == parms.IgnoreBaseClass)
-        {
-            score.FailureReason = EFailureReason.IsDerived;
-            return EMatchResult.NoMatch;
-        }
-
-        score.FailureReason = EFailureReason.IsDerived;
-        return EMatchResult.NoMatch;
+        score.Score--;
+        score.NoMatchReasons.Add(ENoMatchReason.IsDerived);
     }
 
-    public static EMatchResult MatchHasGenericParameters(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchHasGenericParameters(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.HasGenericParameters is null)
         {
-            return EMatchResult.Disabled;
+            return;
         }
 
         if (type.HasGenericParameters == parms.HasGenericParameters)
         {
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
-        score.FailureReason = EFailureReason.HasGenericParameters;
-        return EMatchResult.NoMatch;
+        score.Score--;
+        score.NoMatchReasons.Add(ENoMatchReason.HasGenericParameters);
     }
 
-    public static EMatchResult MatchHasAttribute(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchHasAttribute(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.HasAttribute is null)
         {
-            return EMatchResult.Disabled;
+            return;
         }
 
         if (type.HasCustomAttributes == parms.HasAttribute)
         {
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
-        score.FailureReason = EFailureReason.HasAttribute;
-        return EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.HasAttribute);
     }
 
-    public static EMatchResult MatchConstructors(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchConstructors(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var count = Constructors.GetTypeByParameterCount(type, parms, score);
-
-        if (count == EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        if (count == EMatchResult.NoMatch)
-        {
-            return EMatchResult.NoMatch;
-        }
-
-        return EMatchResult.Disabled;
+        Constructors.GetTypeByParameterCount(type, parms, score);
     }
 
     /// <summary>
     /// Handle running all method matching routines
     /// </summary>
     /// <returns>Match if any search criteria met</returns>
-    public static EMatchResult MatchMethods(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchMethods(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var include = Methods.Include(type, parms, score);
-
-        if (include is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var exclude = Methods.Exclude(type, parms, score);
-
-        if (exclude is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var count = Methods.Count(type, parms, score);
-
-        if (count == EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
-        {
-            return EMatchResult.NoMatch;
-        }
-
-        // return match if any condition matched
-        return EMatchResult.Disabled;
+        Methods.Include(type, parms, score);
+        Methods.Exclude(type, parms, score);
+        Methods.Count(type, parms, score);
     }
 
-    public static EMatchResult MatchFields(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchFields(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var include = Fields.Include(type, parms, score);
-
-        if (include is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var exclude = Fields.Exclude(type, parms, score);
-
-        if (exclude is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var count = Fields.Count(type, parms, score);
-
-        if (count == EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
-        {
-            return EMatchResult.NoMatch;
-        }
-
-        return EMatchResult.Disabled;
+        Fields.Include(type, parms, score);
+        Fields.Exclude(type, parms, score);
+        Fields.Count(type, parms, score);
     }
 
-    public static EMatchResult MatchProperties(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchProperties(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var include = Properties.Include(type, parms, score);
-
-        if (include is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var exclude = Properties.Exclude(type, parms, score);
-
-        if (exclude is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var count = Properties.Count(type, parms, score);
-
-        if (count == EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
-        {
-            return EMatchResult.NoMatch;
-        }
-
-        return EMatchResult.Disabled;
+        Properties.Include(type, parms, score);
+        Properties.Exclude(type, parms, score);
+        Properties.Count(type, parms, score);
     }
 
-    public static EMatchResult MatchNestedTypes(this TypeDef type, SearchParams parms, ScoringModel score)
+    public static void MatchNestedTypes(this TypeDef type, SearchParams parms, ScoringModel score)
     {
-        var include = NestedTypes.Include(type, parms, score);
-
-        if (include is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var exclude = NestedTypes.Exclude(type, parms, score);
-
-        if (exclude is EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        var count = NestedTypes.Count(type, parms, score);
-
-        if (count == EMatchResult.Match)
-        {
-            return EMatchResult.Match;
-        }
-
-        if (include is EMatchResult.NoMatch || exclude is EMatchResult.NoMatch || count is EMatchResult.NoMatch)
-        {
-            return EMatchResult.NoMatch;
-        }
-
-        return EMatchResult.Disabled;
+        NestedTypes.Include(type, parms, score);
+        NestedTypes.Exclude(type, parms, score);
+        NestedTypes.Count(type, parms, score);
     }
 }

@@ -13,21 +13,20 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Include(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Include(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.IncludeFields is null || parms.IncludeFields.Count == 0) return EMatchResult.Disabled;
+        if (parms.IncludeFields is null || parms.IncludeFields.Count == 0) return;
 
         foreach (var field in type.Fields)
         {
             if (!parms.IncludeFields.Contains(field.Name)) continue;
 
             score.Score++;
-            return EMatchResult.Match;
+            return;
         }
 
         score.Score--;
-        score.FailureReason = EFailureReason.FieldsInclude;
-        return EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.FieldsInclude);
     }
 
     /// <summary>
@@ -37,21 +36,20 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.ExcludeFields is null || parms.ExcludeFields.Count == 0) return EMatchResult.Disabled;
+        if (parms.ExcludeFields is null || parms.ExcludeFields.Count == 0) return;
 
         foreach (var field in type.Fields)
         {
             if (!parms.ExcludeFields.Contains(field.Name)) continue;
 
             score.Score--;
-            score.FailureReason = EFailureReason.FieldsExclude;
-            return EMatchResult.NoMatch;
+            score.NoMatchReasons.Add(ENoMatchReason.FieldsExclude);
+            return;
         }
 
         score.Score++;
-        return EMatchResult.Match;
     }
 
     /// <summary>
@@ -61,18 +59,17 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.FieldCount is null) return EMatchResult.Disabled;
+        if (parms.FieldCount is null) return;
 
         var match = type.Fields.Count() == parms.FieldCount;
 
         score.Score += match ? (int)parms.FieldCount : -(int)parms.FieldCount;
 
-        score.FailureReason = match ? EFailureReason.None : EFailureReason.FieldsCount;
-
-        return match
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+        if (!match)
+        {
+            score.NoMatchReasons.Add(ENoMatchReason.FieldsCount);
+        }
     }
 }

@@ -10,7 +10,7 @@ public class ScoringModel
     public TypeDef Definition { get; set; }
     public RemapModel ReMap { get; internal set; }
 
-    public EFailureReason FailureReason { get; set; } = EFailureReason.None;
+    public List<ENoMatchReason> NoMatchReasons { get; set; } = [];
 
     public ScoringModel()
     {

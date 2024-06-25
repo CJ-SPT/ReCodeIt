@@ -12,7 +12,7 @@ public class RemapModel
     public bool Succeeded { get; set; } = false;
 
     [JsonIgnore]
-    public EFailureReason FailureReason { get; set; }
+    public List<ENoMatchReason> NoMatchReason { get; set; } = [];
 
     public string NewTypeName { get; set; } = string.Empty;
 

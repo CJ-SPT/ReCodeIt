@@ -2,7 +2,6 @@
 
 using ReCodeIt.AutoMapper;
 using ReCodeIt.CrossCompiler;
-using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
@@ -272,7 +271,7 @@ public partial class ReCodeItForm : Form
         var newRemap = new RemapModel
         {
             Succeeded = false,
-            FailureReason = EFailureReason.None,
+            NoMatchReason = [],
             NewTypeName = NewTypeName.Text,
             OriginalTypeName = OriginalTypeName.Text == string.Empty ? null : OriginalTypeName.Text,
             UseForceRename = RemapperUseForceRename.Checked,

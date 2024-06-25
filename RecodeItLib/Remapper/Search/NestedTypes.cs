@@ -6,9 +6,9 @@ namespace ReCodeIt.ReMapper.Search;
 
 internal class NestedTypes
 {
-    public static EMatchResult Include(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Include(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.IncludeNestedTypes is null || parms.IncludeNestedTypes.Count == 0) return EMatchResult.Disabled;
+        if (parms.IncludeNestedTypes is null || parms.IncludeNestedTypes.Count == 0) return;
 
         foreach (var nt in type.NestedTypes)
         {
@@ -17,43 +17,39 @@ internal class NestedTypes
             if (!parms.IncludeNestedTypes.Contains(ntName)) { continue; }
 
             score.Score++;
-
-            return EMatchResult.Match;
+            return;
         }
 
-        score.FailureReason = EFailureReason.NestedTypeInclude;
-        return EMatchResult.NoMatch;
+        score.NoMatchReasons.Add(ENoMatchReason.NestedTypeInclude);
     }
 
-    public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.ExcludeNestedTypes is null || parms.ExcludeNestedTypes.Count == 0) return EMatchResult.Disabled;
+        if (parms.ExcludeNestedTypes is null || parms.ExcludeNestedTypes.Count == 0) return;
 
         foreach (var nt in type.NestedTypes)
         {
             if (!parms.ExcludeNestedTypes.Contains(nt.Name)) continue;
 
             score.Score--;
-            score.FailureReason = EFailureReason.NestedTypeExclude;
-            return EMatchResult.NoMatch;
+            score.NoMatchReasons.Add(ENoMatchReason.NestedTypeExclude);
+            return;
         }
 
         score.Score++;
-        return EMatchResult.Match;
     }
 
-    public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
+    public static void Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
-        if (parms.NestedTypeCount is null) return EMatchResult.Disabled;
+        if (parms.NestedTypeCount is null) return;
 
         var match = type.NestedTypes.Count() == parms.NestedTypeCount;
 
         score.Score += match ? type.NestedTypes.Count : -type.NestedTypes.Count - 1;
 
-        score.FailureReason = match ? EFailureReason.None : EFailureReason.NestedTypeCount;
-
-        return match
-            ? EMatchResult.Match
-            : EMatchResult.NoMatch;
+        if (!match)
+        {
+            score.NoMatchReasons.Add(ENoMatchReason.NestedTypeCount);
+        }
     }
 }
