@@ -30,7 +30,7 @@ public class SearchParams
 {
     #region BOOL_PARAMS
 
-    public bool? IsPublic { get; set; } = null;
+    public bool IsPublic { get; set; }
     public bool? IsAbstract { get; set; } = null;
     public bool? IsInterface { get; set; } = null;
     public bool? IsStruct { get; set; } = null;

@@ -101,7 +101,7 @@ internal static class GUIHelpers
     /// <returns></returns>
     public static TreeNode GenerateTreeNode(RemapModel model, ReCodeItForm gui)
     {
-        var isPublic = model.SearchParams.IsPublic == null ? null : model.SearchParams.IsPublic;
+        var isPublic = model.SearchParams.IsPublic;
         var isAbstract = model.SearchParams.IsAbstract == null ? null : model.SearchParams.IsAbstract;
         var isInterface = model.SearchParams.IsInterface == null ? null : model.SearchParams.IsInterface;
         var isStruct = model.SearchParams.IsStruct == null ? null : model.SearchParams.IsStruct;
@@ -123,10 +123,7 @@ internal static class GUIHelpers
             remapTreeItem.Nodes.Add(new TreeNode($"Force Rename: {model.UseForceRename}"));
         }
 
-        if (isPublic is not null)
-        {
-            remapTreeItem.Nodes.Add(new TreeNode($"IsPublic: {isPublic}"));
-        }
+        remapTreeItem.Nodes.Add(new TreeNode($"IsPublic: {isPublic}"));
 
         if (isAbstract is not null)
         {
