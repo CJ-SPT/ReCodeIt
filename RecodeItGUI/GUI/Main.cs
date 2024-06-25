@@ -536,6 +536,8 @@ public partial class ReCodeItForm : Form
 
     private void MethodIncludeAddButton_Click(object sender, EventArgs e)
     {
+        if (IncludeMethodTextBox.Text == string.Empty) return;
+
         if (!MethodIncludeBox.Items.Contains(IncludeMethodTextBox.Text))
         {
             MethodIncludeBox.Items.Add(IncludeMethodTextBox.Text);
@@ -553,6 +555,8 @@ public partial class ReCodeItForm : Form
 
     private void MethodExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (ExcludeMethodTextBox.Text == string.Empty) return;
+
         if (!MethodExcludeBox.Items.Contains(ExcludeMethodTextBox.Text))
         {
             MethodExcludeBox.Items.Add(ExcludeMethodTextBox.Text);
@@ -570,6 +574,8 @@ public partial class ReCodeItForm : Form
 
     private void FIeldIncludeAddButton_Click(object sender, EventArgs e)
     {
+        if (FieldsIncludeTextInput.Text == string.Empty) return;
+
         if (!FieldIncludeBox.Items.Contains(FieldsIncludeTextInput.Text))
         {
             FieldIncludeBox.Items.Add(FieldsIncludeTextInput.Text);
@@ -587,6 +593,8 @@ public partial class ReCodeItForm : Form
 
     private void FieldExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (FieldsExcludeTextInput.Text == string.Empty) return;
+
         if (!FieldExcludeBox.Items.Contains(FieldsExcludeTextInput.Text))
         {
             FieldExcludeBox.Items.Add(FieldsExcludeTextInput.Text);
@@ -604,6 +612,8 @@ public partial class ReCodeItForm : Form
 
     private void PropertiesIncludeAddButton_Click(object sender, EventArgs e)
     {
+        if (PropertiesIncludeTextField.Text == string.Empty) return;
+
         if (!PropertiesIncludeBox.Items.Contains(PropertiesIncludeTextField.Text))
         {
             PropertiesIncludeBox.Items.Add(PropertiesIncludeTextField.Text);
@@ -621,6 +631,8 @@ public partial class ReCodeItForm : Form
 
     private void PropertiesExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (PropertiesExcludeTextField.Text == string.Empty) return;
+
         if (!PropertiesExcludeBox.Items.Contains(PropertiesExcludeTextField.Text))
         {
             PropertiesExcludeBox.Items.Add(PropertiesExcludeTextField.Text);
@@ -638,6 +650,8 @@ public partial class ReCodeItForm : Form
 
     private void NestedTypesAddButton_Click(object sender, EventArgs e)
     {
+        if (NestedTypesIncludeTextField.Text == string.Empty) return;
+
         if (!NestedTypesIncludeBox.Items.Contains(NestedTypesIncludeTextField.Text))
         {
             NestedTypesIncludeBox.Items.Add(NestedTypesIncludeTextField.Text);
@@ -655,6 +669,8 @@ public partial class ReCodeItForm : Form
 
     private void NestedTypesExlcudeAddButton_Click(object sender, EventArgs e)
     {
+        if (NestedTypesExcludeTextField.Text == string.Empty) return;
+
         if (!NestedTypesExcludeBox.Items.Contains(NestedTypesExcludeTextField.Text))
         {
             NestedTypesExcludeBox.Items.Add(NestedTypesExcludeTextField.Text);
@@ -672,6 +688,8 @@ public partial class ReCodeItForm : Form
 
     private void AutoMapperExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (AutoMapperTypesToIgnoreTextField.Text == string.Empty) return;
+
         if (!AutoMapperTypesExcludeBox.Items.Contains(AutoMapperTypesToIgnoreTextField.Text))
         {
             DataProvider.Settings.AutoMapper.TypesToIgnore.Add(AutoMapperTypesToIgnoreTextField.Text);
