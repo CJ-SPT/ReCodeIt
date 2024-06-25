@@ -438,7 +438,7 @@ public partial class ReCodeItForm : Form
         Remapper.InitializeRemap(
             DataProvider.Remaps,
             AppSettings.Remapper.AssemblyPath,
-            Path.GetDirectoryName(AppSettings.Remapper.OutputPath));
+            AppSettings.Remapper.OutputPath);
 
         ReloadRemapTreeView(DataProvider.Remaps);
     }
