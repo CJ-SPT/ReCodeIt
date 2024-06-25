@@ -144,7 +144,7 @@ internal static class GUIHelpers
 
         if (isNested is not null)
         {
-            remapTreeItem.Nodes.Add(new TreeNode($"IsNested: {isEnum}"));
+            remapTreeItem.Nodes.Add(new TreeNode($"IsNested: {isNested}"));
         }
 
         if (isSealed is not null)
