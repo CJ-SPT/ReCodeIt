@@ -12,27 +12,33 @@ internal static class RenameHelper
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
     /// <param name="score"></param>
-    public static void RenameAll(ModuleDefMD module, ScoringModel score, bool direct = false)
+    public static void RenameAll(ModuleDefMD module, RemapModel remap, bool direct = false)
     {
         var types = module.GetTypes();
 
         // Rename all fields and properties first
         if (DataProvider.Settings.Remapper.MappingSettings.RenameFields)
         {
-            RenameAllFields(score.Definition.Name, score.ReMap.NewTypeName, types);
+            RenameAllFields(
+                remap.TypePrimeCandidate.Name.String,
+                remap.NewTypeName,
+                types);
         }
 
         if (DataProvider.Settings.Remapper.MappingSettings.RenameProperties)
         {
-            RenameAllProperties(score.Definition.Name, score.ReMap.NewTypeName, types);
+            RenameAllProperties(
+                remap.TypePrimeCandidate.Name.String,
+                remap.NewTypeName,
+                types);
         }
 
         if (!direct)
         {
-            RenameType(types, score);
+            RenameType(types, remap);
         }
 
-        Logger.Log($"{score.Definition.Name} Renamed.", ConsoleColor.Green);
+        Logger.Log($"{remap.TypePrimeCandidate.Name.String} Renamed.", ConsoleColor.Green);
     }
 
     /// <summary>
@@ -41,12 +47,7 @@ internal static class RenameHelper
     /// <param name="score"></param>
     public static void RenameAllDirect(ModuleDefMD module, RemapModel remap, TypeDef type)
     {
-        var directRename = new ScoringModel
-        {
-            Definition = type,
-            ReMap = remap
-        };
-        RenameAll(module, directRename, true);
+        RenameAll(module, remap, true);
     }
 
     /// <summary>
@@ -156,26 +157,26 @@ internal static class RenameHelper
         return propertyCount > 0 ? $"{newName}_{propertyCount}" : newName;
     }
 
-    private static void RenameType(IEnumerable<TypeDef> typesToCheck, ScoringModel score)
+    private static void RenameType(IEnumerable<TypeDef> typesToCheck, RemapModel remap)
     {
         foreach (var type in typesToCheck)
         {
             if (type.HasNestedTypes)
             {
-                RenameType(type.NestedTypes, score);
+                RenameType(type.NestedTypes, remap);
             }
 
-            if (score.Definition.Name is null) { continue; }
+            if (remap.TypePrimeCandidate.Name is null) { continue; }
 
-            if (score.ReMap.SearchParams.IsNested is true &&
-                type.IsNested && type.Name == score.Definition.Name)
+            if (remap.SearchParams.IsNested is true &&
+                type.IsNested && type.Name == remap.TypePrimeCandidate.Name)
             {
-                type.Name = score.ProposedNewName;
+                type.Name = remap.NewTypeName;
             }
 
-            if (type.FullName == score.Definition.Name)
+            if (type.FullName == remap.TypePrimeCandidate.Name)
             {
-                type.Name = score.ProposedNewName;
+                type.Name = remap.NewTypeName;
             }
         }
     }

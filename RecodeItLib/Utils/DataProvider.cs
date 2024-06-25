@@ -26,8 +26,6 @@ public static class DataProvider
 
     public static List<RemapModel> Remaps { get; set; } = [];
 
-    public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
-
     public static Settings Settings { get; private set; }
 
     public static void LoadAppSettings()
@@ -92,8 +90,6 @@ public static class DataProvider
         }
 
         var jsonText = File.ReadAllText(path);
-
-        ScoringModels = [];
 
         var remaps = JsonConvert.DeserializeObject<List<RemapModel>>(jsonText);
 

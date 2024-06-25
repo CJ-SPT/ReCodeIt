@@ -131,90 +131,41 @@ public class ReCodeItRemapper
             types = types.Where(type => tokens.Any(token => type.Name.StartsWith(token)));
         }
 
-        types = TypeFilters.FilterPublic(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterPublic(types, mapping.SearchParams);
 
         if (!types.Any())
         {
             Logger.Log($"All types filtered out after public filter for: {mapping.NewTypeName}", ConsoleColor.Red);
         }
 
-        types = TypeFilters.FilterAbstract(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterAbstract(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterSealed(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterInterface(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterStruct(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterEnum(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterAttributes(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterDerived(types, mapping.SearchParams);
+        types = GenericTypeFilters.FilterByGenericParameters(types, mapping.SearchParams);
 
-        types = TypeFilters.FilterSealed(types, mapping.SearchParams);
+        types = MethodTypeFilters.FilterByInclude(types, mapping.SearchParams);
+        types = MethodTypeFilters.FilterByExclude(types, mapping.SearchParams);
+        types = MethodTypeFilters.FilterByCount(types, mapping.SearchParams);
 
-        types = TypeFilters.FilterInterface(types, mapping.SearchParams);
+        types = FieldTypeFilters.FilterByInclude(types, mapping.SearchParams);
+        types = FieldTypeFilters.FilterByExclude(types, mapping.SearchParams);
+        types = FieldTypeFilters.FilterByCount(types, mapping.SearchParams);
 
-        types = TypeFilters.FilterStruct(types, mapping.SearchParams);
+        types = PropertyTypeFilters.FilterByInclude(types, mapping.SearchParams);
+        types = PropertyTypeFilters.FilterByExclude(types, mapping.SearchParams);
+        types = PropertyTypeFilters.FilterByCount(types, mapping.SearchParams);
 
-        types = TypeFilters.FilterEnum(types, mapping.SearchParams);
+        types = CtorTypeFilters.FilterByParameterCount(types, mapping.SearchParams);
 
-        types = TypeFilters.FilterAttributes(types, mapping.SearchParams);
+        types = NestedTypeFilters.FilterByInclude(types, mapping.SearchParams);
+        types = NestedTypeFilters.FilterByExclude(types, mapping.SearchParams);
+        types = NestedTypeFilters.FilterByCount(types, mapping.SearchParams);
 
-        types = TypeFilters.FilterDerived(types, mapping.SearchParams);
-
-        types = TypeFilters.FilterByGenericParameters(types, mapping.SearchParams);
-
-        types = TypeFilters.FilterByMethodCount(types, mapping.SearchParams);
-
-        types = TypeFilters.FilterByFieldCount(types, mapping.SearchParams);
-
-        types = TypeFilters.FilterByPropCount(types, mapping.SearchParams);
-
-        foreach (var type in types)
-        {
-            FindMatch(type, mapping);
-        }
-    }
-
-    /// <summary>
-    /// Find a match result
-    /// </summary>
-    /// <param name="type">OriginalTypeRef to score</param>
-    /// <param name="remap">Remap to check against</param>
-    /// <param name="parentTypeName"></param>
-    /// <returns>EMatchResult</returns>
-    private void FindMatch(TypeDef type, RemapModel remap)
-    {
-        // Handle Direct Remaps by strict naming first bypasses everything else
-        if (remap.UseForceRename)
-        {
-            HandleByDirectName(type, remap);
-            return;
-        }
-
-        foreach (var nestedType in type.NestedTypes)
-        {
-            FindMatch(nestedType, remap);
-        }
-
-        var score = new ScoringModel
-        {
-            ProposedNewName = remap.NewTypeName,
-            ReMap = remap,
-            Definition = type,
-        };
-
-        if (score.ProposedNewName == "GameServerClass")
-        {
-            //Console.WriteLine("BreakPoint!");
-        }
-
-        type.MatchConstructors(remap.SearchParams, score);
-        type.MatchMethods(remap.SearchParams, score);
-        type.MatchFields(remap.SearchParams, score);
-        type.MatchProperties(remap.SearchParams, score);
-        type.MatchNestedTypes(remap.SearchParams, score);
-
-        if (score.Score == 0)
-        {
-            remap.NoMatchReasons = score.NoMatchReasons;
-            return;
-        }
-
-        // Set the original type name to be used later
-        score.ReMap.OriginalTypeName = type.FullName;
-        remap.OriginalTypeName = type.FullName;
-        score.AddScoreToResult();
+        mapping.TypeCandidates.UnionWith(types);
     }
 
     private void HandleByDirectName(TypeDef type, RemapModel remap)
@@ -247,9 +198,9 @@ public class ReCodeItRemapper
     /// </summary>
     private void ChooseBestMatches()
     {
-        foreach (var score in DataProvider.ScoringModels)
+        foreach (var remap in _remaps)
         {
-            ChooseBestMatch(score.Value);
+            ChooseBestMatch(remap);
         }
 
         var failures = 0;
@@ -284,32 +235,26 @@ public class ReCodeItRemapper
     /// Choose best match from a collection of scores, then start the renaming process
     /// </summary>
     /// <param name="scores">Scores to rate</param>
-    private void ChooseBestMatch(HashSet<ScoringModel> scores)
+    private void ChooseBestMatch(RemapModel remap)
     {
-        if (scores.Count == 0) { return; }
+        if (remap.TypeCandidates.Count == 0) { return; }
 
-        var filteredScores = scores
-            .Where(score => score.Score > 0)
-            .OrderByDescending(score => score.Score)
-            .Take(5);
+        var winner = remap.TypeCandidates.FirstOrDefault();
 
-        var highestScore = filteredScores.FirstOrDefault();
+        if (winner is null) { return; }
 
-        if (highestScore is null) { return; }
-
-        highestScore.ReMap.Succeeded = true;
+        remap.Succeeded = true;
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Renaming {highestScore.Definition.FullName} to {highestScore.ProposedNewName}", ConsoleColor.Green);
-        Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
+        Logger.Log($"Renaming {winner.FullName} to {remap.NewTypeName}", ConsoleColor.Green);
 
-        DisplayAlternativeMatches(filteredScores, highestScore);
+        remap.OriginalTypeName = winner.Name.String;
 
-        highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
+        DisplayAlternativeMatches(remap);
 
         if (CrossMapMode)
         {// Store the original types for caching
-            _compiler.ActiveProject.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
+            //_compiler.ActiveProject.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
         }
 
         // Rename type and all associated type members
@@ -319,15 +264,15 @@ public class ReCodeItRemapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
-    private void DisplayAlternativeMatches(IEnumerable<ScoringModel> filteredScores, ScoringModel highestScore)
+    private void DisplayAlternativeMatches(RemapModel remap)
     {
-        if (filteredScores.Count() > 1 && filteredScores.Skip(1).Any(score => score.Score == highestScore.Score))
+        if (remap.TypeCandidates.Count() > 1)
         {
-            Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Consider adding more search parameters, Only showing the first 5.", ConsoleColor.Yellow);
+            Logger.Log($"Warning! There were {remap.TypeCandidates.Count()} possible matches. Consider adding more search parameters, Only showing the first 5.", ConsoleColor.Yellow);
 
-            foreach (var score in filteredScores.Skip(1).Take(5))
+            foreach (var type in remap.TypeCandidates.Skip(1).Take(5))
             {
-                Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
+                Logger.Log($"{type.Name}", ConsoleColor.Yellow);
             }
         }
     }
@@ -358,7 +303,6 @@ public class ReCodeItRemapper
         Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
 
-        DataProvider.ScoringModels = [];
         Stopwatch.Reset();
 
         IsRunning = false;

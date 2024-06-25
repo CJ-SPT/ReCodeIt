@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using dnlib.DotNet;
+using Newtonsoft.Json;
 using ReCodeIt.Enums;
 
 namespace ReCodeIt.Models;
@@ -14,7 +15,21 @@ public class RemapModel
     [JsonIgnore]
     public List<ENoMatchReason> NoMatchReasons { get; set; } = [];
 
+    /// <summary>
+    /// This is a list of type candidates that made it through the filter
+    /// </summary>
+    [JsonIgnore]
+    public HashSet<TypeDef> TypeCandidates { get; set; } = [];
+
+    /// <summary>
+    /// This is the final chosen type we will use to remap
+    /// </summary>
+    [JsonIgnore]
+    public TypeDef TypePrimeCandidate { get; set; }
+
     public string NewTypeName { get; set; } = string.Empty;
+
+    public string RemapperGivenName { get; set; } = string.Empty;
 
     public string OriginalTypeName { get; set; } = string.Empty;
 
