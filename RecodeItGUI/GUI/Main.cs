@@ -279,9 +279,7 @@ public partial class ReCodeItForm : Form
             UseForceRename = RemapperUseForceRename.Checked,
             SearchParams = new SearchParams
             {
-                IsPublic = IsPublicComboBox.SelectedItem as string != "Disabled"
-                    ? bool.Parse(IsPublicComboBox.GetSelectedItem<string>().AsSpan())
-                    : null,
+                IsPublic = bool.Parse(IsPublicComboBox.GetSelectedItem<string>().AsSpan()),
 
                 IsAbstract = IsAbstractComboBox.SelectedItem as string != "Disabled"
                     ? bool.Parse(IsAbstractComboBox.GetSelectedItem<string>().AsSpan())
