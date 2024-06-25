@@ -139,7 +139,7 @@ internal static class GUIHelpers
 
         if (isEnum is not null)
         {
-            remapTreeItem.Nodes.Add(new TreeNode($"isEnum: {isEnum}"));
+            remapTreeItem.Nodes.Add(new TreeNode($"IsEnum: {isEnum}"));
         }
 
         if (isNested is not null)
