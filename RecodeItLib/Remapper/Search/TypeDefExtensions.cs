@@ -6,23 +6,6 @@ namespace ReCodeIt.ReMapper.Search;
 
 internal static class TypeDefExtensions
 {
-    public static EMatchResult MatchIsAbstract(this TypeDef type, SearchParams parms, ScoringModel score)
-    {
-        if (parms.IsAbstract is null)
-        {
-            return EMatchResult.Disabled;
-        }
-
-        if (type.IsAbstract == parms.IsAbstract)
-        {
-            score.Score++;
-            return EMatchResult.Match;
-        }
-
-        score.FailureReason = EFailureReason.IsAbstract;
-        return EMatchResult.NoMatch;
-    }
-
     public static EMatchResult MatchIsEnum(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IsEnum is null)
@@ -113,23 +96,6 @@ internal static class TypeDefExtensions
         return EMatchResult.NoMatch;
     }
 
-    public static EMatchResult MatchIsInterface(this TypeDef type, SearchParams parms, ScoringModel score)
-    {
-        if (parms.IsInterface is null)
-        {
-            return EMatchResult.Disabled;
-        }
-
-        if (type.IsInterface == parms.IsInterface)
-        {
-            score.Score++;
-            return EMatchResult.Match;
-        }
-
-        score.FailureReason = EFailureReason.IsInterface;
-        return EMatchResult.NoMatch;
-    }
-
     public static EMatchResult MatchHasGenericParameters(this TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.HasGenericParameters is null)
@@ -144,30 +110,6 @@ internal static class TypeDefExtensions
         }
 
         score.FailureReason = EFailureReason.HasGenericParameters;
-        return EMatchResult.NoMatch;
-    }
-
-    public static EMatchResult MatchIsPublic(this TypeDef type, SearchParams parms, ScoringModel score)
-    {
-        if (parms.IsPublic == null)
-        {
-            return EMatchResult.Disabled;
-        }
-
-        if ((bool)!parms.IsPublic && type.IsNotPublic)
-        {
-            score.Score++;
-
-            return EMatchResult.Match;
-        }
-
-        if ((bool)parms.IsPublic && type.IsPublic)
-        {
-            score.Score++;
-            return EMatchResult.Match;
-        }
-
-        score.FailureReason = EFailureReason.IsPublic;
         return EMatchResult.NoMatch;
     }
 

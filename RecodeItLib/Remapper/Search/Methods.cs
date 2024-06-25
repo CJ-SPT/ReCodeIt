@@ -19,7 +19,9 @@ internal static class Methods
 
         foreach (var method in type.Methods)
         {
-            if (!parms.IncludeMethods.Contains(method.Name)) continue;
+            if (!parms.IncludeMethods.Contains(method.ResolveMethodDef().Name)) continue;
+
+
 
             score.Score++;
             return EMatchResult.Match;
@@ -43,7 +45,7 @@ internal static class Methods
 
         foreach (var method in type.Methods)
         {
-            if (!parms.ExcludeMethods.Contains(method.Name)) continue;
+            if (!parms.ExcludeMethods.Contains(method.ResolveMethodDef().Name)) continue;
 
             score.Score--;
             score.FailureReason = EFailureReason.MethodsExclude;

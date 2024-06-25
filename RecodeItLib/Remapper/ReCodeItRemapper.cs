@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace ReCodeIt.ReMapper;
 
-public class ReCodeItRemapper
+public partial class ReCodeItRemapper
 {
     public ReCodeItRemapper(ReCodeItCrossCompiler compiler)
     {
@@ -112,7 +112,28 @@ public class ReCodeItRemapper
     /// <param name="mapping">Mapping to score</param>
     private void ScoreMapping(RemapModel mapping)
     {
-        foreach (var type in Module.GetTypes())
+        var types = Module.GetTypes();
+
+        if (mapping.SearchParams.IsPublic is true)
+        {
+            types = FilterToPublic(types);
+        }
+        else
+        {
+            types = FilterToNonPublic(types);
+        }
+
+        if (mapping.SearchParams.IsAbstract is true)
+        {
+            types = FilterToAbstract(types);
+        }
+
+        if (mapping.SearchParams.IsInterface is true)
+        {
+            types = FilterToInterfaces(types);
+        }
+
+        foreach (var type in types)
         {
             FindMatch(type, mapping);
         }
@@ -165,9 +186,6 @@ public class ReCodeItRemapper
             type.MatchFields(remap.SearchParams, score),
             type.MatchProperties(remap.SearchParams, score),
             type.MatchNestedTypes(remap.SearchParams, score),
-            type.MatchIsPublic(remap.SearchParams, score) ,
-            type.MatchIsInterface(remap.SearchParams, score),
-            type.MatchIsAbstract(remap.SearchParams, score),
             type.MatchIsSealed(remap.SearchParams, score) ,
             type.MatchIsEnum(remap.SearchParams, score) ,
             type.MatchIsNested(remap.SearchParams, score),
