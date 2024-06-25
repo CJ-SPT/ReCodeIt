@@ -61,7 +61,7 @@ public class ReCodeItRemapper
 
         foreach (var remap in remapModels)
         {
-            Logger.Log($"Finding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
+            Logger.Log($"\nFinding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
 
             ScoreMapping(remap);
         }
@@ -116,16 +116,39 @@ public class ReCodeItRemapper
 
         var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
 
-        types = types.Where(type => tokens.Any(token => type.Name.StartsWith(token)));
+        if (mapping.SearchParams.IsNested is false or null)
+        {
+            types = types.Where(type => tokens.Any(token => type.Name.StartsWith(token)));
+        }
 
         // REQUIRED PROPERTY
         if (mapping.SearchParams.IsPublic is true)
         {
-            types = types.Where(t => t.IsPublic);
+            if (mapping.SearchParams.IsNested is true)
+            {
+                Logger.Log("IsNested Public", ConsoleColor.Yellow);
+
+                types = types.Where(t => t.IsNestedPublic);
+            }
+            else
+            {
+                Logger.Log("IsPublic is true", ConsoleColor.Yellow);
+                types = types.Where(t => t.IsPublic);
+            }
         }
         else if (mapping.SearchParams.IsPublic is false)
         {
-            types = types.Where(t => t.IsNotPublic);
+            if (mapping.SearchParams.IsNested is true)
+            {
+                Logger.Log("IsNested Private or family", ConsoleColor.Yellow);
+
+                types = types.Where(t => t.IsNestedPrivate || t.IsNestedFamily);
+            }
+            else
+            {
+                Logger.Log("IsPublic is false", ConsoleColor.Yellow);
+                types = types.Where(t => t.IsNotPublic);
+            }
         }
         else
         {
@@ -136,61 +159,72 @@ public class ReCodeItRemapper
         // Filter based on abstract or not
         if (mapping.SearchParams.IsAbstract is true)
         {
+            Logger.Log("IsAbstract is true", ConsoleColor.Yellow);
             types = types.Where(t => t.IsAbstract);
         }
         else if (mapping.SearchParams.IsAbstract is false)
         {
+            Logger.Log("IsAbstract is false", ConsoleColor.Yellow);
             types = types.Where(t => !t.IsAbstract);
         }
 
         // Filter based on interface or not
         if (mapping.SearchParams.IsInterface is true)
         {
+            Logger.Log("IsInterface is true", ConsoleColor.Yellow);
             types = types.Where(t => t.IsInterface);
         }
         else if (mapping.SearchParams.IsInterface is false)
         {
+            Logger.Log("IsInterface is false", ConsoleColor.Yellow);
             types = types.Where(t => !t.IsInterface);
+        }
+
+        if (mapping.SearchParams.IsStruct is true)
+        {
+            Logger.Log("IsStruct is true", ConsoleColor.Yellow);
+            types = types.Where(t => t.IsValueType && !t.IsEnum && !t.IsClass || !t.IsInterface);
+        }
+        else if (mapping.SearchParams.IsStruct is false)
+        {
+            Logger.Log("IsStruct is false", ConsoleColor.Yellow);
+            types = types.Where(t => !t.IsValueType && t.IsClass || t.IsEnum || t.IsInterface);
         }
 
         // Filter based on enum or not
         if (mapping.SearchParams.IsEnum is true)
         {
+            Logger.Log("IsEnum is true", ConsoleColor.Yellow);
             types = types.Where(t => t.IsEnum);
         }
         else if (mapping.SearchParams.IsEnum is false)
         {
+            Logger.Log("IsEnum is false", ConsoleColor.Yellow);
             types = types.Where(t => !t.IsEnum);
         }
 
         // Filter based on HasAttribute or not
         if (mapping.SearchParams.HasAttribute is true)
         {
+            Logger.Log("HasAttribute is true", ConsoleColor.Yellow);
             types = types.Where(t => t.HasCustomAttributes);
         }
         else if (mapping.SearchParams.HasAttribute is false)
         {
+            Logger.Log("HasAttribute is false", ConsoleColor.Yellow);
             types = types.Where(t => !t.HasCustomAttributes);
         }
 
-        // Filter based on IsNested or not
-        if (mapping.SearchParams.IsNested is true)
-        {
-            types = types.Where(t => t.IsNested);
-        }
-        else if (mapping.SearchParams.IsNested is false)
-        {
-            types = types.Where(t => !t.IsNested);
-        }
-
-        // Filter based on IsNested or not
+        // Filter based on IsDerived or not
         if (mapping.SearchParams.IsDerived is true)
         {
-            types = types.Where(t => t.BaseType is not null);
+            Logger.Log("IsDerived is true", ConsoleColor.Yellow);
+            types = types.Where(t => t.GetBaseType() is not null);
         }
         else if (mapping.SearchParams.IsDerived is false)
         {
-            types = types.Where(t => t.BaseType is null);
+            Logger.Log("IsDerived is false", ConsoleColor.Yellow);
+            types = types.Where(t => t.GetBaseType() is null);
         }
 
         foreach (var type in types)
@@ -237,14 +271,8 @@ public class ReCodeItRemapper
         type.MatchFields(remap.SearchParams, score);
         type.MatchProperties(remap.SearchParams, score);
         type.MatchNestedTypes(remap.SearchParams, score);
-        type.MatchIsSealed(remap.SearchParams, score);
-        type.MatchIsEnum(remap.SearchParams, score);
-        type.MatchIsNested(remap.SearchParams, score);
-        type.MatchIsDerived(remap.SearchParams, score);
-        type.MatchHasGenericParameters(remap.SearchParams, score);
-        type.MatchHasAttribute(remap.SearchParams, score);
 
-        if (score.Score <= 0)
+        if (score.Score == 0)
         {
             remap.NoMatchReasons = score.NoMatchReasons;
             return;
@@ -253,7 +281,6 @@ public class ReCodeItRemapper
         // Set the original type name to be used later
         score.ReMap.OriginalTypeName = type.FullName;
         remap.OriginalTypeName = type.FullName;
-        remap.NoMatchReasons = score.NoMatchReasons;
         score.AddScoreToResult();
     }
 
@@ -330,7 +357,6 @@ public class ReCodeItRemapper
 
         var filteredScores = scores
             .Where(score => score.Score > 0)
-            .Where(score => score.NoMatchReasons.Count == 0)
             .OrderByDescending(score => score.Score)
             .Take(5);
 
@@ -355,7 +381,7 @@ public class ReCodeItRemapper
 
         // Rename type and all associated type members
 
-        RenameHelper.RenameAll(Module, highestScore);
+        //RenameHelper.RenameAll(Module, highestScore);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }

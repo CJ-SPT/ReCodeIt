@@ -26,7 +26,6 @@ namespace ReCodeIt.ReMapper.Search
                 return;
             }
 
-            score.Score--;
             score.NoMatchReasons.Add(ENoMatchReason.PropertiesInclude);
         }
 
@@ -38,7 +37,6 @@ namespace ReCodeIt.ReMapper.Search
             {
                 if (!parms.ExcludeProperties.Contains(prop.Name)) continue;
 
-                score.Score--;
                 score.NoMatchReasons.Add(ENoMatchReason.PropertiesExclude);
                 return;
             }
@@ -52,7 +50,7 @@ namespace ReCodeIt.ReMapper.Search
 
             var match = type.Properties.Count() == parms.PropertyCount;
 
-            score.Score += match ? (int)parms.PropertyCount : -(int)parms.PropertyCount;
+            score.Score += match ? (int)parms.PropertyCount : 0;
 
             if (!match)
             {

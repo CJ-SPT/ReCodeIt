@@ -295,6 +295,10 @@ public partial class ReCodeItForm : Form
                     ? bool.Parse(IsInterfaceComboBox.GetSelectedItem<string>().AsSpan())
                     : null,
 
+                IsStruct = IsStructComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(IsStructComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
                 IsEnum = IsEnumComboBox.SelectedItem as string != "Disabled"
                     ? bool.Parse(IsEnumComboBox.GetSelectedItem<string>().AsSpan())
                     : null,
@@ -1092,12 +1096,6 @@ public partial class ReCodeItForm : Form
         AppSettings.CrossCompiler.AutoLoadLastActiveProject = CCAutoLoadLastProj.Checked;
     }
 
-    // Use the projects remap list on the remap tab
-    private void ActiveProjectMappingsCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-        // TODO
-    }
-
     private void CCImportMappings_Click(object sender, EventArgs e)
     {
         if (CrossCompiler.ActiveProject == null)
@@ -1314,6 +1312,10 @@ public partial class ReCodeItForm : Form
             ? remap.SearchParams.IsInterface.ToString()
             : "Disabled";
 
+        IsStructComboBox.SelectedItem = remap.SearchParams.IsStruct is not null
+            ? remap.SearchParams.IsStruct.ToString()
+            : "Disabled";
+
         IsEnumComboBox.SelectedItem = remap.SearchParams.IsEnum is not null
             ? remap.SearchParams.IsEnum.ToString()
             : "Disabled";
@@ -1384,6 +1386,9 @@ public partial class ReCodeItForm : Form
 
         IsInterfaceComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
         IsInterfaceComboBox.SelectedItem = "Disabled";
+
+        IsStructComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        IsStructComboBox.SelectedItem = "Disabled";
 
         IsEnumComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
         IsEnumComboBox.SelectedItem = "Disabled";

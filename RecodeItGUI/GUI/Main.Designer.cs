@@ -37,6 +37,8 @@ partial class ReCodeItForm
         RMSearchBox = new TextBox();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        label11 = new Label();
+        IsStructComboBox = new ComboBox();
         label10 = new Label();
         HasGenericParamsComboBox = new ComboBox();
         label8 = new Label();
@@ -292,6 +294,8 @@ partial class ReCodeItForm
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(label11);
+        groupBox1.Controls.Add(IsStructComboBox);
         groupBox1.Controls.Add(label10);
         groupBox1.Controls.Add(HasGenericParamsComboBox);
         groupBox1.Controls.Add(label8);
@@ -332,10 +336,29 @@ partial class ReCodeItForm
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
         // 
+        // label11
+        // 
+        label11.AutoSize = true;
+        label11.Location = new Point(224, 264);
+        label11.Name = "label11";
+        label11.Size = new Size(75, 25);
+        label11.TabIndex = 53;
+        label11.Text = "Is Struct";
+        // 
+        // IsStructComboBox
+        // 
+        IsStructComboBox.BackColor = SystemColors.ScrollBar;
+        IsStructComboBox.FormattingEnabled = true;
+        IsStructComboBox.Location = new Point(10, 258);
+        IsStructComboBox.Name = "IsStructComboBox";
+        IsStructComboBox.Size = new Size(208, 33);
+        IsStructComboBox.TabIndex = 52;
+        toolTip1.SetToolTip(IsStructComboBox, "Is the type an enum?");
+        // 
         // label10
         // 
         label10.AutoSize = true;
-        label10.Location = new Point(224, 338);
+        label10.Location = new Point(224, 380);
         label10.Name = "label10";
         label10.Size = new Size(197, 25);
         label10.TabIndex = 51;
@@ -345,7 +368,7 @@ partial class ReCodeItForm
         // 
         HasGenericParamsComboBox.BackColor = SystemColors.ScrollBar;
         HasGenericParamsComboBox.FormattingEnabled = true;
-        HasGenericParamsComboBox.Location = new Point(10, 332);
+        HasGenericParamsComboBox.Location = new Point(10, 374);
         HasGenericParamsComboBox.Name = "HasGenericParamsComboBox";
         HasGenericParamsComboBox.Size = new Size(208, 33);
         HasGenericParamsComboBox.TabIndex = 50;
@@ -354,7 +377,7 @@ partial class ReCodeItForm
         // label8
         // 
         label8.AutoSize = true;
-        label8.Location = new Point(224, 301);
+        label8.Location = new Point(224, 343);
         label8.Name = "label8";
         label8.Size = new Size(117, 25);
         label8.TabIndex = 49;
@@ -364,7 +387,7 @@ partial class ReCodeItForm
         // 
         HasAttributeComboBox.BackColor = SystemColors.ScrollBar;
         HasAttributeComboBox.FormattingEnabled = true;
-        HasAttributeComboBox.Location = new Point(10, 295);
+        HasAttributeComboBox.Location = new Point(10, 335);
         HasAttributeComboBox.Name = "HasAttributeComboBox";
         HasAttributeComboBox.Size = new Size(208, 33);
         HasAttributeComboBox.TabIndex = 48;
@@ -373,7 +396,7 @@ partial class ReCodeItForm
         // label9
         // 
         label9.AutoSize = true;
-        label9.Location = new Point(224, 263);
+        label9.Location = new Point(224, 303);
         label9.Name = "label9";
         label9.Size = new Size(75, 25);
         label9.TabIndex = 47;
@@ -383,7 +406,7 @@ partial class ReCodeItForm
         // 
         IsEnumComboBox.BackColor = SystemColors.ScrollBar;
         IsEnumComboBox.FormattingEnabled = true;
-        IsEnumComboBox.Location = new Point(10, 257);
+        IsEnumComboBox.Location = new Point(10, 297);
         IsEnumComboBox.Name = "IsEnumComboBox";
         IsEnumComboBox.Size = new Size(208, 33);
         IsEnumComboBox.TabIndex = 46;
@@ -965,7 +988,7 @@ partial class ReCodeItForm
         // NestedTypeParentName
         // 
         NestedTypeParentName.BackColor = SystemColors.ScrollBar;
-        NestedTypeParentName.Location = new Point(224, 371);
+        NestedTypeParentName.Location = new Point(221, 421);
         NestedTypeParentName.Name = "NestedTypeParentName";
         NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
         NestedTypeParentName.Size = new Size(208, 31);
@@ -984,7 +1007,7 @@ partial class ReCodeItForm
         // BaseClassIncludeTextFIeld
         // 
         BaseClassIncludeTextFIeld.BackColor = SystemColors.ScrollBar;
-        BaseClassIncludeTextFIeld.Location = new Point(224, 407);
+        BaseClassIncludeTextFIeld.Location = new Point(221, 457);
         BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
         BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
         BaseClassIncludeTextFIeld.Size = new Size(208, 31);
@@ -1013,7 +1036,7 @@ partial class ReCodeItForm
         // IsDerivedUpDown
         // 
         IsDerivedUpDown.BackColor = SystemColors.ScrollBar;
-        IsDerivedUpDown.Location = new Point(10, 408);
+        IsDerivedUpDown.Location = new Point(7, 458);
         IsDerivedUpDown.Name = "IsDerivedUpDown";
         IsDerivedUpDown.Size = new Size(208, 31);
         IsDerivedUpDown.Sorted = true;
@@ -1024,7 +1047,7 @@ partial class ReCodeItForm
         // IsNestedUpDown
         // 
         IsNestedUpDown.BackColor = SystemColors.ScrollBar;
-        IsNestedUpDown.Location = new Point(10, 371);
+        IsNestedUpDown.Location = new Point(7, 421);
         IsNestedUpDown.Name = "IsNestedUpDown";
         IsNestedUpDown.Size = new Size(208, 31);
         IsNestedUpDown.Sorted = true;
@@ -1035,7 +1058,7 @@ partial class ReCodeItForm
         // BaseClassExcludeTextField
         // 
         BaseClassExcludeTextField.BackColor = SystemColors.ScrollBar;
-        BaseClassExcludeTextField.Location = new Point(438, 408);
+        BaseClassExcludeTextField.Location = new Point(435, 458);
         BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
         BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
         BaseClassExcludeTextField.Size = new Size(208, 31);
@@ -2041,4 +2064,6 @@ partial class ReCodeItForm
     private ComboBox IsInterfaceComboBox;
     private Label label10;
     private ComboBox HasGenericParamsComboBox;
+    private Label label11;
+    private ComboBox IsStructComboBox;
 }

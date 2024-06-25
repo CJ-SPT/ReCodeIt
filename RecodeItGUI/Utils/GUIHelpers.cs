@@ -104,6 +104,7 @@ internal static class GUIHelpers
         var isPublic = model.SearchParams.IsPublic == null ? null : model.SearchParams.IsPublic;
         var isAbstract = model.SearchParams.IsAbstract == null ? null : model.SearchParams.IsAbstract;
         var isInterface = model.SearchParams.IsInterface == null ? null : model.SearchParams.IsInterface;
+        var isStruct = model.SearchParams.IsStruct == null ? null : model.SearchParams.IsStruct;
         var isEnum = model.SearchParams.IsEnum == null ? null : model.SearchParams.IsEnum;
         var isNested = model.SearchParams.IsNested == null ? null : model.SearchParams.IsNested;
         var isSealed = model.SearchParams.IsSealed == null ? null : model.SearchParams.IsSealed;
@@ -135,6 +136,11 @@ internal static class GUIHelpers
         if (isInterface is not null)
         {
             remapTreeItem.Nodes.Add(new TreeNode($"IsInterface: {isInterface}"));
+        }
+
+        if (isStruct is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsStruct: {isStruct}"));
         }
 
         if (isEnum is not null)

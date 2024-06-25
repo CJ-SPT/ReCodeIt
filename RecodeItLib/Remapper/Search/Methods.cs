@@ -20,10 +20,11 @@ internal static class Methods
 
         foreach (var method in type.Methods)
         {
-            if (parms.IncludeMethods.Contains(method.Name))
+            if (parms.IncludeMethods.Contains(method.Name.String))
             {
                 count++;
                 score.Score++;
+                continue;
             }
 
             if (parms.IncludeMethods.Contains(method.Name.String.Split(".").Last()))
@@ -38,7 +39,6 @@ internal static class Methods
             return;
         }
 
-        score.Score--;
         score.NoMatchReasons.Add(ENoMatchReason.MethodsInclude);
     }
 
@@ -55,9 +55,8 @@ internal static class Methods
 
         foreach (var method in type.Methods)
         {
-            if (!parms.ExcludeMethods.Contains(method.ResolveMethodDef().Name)) continue;
+            if (!parms.ExcludeMethods.Contains(method.Name.String)) continue;
 
-            score.Score--;
             score.NoMatchReasons.Add(ENoMatchReason.MethodsExclude);
             return;
         }
@@ -79,7 +78,7 @@ internal static class Methods
         var numMethods = type.Methods.Count - type.FindConstructors().Count();
         bool match = numMethods == parms.MethodCount;
 
-        score.Score += match ? (int)parms.MethodCount : -(int)parms.MethodCount;
+        score.Score += match ? (int)parms.MethodCount : 0;
 
         if (!match)
         {

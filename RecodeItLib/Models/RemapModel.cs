@@ -33,6 +33,7 @@ public class SearchParams
     public bool? IsPublic { get; set; } = null;
     public bool? IsAbstract { get; set; } = null;
     public bool? IsInterface { get; set; } = null;
+    public bool? IsStruct { get; set; } = null;
     public bool? IsEnum { get; set; } = null;
     public bool? IsNested { get; set; } = null;
     public bool? IsSealed { get; set; } = null;

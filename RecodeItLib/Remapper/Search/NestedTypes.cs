@@ -31,7 +31,6 @@ internal class NestedTypes
         {
             if (!parms.ExcludeNestedTypes.Contains(nt.Name)) continue;
 
-            score.Score--;
             score.NoMatchReasons.Add(ENoMatchReason.NestedTypeExclude);
             return;
         }
@@ -45,7 +44,7 @@ internal class NestedTypes
 
         var match = type.NestedTypes.Count() == parms.NestedTypeCount;
 
-        score.Score += match ? type.NestedTypes.Count : -type.NestedTypes.Count - 1;
+        score.Score += match ? type.NestedTypes.Count : 0;
 
         if (!match)
         {

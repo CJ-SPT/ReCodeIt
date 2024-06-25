@@ -16,13 +16,13 @@ internal static class Constructors
     {
         if (parms.ConstructorParameterCount is null) return;
 
-        var match = type.FindConstructors()
-            .Any(c => c.Parameters.Count() == parms.ConstructorParameterCount);
-
-        if (match)
+        foreach (var constructor in type.FindConstructors())
         {
-            score.Score++;
-            return;
+            if (constructor.Parameters.Count == parms.ConstructorParameterCount)
+            {
+                score.Score++;
+                return;
+            }
         }
 
         score.NoMatchReasons.Add(ENoMatchReason.ConstructorParameterCount);

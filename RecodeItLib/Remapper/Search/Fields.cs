@@ -25,7 +25,6 @@ internal static class Fields
             return;
         }
 
-        score.Score--;
         score.NoMatchReasons.Add(ENoMatchReason.FieldsInclude);
     }
 
@@ -44,7 +43,6 @@ internal static class Fields
         {
             if (!parms.ExcludeFields.Contains(field.Name)) continue;
 
-            score.Score--;
             score.NoMatchReasons.Add(ENoMatchReason.FieldsExclude);
             return;
         }
@@ -65,7 +63,7 @@ internal static class Fields
 
         var match = type.Fields.Count() == parms.FieldCount;
 
-        score.Score += match ? (int)parms.FieldCount : -(int)parms.FieldCount;
+        score.Score += match ? (int)parms.FieldCount : 0;
 
         if (!match)
         {
