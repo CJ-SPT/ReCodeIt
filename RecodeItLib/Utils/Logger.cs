@@ -29,6 +29,7 @@ public static class Logger
         if (!silent)
         {
             Console.ForegroundColor = color;
+            Console.ResetColor();
             Console.WriteLine(message);
         }
 
