@@ -314,7 +314,7 @@ public partial class ReCodeItForm : Form
                 IsNested = IsNestedUpDown.GetEnabled(),
                 IsDerived = IsDerivedUpDown.GetEnabled(),
 
-                ParentName = NestedTypeParentName.Text == string.Empty
+                NTParentName = NestedTypeParentName.Text == string.Empty
                 ? null
                 : NestedTypeParentName.Text,
 
@@ -1256,7 +1256,7 @@ public partial class ReCodeItForm : Form
 
         BaseClassIncludeTextFIeld.Text = remap.SearchParams.MatchBaseClass;
         BaseClassExcludeTextField.Text = remap.SearchParams.IgnoreBaseClass;
-        NestedTypeParentName.Text = remap.SearchParams.ParentName;
+        NestedTypeParentName.Text = remap.SearchParams.NTParentName;
 
         ConstructorCountEnabled.Checked = remap.SearchParams.ConstructorParameterCount is not null
             ? remap.SearchParams.ConstructorParameterCount > 0

@@ -23,6 +23,11 @@ internal static class TypeFilters
                 Logger.Log("IsNested Public", ConsoleColor.Yellow);
 
                 types = types.Where(t => t.IsNestedPublic);
+
+                if (parms.NTParentName is not null or "")
+                {
+                    types = types.Where(t => t.DeclaringType.Name.String == parms.NTParentName);
+                }
             }
             else
             {
@@ -40,6 +45,11 @@ internal static class TypeFilters
                                          || t.IsNestedFamily
                                          || t.IsNestedFamilyAndAssembly
                                          || t.IsNestedAssembly);
+
+                if (parms.NTParentName is not null or "")
+                {
+                    types = types.Where(t => t.DeclaringType.Name.String == parms.NTParentName);
+                }
             }
             else
             {
@@ -53,6 +63,11 @@ internal static class TypeFilters
             return [];
         }
 
+        return types;
+    }
+
+    private static IEnumerable<TypeDef> FilterNestedByName(IEnumerable<TypeDef> types, SearchParams parms)
+    {
         return types;
     }
 
@@ -182,12 +197,24 @@ internal static class TypeFilters
         if (parms.IsDerived is true)
         {
             Logger.Log("IsDerived is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.GetBaseType() is not null && t.GetBaseType().Name.String == parms.MatchBaseClass);
+            types = types.Where(t => t.GetBaseType()?.Name?.String != "Object");
+
+            if (parms.MatchBaseClass is not null and not "")
+            {
+                Logger.Log($"Matching base class: {parms.MatchBaseClass}", ConsoleColor.Yellow);
+                types = types.Where(t => t.GetBaseType()?.Name?.String == parms.MatchBaseClass);
+            }
+
+            if (parms.IgnoreBaseClass is not null and not "")
+            {
+                Logger.Log($"Ignoring base class: {parms.MatchBaseClass}", ConsoleColor.Yellow);
+                types = types.Where(t => t.GetBaseType()?.Name?.String != parms.IgnoreBaseClass);
+            }
         }
         else if (parms.IsDerived is false)
         {
             Logger.Log("IsDerived is false", ConsoleColor.Yellow);
-            types = types.Where(t => t.GetBaseType().Name.String is "System.Object");
+            types = types.Where(t => t.GetBaseType()?.Name?.String is "Object");
         }
 
         return types;

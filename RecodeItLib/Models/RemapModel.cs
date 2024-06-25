@@ -45,8 +45,19 @@ public class SearchParams
 
     #region STR_PARAMS
 
-    public string? ParentName { get; set; } = null;
+    /// <summary>
+    /// Name of the nested types parent
+    /// </summary>
+    public string? NTParentName { get; set; } = null;
+
+    /// <summary>
+    /// Name of the derived classes declaring type
+    /// </summary>
     public string? MatchBaseClass { get; set; } = null;
+
+    /// <summary>
+    /// Name of the derived classes declaring type we want to ignore
+    /// </summary>
     public string? IgnoreBaseClass { get; set; } = null;
 
     #endregion STR_PARAMS

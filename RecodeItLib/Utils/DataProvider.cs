@@ -99,19 +99,6 @@ public static class DataProvider
 
         if (remaps == null) { return []; }
 
-        var properties = typeof(SearchParams).GetProperties();
-
-        foreach (var remap in Remaps)
-        {
-            foreach (var property in properties)
-            {
-                if (property.PropertyType == typeof(List<string>) && property.GetValue(remap.SearchParams) is null)
-                {
-                    property.SetValue(remap.SearchParams, new List<string>());
-                }
-            }
-        }
-
         Logger.Log($"Mapping file loaded from '{path}' containing {remaps.Count} remaps");
 
         return remaps;
