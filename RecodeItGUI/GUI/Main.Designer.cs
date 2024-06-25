@@ -30,6 +30,7 @@ partial class ReCodeItForm
     {
         components = new System.ComponentModel.Container();
         RemapperTabPage = new TabPage();
+        label1 = new Label();
         ResetSearchButton = new Button();
         ActiveProjectMappingsCheckbox = new CheckBox();
         LoadedMappingFilePath = new TextBox();
@@ -168,7 +169,6 @@ partial class ReCodeItForm
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
         toolTip1 = new ToolTip(components);
-        label1 = new Label();
         RemapperTabPage.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -221,6 +221,15 @@ partial class ReCodeItForm
         RemapperTabPage.Size = new Size(1336, 953);
         RemapperTabPage.TabIndex = 1;
         RemapperTabPage.Text = "Remapper";
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(777, 47);
+        label1.Name = "label1";
+        label1.Size = new Size(235, 25);
+        label1.TabIndex = 41;
+        label1.Text = "Double click to edit a remap";
         // 
         // ResetSearchButton
         // 
@@ -816,7 +825,7 @@ partial class ReCodeItForm
         IsPublicUpDown.Sorted = true;
         IsPublicUpDown.TabIndex = 0;
         IsPublicUpDown.Text = "IsPublic";
-        toolTip1.SetToolTip(IsPublicUpDown, "Is the type public? Note: Only public counts as public all other access modifiers fall under false.");
+        toolTip1.SetToolTip(IsPublicUpDown, "Is the type public? Note: Only public counts as public all other access modifiers fall under false. \\nThis is a required field.");
         // 
         // FieldCountEnabled
         // 
@@ -1759,15 +1768,6 @@ partial class ReCodeItForm
         toolTip1.SetToolTip(DebugLoggingCheckbox, "Enables debug logging for the appliaction");
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
-        // 
-        // label1
-        // 
-        label1.AutoSize = true;
-        label1.Location = new Point(777, 47);
-        label1.Name = "label1";
-        label1.Size = new Size(235, 25);
-        label1.TabIndex = 41;
-        label1.Text = "Double click to edit a remap";
         // 
         // ReCodeItForm
         // 

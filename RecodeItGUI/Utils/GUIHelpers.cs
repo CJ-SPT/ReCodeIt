@@ -38,10 +38,14 @@ internal static class GUIHelpers
     /// </summary>
     /// <param name="domainUpDown"></param>
     /// <param name="name"></param>
-    public static void BuildStringList(this DomainUpDown domainUpDown, string name, bool? update = null)
+    public static void BuildStringList(this DomainUpDown domainUpDown, string name, bool required, bool? update = null)
     {
         domainUpDown.Items.Clear();
-        domainUpDown.Text = name + " (Disabled)";
+
+        domainUpDown.Text = required
+            ? name + @" (Required)"
+            : name + @" (Disabled)";
+
         domainUpDown.ReadOnly = true;
 
         var list = new List<string>
@@ -50,6 +54,11 @@ internal static class GUIHelpers
             "True",
             "False",
         };
+
+        if (required)
+        {
+            list.RemoveAt(0);
+        }
 
         if (update != null)
         {

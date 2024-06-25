@@ -262,9 +262,18 @@ public partial class ReCodeItForm : Form
     /// <param name="e"></param>
     private void AddRemapButton_Click(object sender, EventArgs e)
     {
+        ResetSearchButton_Click(this, e);
+
         if (NewTypeName.Text == string.Empty)
         {
             MessageBox.Show("Please enter a new type name", "Invalid data");
+            return;
+        }
+
+        if (IsPublicUpDown.SelectedItem is not "False"
+            || IsPublicUpDown.SelectedItem is not "True")
+        {
+            MessageBox.Show("Please Select a public option", "Invalid data");
             return;
         }
 
@@ -1249,15 +1258,15 @@ public partial class ReCodeItForm : Form
         PropertyCountUpDown.Value = (decimal)(remap.SearchParams.PropertyCount != null ? remap.SearchParams.PropertyCount : 0);
         NestedTypeCountUpDown.Value = (decimal)(remap.SearchParams.NestedTypeCount != null ? remap.SearchParams.NestedTypeCount : 0);
 
-        IsPublicUpDown.BuildStringList("IsPublic", remap.SearchParams.IsPublic);
-        IsAbstractUpDown.BuildStringList("IsAbstract", remap.SearchParams.IsAbstract);
-        IsInterfaceUpDown.BuildStringList("IsInterface", remap.SearchParams.IsInterface);
-        IsEnumUpDown.BuildStringList("IsEnum", remap.SearchParams.IsEnum);
-        IsNestedUpDown.BuildStringList("IsNested", remap.SearchParams.IsNested);
-        IsSealedUpDown.BuildStringList("IsSealed", remap.SearchParams.IsSealed);
-        HasAttributeUpDown.BuildStringList("HasAttribute", remap.SearchParams.HasAttribute);
-        IsDerivedUpDown.BuildStringList("IsDerived", remap.SearchParams.IsDerived);
-        HasGenericParametersUpDown.BuildStringList("HasGenericParams", remap.SearchParams.HasGenericParameters);
+        IsPublicUpDown.BuildStringList("IsPublic", true, remap.SearchParams.IsPublic);
+        IsAbstractUpDown.BuildStringList("IsAbstract", false, remap.SearchParams.IsAbstract);
+        IsInterfaceUpDown.BuildStringList("IsInterface", false, remap.SearchParams.IsInterface);
+        IsEnumUpDown.BuildStringList("IsEnum", false, remap.SearchParams.IsEnum);
+        IsNestedUpDown.BuildStringList("IsNested", false, remap.SearchParams.IsNested);
+        IsSealedUpDown.BuildStringList("IsSealed", false, remap.SearchParams.IsSealed);
+        HasAttributeUpDown.BuildStringList("HasAttribute", false, remap.SearchParams.HasAttribute);
+        IsDerivedUpDown.BuildStringList("IsDerived", false, remap.SearchParams.IsDerived);
+        HasGenericParametersUpDown.BuildStringList("HasGenericParams", false, remap.SearchParams.HasGenericParameters);
 
         foreach (var method in remap.SearchParams.IncludeMethods)
         {
@@ -1303,15 +1312,15 @@ public partial class ReCodeItForm : Form
     private void PopulateDomainUpDowns()
     {
         // Clear them all first just incase
-        IsPublicUpDown.BuildStringList("IsPublic");
-        IsAbstractUpDown.BuildStringList("IsAbstract");
-        IsInterfaceUpDown.BuildStringList("IsInterface");
-        IsEnumUpDown.BuildStringList("IsEnum");
-        IsNestedUpDown.BuildStringList("IsNested");
-        IsSealedUpDown.BuildStringList("IsSealed");
-        HasAttributeUpDown.BuildStringList("HasAttribute");
-        IsDerivedUpDown.BuildStringList("IsDerived");
-        HasGenericParametersUpDown.BuildStringList("HasGenericParams");
+        IsPublicUpDown.BuildStringList("IsPublic", true);
+        IsAbstractUpDown.BuildStringList("IsAbstract", false);
+        IsInterfaceUpDown.BuildStringList("IsInterface", false);
+        IsEnumUpDown.BuildStringList("IsEnum", false);
+        IsNestedUpDown.BuildStringList("IsNested", false);
+        IsSealedUpDown.BuildStringList("IsSealed", false);
+        HasAttributeUpDown.BuildStringList("HasAttribute", false);
+        IsDerivedUpDown.BuildStringList("IsDerived", false);
+        HasGenericParametersUpDown.BuildStringList("HasGenericParams", false);
     }
 
     /// <summary>

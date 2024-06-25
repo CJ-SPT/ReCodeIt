@@ -10,11 +10,19 @@ namespace ReCodeIt.ReMapper.Search
         {
             if (parms.IncludeProperties is null || parms.IncludeProperties.Count == 0) return;
 
+            int count = 0;
+
             foreach (var prop in type.Properties)
             {
-                if (!parms.IncludeProperties.Contains(prop.Name)) continue;
+                if (parms.IncludeProperties.Contains(prop.Name))
+                {
+                    count++;
+                    score.Score++;
+                }
+            }
 
-                score.Score++;
+            if (count > 0)
+            {
                 return;
             }
 

@@ -16,11 +16,25 @@ internal static class Methods
     {
         if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return;
 
+        int count = 0;
+
         foreach (var method in type.Methods)
         {
-            if (!parms.IncludeMethods.Contains(method.Name)) continue;
+            if (parms.IncludeMethods.Contains(method.Name))
+            {
+                count++;
+                score.Score++;
+            }
 
-            score.Score++;
+            if (parms.IncludeMethods.Contains(method.Name.String.Split(".").Last()))
+            {
+                count++;
+                score.Score++;
+            }
+        }
+
+        if (count > 0)
+        {
             return;
         }
 

@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace ReCodeIt.ReMapper;
 
-public partial class ReCodeItRemapper
+public class ReCodeItRemapper
 {
     public ReCodeItRemapper(ReCodeItCrossCompiler compiler)
     {
@@ -106,7 +106,8 @@ public partial class ReCodeItRemapper
     }
 
     /// <summary>
-    /// Loop over all types in the assembly and score them
+    /// First we filter our type collection based on simple search parameters (true/false/null)
+    /// where null is a third disabled state. Then we score the types based on the search parameters
     /// </summary>
     /// <param name="mapping">Mapping to score</param>
     private void ScoreMapping(RemapModel mapping)
@@ -117,23 +118,49 @@ public partial class ReCodeItRemapper
 
         types = types.Where(type => tokens.Any(token => type.Name.StartsWith(token)));
 
+        // REQUIRED PROPERTY
         if (mapping.SearchParams.IsPublic is true)
         {
-            types = FilterToPublic(types);
+            types = types.Where(t => t.IsPublic);
+        }
+        else if (mapping.SearchParams.IsPublic is false)
+        {
+            types = types.Where(t => t.IsNotPublic);
         }
         else
         {
-            types = FilterToNonPublic(types);
+            Logger.Log("ERROR: IsPublic is null, skipping...", ConsoleColor.Red);
+            return;
         }
 
+        // Filter based on abstract or not
         if (mapping.SearchParams.IsAbstract is true)
         {
-            types = FilterToAbstract(types);
+            types = types.Where(t => t.IsAbstract);
+        }
+        else if (mapping.SearchParams.IsAbstract is false)
+        {
+            types = types.Where(t => !t.IsAbstract);
         }
 
+        // Filter based on interface or not
         if (mapping.SearchParams.IsInterface is true)
         {
-            types = FilterToInterfaces(types);
+            types = types.Where(t => t.IsInterface);
+        }
+        else if (mapping.SearchParams.IsInterface is false)
+        {
+            types = types.Where(t => !t.IsInterface);
+        }
+
+        // Filter based on enum or not
+        if (mapping.SearchParams.IsEnum is true)
+        {
+            types = types.Where(t => t.IsEnum);
+        }
+        else if (mapping.SearchParams.IsEnum is false)
+        {
+            types = types.Where(t => !t.IsEnum);
         }
 
         foreach (var type in types)
@@ -186,6 +213,12 @@ public partial class ReCodeItRemapper
         type.MatchIsDerived(remap.SearchParams, score);
         type.MatchHasGenericParameters(remap.SearchParams, score);
         type.MatchHasAttribute(remap.SearchParams, score);
+
+        if (score.Score <= 0)
+        {
+            remap.NoMatchReasons = score.NoMatchReasons;
+            return;
+        }
 
         // Set the original type name to be used later
         score.ReMap.OriginalTypeName = type.FullName;
