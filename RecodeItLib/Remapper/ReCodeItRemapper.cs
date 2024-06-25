@@ -190,7 +190,6 @@ public partial class ReCodeItRemapper
         // Set the original type name to be used later
         score.ReMap.OriginalTypeName = type.FullName;
         remap.OriginalTypeName = type.FullName;
-        remap.Succeeded = true;
         remap.NoMatchReasons = score.NoMatchReasons;
         score.AddScoreToResult();
     }
@@ -238,7 +237,13 @@ public partial class ReCodeItRemapper
             if (remap.Succeeded is false)
             {
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
-                Logger.Log($"Renaming {remap.NewTypeName} failed with reason {remap.NoMatchReasons}", ConsoleColor.Red);
+                Logger.Log($"Renaming {remap.NewTypeName} failed with reason(s)", ConsoleColor.Red);
+
+                foreach (var reason in remap.NoMatchReasons)
+                {
+                    Logger.Log($"Reason: {reason}", ConsoleColor.Red);
+                }
+
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
                 failures++;
                 continue;
@@ -262,6 +267,7 @@ public partial class ReCodeItRemapper
 
         var filteredScores = scores
             .Where(score => score.Score > 0)
+            .Where(score => score.NoMatchReasons.Count == 0)
             .OrderByDescending(score => score.Score)
             .Take(5);
 
@@ -269,19 +275,13 @@ public partial class ReCodeItRemapper
 
         if (highestScore is null) { return; }
 
+        highestScore.ReMap.Succeeded = true;
+
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Renaming {highestScore.Definition.FullName} to {highestScore.ProposedNewName}", ConsoleColor.Green);
         Logger.Log($"Scored: {highestScore.Score} points", ConsoleColor.Green);
 
-        if (filteredScores.Count() > 1 && filteredScores.Skip(1).Any(score => score.Score == highestScore.Score))
-        {
-            Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Considering adding more search parameters, Only showing first 5.", ConsoleColor.Yellow);
-
-            foreach (var score in filteredScores.Skip(1).Take(5))
-            {
-                Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
-            }
-        }
+        DisplayAlternativeMatches(filteredScores, highestScore);
 
         highestScore.ReMap.OriginalTypeName = highestScore.Definition.Name;
 
@@ -295,6 +295,19 @@ public partial class ReCodeItRemapper
         RenameHelper.RenameAll(Module, highestScore);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+    }
+
+    private void DisplayAlternativeMatches(IEnumerable<ScoringModel> filteredScores, ScoringModel highestScore)
+    {
+        if (filteredScores.Count() > 1 && filteredScores.Skip(1).Any(score => score.Score == highestScore.Score))
+        {
+            Logger.Log($"Warning! There were {filteredScores.Count()} possible matches. Consider adding more search parameters, Only showing the first 5.", ConsoleColor.Yellow);
+
+            foreach (var score in filteredScores.Skip(1).Take(5))
+            {
+                Logger.Log($"{score.Definition.Name} - Score [{score.Score}]", ConsoleColor.Yellow);
+            }
+        }
     }
 
     /// <summary>
