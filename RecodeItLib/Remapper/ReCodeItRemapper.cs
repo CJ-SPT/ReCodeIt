@@ -1,4 +1,5 @@
 ﻿using dnlib.DotNet;
+using dnlib.DotNet.Emit;
 using ReCodeIt.CrossCompiler;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
@@ -342,7 +343,9 @@ public class ReCodeItRemapper
         {
             foreach (var method in type.Methods.Where(m => m.HasBody))
             {
-                method.Body.Instructions.Clear();
+                if (!method.HasBody) { continue; }
+
+                method.Body = new CilBody();
             }
         }
     }
