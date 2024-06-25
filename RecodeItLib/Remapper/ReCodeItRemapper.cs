@@ -142,7 +142,10 @@ public class ReCodeItRemapper
             {
                 Logger.Log("IsNested Private or family", ConsoleColor.Yellow);
 
-                types = types.Where(t => t.IsNestedPrivate || t.IsNestedFamily);
+                types = types.Where(t => t.IsNestedPrivate
+                                         || t.IsNestedFamily
+                                         || t.IsNestedFamilyAndAssembly
+                                         || t.IsNestedAssembly);
             }
             else
             {
