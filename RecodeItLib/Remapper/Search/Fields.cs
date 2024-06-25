@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using dnlib.DotNet;
 using MoreLinq;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
@@ -14,13 +14,12 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Include(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Include(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IncludeFields is null || parms.IncludeFields.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Fields
-            .Where(field => parms.IncludeFields.Contains(field.Name))
-            .Count();
+            .Count(field => parms.IncludeFields.Contains(field.Name));
 
         score.Score += matches > 0 ? matches : -matches;
 
@@ -38,13 +37,12 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Exclude(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.ExcludeFields is null || parms.ExcludeFields.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Fields
-            .Where(field => parms.ExcludeFields.Contains(field.Name))
-            .Count();
+            .Count(field => parms.ExcludeFields.Contains(field.Name));
 
         score.Score += matches > 0 ? -matches : 1;
 
@@ -62,7 +60,7 @@ internal static class Fields
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Count(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.FieldCount is null) return EMatchResult.Disabled;
 

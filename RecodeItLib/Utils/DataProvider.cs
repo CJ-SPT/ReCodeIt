@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using dnlib.DotNet;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeItLib.Utils;
@@ -29,10 +29,6 @@ public static class DataProvider
     public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
 
     public static Settings Settings { get; private set; }
-
-    public static AssemblyDefinition AssemblyDefinition { get; private set; }
-
-    public static ModuleDefinition ModuleDefinition { get; private set; }
 
     public static void LoadAppSettings()
     {
@@ -174,38 +170,17 @@ public static class DataProvider
         Logger.Log($"Mapping file saved to {path}");
     }
 
-    public static void LoadAssemblyDefinition(string path)
+    public static ModuleDefMD LoadModule(string path)
     {
-        AssemblyDefinition = null;
-        ModuleDefinition = null;
+        ModuleContext modCtx = ModuleDef.CreateModuleContext();
+        ModuleDefMD module = ModuleDefMD.Load(path, modCtx);
 
-        DefaultAssemblyResolver resolver = new();
-
-        Console.WriteLine(path);
-
-        resolver.AddSearchDirectory(Path.GetDirectoryName(path)); // Replace with the correct path : (6/14) I have no idea what I met by that
-        ReaderParameters parameters = new() { AssemblyResolver = resolver };
-
-        var assemblyDefinition = AssemblyDefinition.ReadAssembly(
-            path,
-            parameters);
-
-        if (assemblyDefinition is null)
+        if (module is null)
         {
-            throw new NullReferenceException("AssemblyDefinition was null...");
+            throw new NullReferenceException("Module is null...");
         }
 
-        var fileName = Path.GetFileName(path);
-
-        AssemblyDefinition = assemblyDefinition;
-        ModuleDefinition = assemblyDefinition.MainModule;
-    }
-
-    public static string WriteAssemblyDefinition(string path)
-    {
-        AssemblyDefinition.Write(path);
-
-        return path;
+        return module;
     }
 
     private static Settings CreateFakeSettings()

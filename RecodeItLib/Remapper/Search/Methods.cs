@@ -1,5 +1,4 @@
-﻿using Mono.Cecil;
-using Mono.Cecil.Rocks;
+﻿using dnlib.DotNet;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
 
@@ -14,13 +13,12 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type contains any supplied methods</returns>
-    public static EMatchResult Include(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Include(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IncludeMethods is null || parms.IncludeMethods.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Methods
-            .Where(method => parms.IncludeMethods.Any(include => method.Name.Contains(include)))
-            .Count();
+            .Count(method => parms.IncludeMethods.Any(include => method.Name.Contains(include)));
 
         score.Score += matches > 0 ? matches : -matches;
 
@@ -38,13 +36,12 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if type has no methods</returns>
-    public static EMatchResult Exclude(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.ExcludeMethods is null || parms.ExcludeMethods.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.Methods
-            .Where(method => parms.ExcludeMethods.Contains(method.Name))
-            .Count();
+            .Count(method => parms.ExcludeMethods.Contains(method.Name));
 
         score.Score += matches > 0 ? -matches : 1;
 
@@ -62,11 +59,11 @@ internal static class Methods
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns></returns>
-    public static EMatchResult Count(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.MethodCount is null) return EMatchResult.Disabled;
 
-        var numMethods = type.Methods.Count - type.GetConstructors().Count();
+        var numMethods = type.Methods.Count - type.FindConstructors().Count();
         bool match = numMethods == parms.MethodCount;
 
         score.Score += match ? (int)parms.MethodCount : -(int)parms.MethodCount;

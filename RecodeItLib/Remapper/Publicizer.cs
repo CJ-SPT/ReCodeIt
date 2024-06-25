@@ -1,66 +1,15 @@
-﻿using Mono.Cecil;
-using Mono.Cecil.Rocks;
-using ReCodeIt.Utils;
+﻿using dnlib.DotNet;
 using System.Runtime.CompilerServices;
 
 namespace ReCodeIt.ReMapper;
 
-public static class Publicizer
-{
-    public static void Publicize()
-    {
-        Logger.Log("Starting publicization...", ConsoleColor.Green);
-
-        foreach (var type in DataProvider.ModuleDefinition.Types)
-        {
-            if (type.IsNotPublic) { type.IsPublic = true; }
-
-            // We only want to do methods and properties
-
-            if (type.HasMethods)
-            {
-                foreach (var method in type.Methods)
-                {
-                    method.IsPublic = true;
-                }
-            }
-
-            if (type.HasProperties)
-            {
-                foreach (var property in type.Properties)
-                {
-                    if (property.SetMethod != null)
-                    {
-                        property.SetMethod.IsPublic = true;
-                    }
-
-                    if (property.GetMethod != null)
-                    {
-                        property.GetMethod.IsPublic = true;
-                    }
-                }
-            }
-        }
-    }
-
-    public static void Unseal()
-    {
-        Logger.Log("Starting unseal...", ConsoleColor.Green);
-
-        foreach (var type in DataProvider.ModuleDefinition.Types)
-        {
-            if (type.IsSealed) { type.IsSealed = false; }
-        }
-    }
-}
-
 internal static class SPTPublicizer
 {
-    private static ModuleDefinition MainModule;
+    private static ModuleDefMD MainModule;
 
-    public static void PublicizeClasses(ModuleDefinition definition)
+    public static void PublicizeClasses(ModuleDefMD definition)
     {
-        var types = definition.GetAllTypes();
+        var types = definition.GetTypes();
 
         foreach (var type in types)
         {
@@ -70,7 +19,7 @@ internal static class SPTPublicizer
         }
     }
 
-    private static void PublicizeType(TypeDefinition type)
+    private static void PublicizeType(TypeDef type)
     {
         // if (type.CustomAttributes.Any(a => a.AttributeType.Name ==
         // nameof(CompilerGeneratedAttribute))) { return; }
@@ -109,11 +58,11 @@ internal static class SPTPublicizer
         // Workaround to not publicize some nested types that cannot be patched easily and cause
         // issues Specifically, we want to find any type that implements the "IHealthController"
         // interface and make sure none of it's nested types that implement "IEffect" are changed
-        if (GetFlattenedInterfacesRecursive(type).Any(i => i.InterfaceType.Name == "IHealthController"))
+        if (GetFlattenedInterfacesRecursive(type).Any(i => i.Interface.Name == "IHealthController"))
         {
             // Specifically, any type that implements the IHealthController interface needs to not
             // publicize any nested types that implement the IEffect interface
-            nestedTypesToPublicize = type.NestedTypes.Where(t => t.IsAbstract || t.Interfaces.All(i => i.InterfaceType.Name != "IEffect")).ToArray();
+            nestedTypesToPublicize = type.NestedTypes.Where(t => t.IsAbstract || t.Interfaces.All(i => i.Interface.Name != "IEffect")).ToArray();
         }
 
         foreach (var nestedType in nestedTypesToPublicize)
@@ -122,15 +71,7 @@ internal static class SPTPublicizer
         }
     }
 
-    // Don't publicize methods that implement interfaces not belonging to the current assembly
-    // Unused - sometimes some ambiguous reference errors appear due to this, but the pros outweigh
-    // the cons at the moment
-    private static bool CanPublicizeMethod(MethodDefinition method)
-    {
-        return !method.HasOverrides && method.GetBaseMethod().Equals(method) && !method.IsVirtual;
-    }
-
-    private static void PublicizeMethod(MethodDefinition method)
+    private static void PublicizeMethod(MethodDef method)
     {
         if (method.IsCompilerControlled /*|| method.CustomAttributes.Any(a => a.AttributeType.Name == nameof(CompilerGeneratedAttribute))*/)
         {
@@ -151,7 +92,7 @@ internal static class SPTPublicizer
     // Unused for now - publicizing fields is tricky, as it often creates MonoBehaviour loading
     // errors and prevents scenes from loading, most notably breaking the initial game loader scene
     // and causing the game to CTD right after starting
-    private static void PublicizeField(FieldDefinition field)
+    private static void PublicizeField(FieldDef field)
     {
         if (field.CustomAttributes.Any(a => a.AttributeType.Name == nameof(CompilerGeneratedAttribute))
             // || field.HasCustomAttributes
@@ -167,9 +108,9 @@ internal static class SPTPublicizer
         field.Attributes |= FieldAttributes.Public;
     }
 
-    private static List<InterfaceImplementation> GetFlattenedInterfacesRecursive(TypeDefinition type)
+    private static List<InterfaceImpl> GetFlattenedInterfacesRecursive(TypeDef type)
     {
-        var interfaces = new List<InterfaceImplementation>();
+        var interfaces = new List<InterfaceImpl>();
 
         if (type is null) return interfaces;
 
@@ -180,7 +121,7 @@ internal static class SPTPublicizer
 
         if (type.BaseType != null && !type.BaseType.Name.Contains("Object"))
         {
-            var baseTypeDefinition = MainModule?.ImportReference(type.BaseType)?.Resolve();
+            var baseTypeDefinition = MainModule?.Find(type.BaseType);
             var baseTypeInterfaces = GetFlattenedInterfacesRecursive(baseTypeDefinition);
 
             if (baseTypeInterfaces.Any())

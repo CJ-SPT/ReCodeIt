@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using dnlib.DotNet;
 
 namespace ReCodeIt.AutoMapper;
 
@@ -10,18 +10,18 @@ namespace ReCodeIt.AutoMapper;
 /// <param name="isInterface"></param>
 /// <param name="isStruct"></param>
 public sealed class MappingPair(
-    TypeDefinition type,
+    TypeDef type,
     string name,
     bool isInterface,
     bool isStruct,
     bool isPublic)
 {
-    public TypeDefinition OriginalTypeDefinition { get; private set; } = type;
+    public TypeDef OriginalTypeDefinition { get; private set; } = type;
 
     /// <summary>
     /// The type reference we want to change
     /// </summary>
-    public TypeDefinition NewTypeRef { get; set; }
+    public TypeDef NewTypeRef { get; set; }
 
     /// <summary>
     /// Is this field an interface?

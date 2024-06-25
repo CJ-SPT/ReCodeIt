@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using dnlib.DotNet;
 using MoreLinq;
 using ReCodeIt.Enums;
 using ReCodeIt.Models;
@@ -7,13 +7,12 @@ namespace ReCodeIt.ReMapper.Search;
 
 internal class NestedTypes
 {
-    public static EMatchResult Include(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Include(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.IncludeNestedTypes is null || parms.IncludeNestedTypes.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.NestedTypes
-            .Where(nt => parms.IncludeNestedTypes.Contains(nt.Name))
-            .Count();
+            .Count(nt => parms.IncludeNestedTypes.Contains(nt.Name));
 
         score.Score += matches > 0 ? matches : -matches;
 
@@ -24,13 +23,12 @@ internal class NestedTypes
             : EMatchResult.NoMatch;
     }
 
-    public static EMatchResult Exclude(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Exclude(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.ExcludeNestedTypes is null || parms.ExcludeNestedTypes.Count == 0) return EMatchResult.Disabled;
 
         var matches = type.NestedTypes
-            .Where(nt => parms.ExcludeNestedTypes.Contains(nt.Name))
-            .Count();
+            .Count(nt => parms.ExcludeNestedTypes.Contains(nt.Name));
 
         score.Score += matches > 0 ? -matches : 1;
 
@@ -41,7 +39,7 @@ internal class NestedTypes
             : EMatchResult.Match;
     }
 
-    public static EMatchResult Count(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult Count(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.NestedTypeCount is null) return EMatchResult.Disabled;
 

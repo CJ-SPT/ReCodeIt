@@ -1,7 +1,6 @@
-﻿using ReCodeIt.Enums;
+﻿using dnlib.DotNet;
+using ReCodeIt.Enums;
 using ReCodeIt.Models;
-using Mono.Cecil;
-using Mono.Cecil.Rocks;
 
 namespace ReCodeIt.ReMapper.Search;
 
@@ -13,13 +12,12 @@ internal static class Constructors
     /// <param name="parms"></param>
     /// <param name="score"></param>
     /// <returns>Match if constructor parameters matches</returns>
-    public static EMatchResult GetTypeByParameterCount(TypeDefinition type, SearchParams parms, ScoringModel score)
+    public static EMatchResult GetTypeByParameterCount(TypeDef type, SearchParams parms, ScoringModel score)
     {
         if (parms.ConstructorParameterCount is null) return EMatchResult.Disabled;
 
-        var match = type.GetConstructors()
-            .Where(c => c.Parameters.Count == parms.ConstructorParameterCount)
-            .Any();
+        var match = type.FindConstructors()
+            .Any(c => c.Parameters.Count == parms.ConstructorParameterCount);
 
         return match
             ? EMatchResult.Match

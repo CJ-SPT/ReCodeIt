@@ -1,5 +1,4 @@
-﻿using Mono.Cecil;
-using Mono.Cecil.Rocks;
+﻿using dnlib.DotNet;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
 
@@ -13,9 +12,9 @@ internal static class RenameHelper
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
     /// <param name="score"></param>
-    public static void RenameAll(ScoringModel score, bool direct = false)
+    public static void RenameAll(ModuleDefMD module, ScoringModel score, bool direct = false)
     {
-        var types = DataProvider.ModuleDefinition.GetAllTypes();
+        var types = module.GetTypes();
 
         // Rename all fields and properties first
         if (DataProvider.Settings.Remapper.MappingSettings.RenameFields)
@@ -40,14 +39,14 @@ internal static class RenameHelper
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
     /// <param name="score"></param>
-    public static void RenameAllDirect(RemapModel remap, TypeDefinition type)
+    public static void RenameAllDirect(ModuleDefMD module, RemapModel remap, TypeDef type)
     {
         var directRename = new ScoringModel
         {
             Definition = type,
             ReMap = remap
         };
-        RenameAll(directRename, true);
+        RenameAll(module, directRename, true);
     }
 
     /// <summary>
@@ -60,7 +59,7 @@ internal static class RenameHelper
     public static int RenameAllFields(
         string oldTypeName,
         string newTypeName,
-        IEnumerable<TypeDefinition> typesToCheck,
+        IEnumerable<TypeDef> typesToCheck,
         int overAllCount = 0)
     {
         foreach (var type in typesToCheck)
@@ -73,14 +72,14 @@ internal static class RenameHelper
             int fieldCount = 0;
             foreach (var field in fields)
             {
-                if (field.FieldType.Name == oldTypeName)
+                if (field.Name == oldTypeName)
                 {
                     var newFieldName = GetNewFieldName(newTypeName, field.IsPrivate, fieldCount);
 
                     // Dont need to do extra work
                     if (field.Name == newFieldName) { continue; }
 
-                    Logger.Log($"Renaming original field type name: `{field.FieldType.Name}` with name `{field.Name}` to `{newFieldName}`", ConsoleColor.Green);
+                    Logger.Log($"Renaming original field type name: `{field.Name}` with name `{field.Name}` to `{newFieldName}`", ConsoleColor.Green);
 
                     field.Name = newFieldName;
 
@@ -108,7 +107,7 @@ internal static class RenameHelper
     public static int RenameAllProperties(
         string oldTypeName,
         string newTypeName,
-        IEnumerable<TypeDefinition> typesToCheck,
+        IEnumerable<TypeDef> typesToCheck,
         int overAllCount = 0)
     {
         foreach (var type in typesToCheck)
@@ -121,14 +120,14 @@ internal static class RenameHelper
             int propertyCount = 0;
             foreach (var property in properties)
             {
-                if (property.PropertyType.Name == oldTypeName)
+                if (property.Name == oldTypeName)
                 {
                     var newPropertyName = GetNewPropertyName(newTypeName, propertyCount);
 
                     // Dont need to do extra work
                     if (property.Name == newPropertyName) { continue; }
 
-                    Logger.Log($"Renaming original property type name: `{property.PropertyType.Name}` with name `{property.Name}` to `{newPropertyName}`", ConsoleColor.Green);
+                    Logger.Log($"Renaming original property type name: `{property.Name}` with name `{property.Name}` to `{newPropertyName}`", ConsoleColor.Green);
                     property.Name = newPropertyName;
                     propertyCount++;
                     overAllCount++;
@@ -157,7 +156,7 @@ internal static class RenameHelper
         return propertyCount > 0 ? $"{newName}_{propertyCount}" : newName;
     }
 
-    private static void RenameType(IEnumerable<TypeDefinition> typesToCheck, ScoringModel score)
+    private static void RenameType(IEnumerable<TypeDef> typesToCheck, ScoringModel score)
     {
         foreach (var type in typesToCheck)
         {
