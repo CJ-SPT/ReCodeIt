@@ -112,7 +112,7 @@ public static class DataProvider
             }
         }
 
-        Logger.Log($"Mapping file loaded from '{path}' containing {Remaps.Count} remaps");
+        Logger.Log($"Mapping file loaded from '{path}' containing {remaps.Count} remaps");
 
         return remaps;
     }

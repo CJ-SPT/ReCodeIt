@@ -4,6 +4,7 @@ using ReCodeIt.CrossCompiler;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper.Search;
 using ReCodeIt.Utils;
+using ReCodeItLib.Remapper.Search;
 using System.Diagnostics;
 
 namespace ReCodeIt.ReMapper;
@@ -38,6 +39,8 @@ public class ReCodeItRemapper
 
     private string AssemblyPath { get; set; }
 
+    private List<RemapModel> _remaps = [];
+
     /// <summary>
     /// Start the remapping process
     /// </summary>
@@ -47,6 +50,7 @@ public class ReCodeItRemapper
         string outPath,
         bool crossMapMode = false)
     {
+        _remaps = remapModels;
         Module = DataProvider.LoadModule(assemblyPath);
 
         AssemblyPath = assemblyPath;
@@ -121,114 +125,19 @@ public class ReCodeItRemapper
             types = types.Where(type => tokens.Any(token => type.Name.StartsWith(token)));
         }
 
-        // REQUIRED PROPERTY
-        if (mapping.SearchParams.IsPublic is true)
-        {
-            if (mapping.SearchParams.IsNested is true)
-            {
-                Logger.Log("IsNested Public", ConsoleColor.Yellow);
+        types = TypeFilters.FilterPublic(types, mapping.SearchParams);
 
-                types = types.Where(t => t.IsNestedPublic);
-            }
-            else
-            {
-                Logger.Log("IsPublic is true", ConsoleColor.Yellow);
-                types = types.Where(t => t.IsPublic);
-            }
-        }
-        else if (mapping.SearchParams.IsPublic is false)
-        {
-            if (mapping.SearchParams.IsNested is true)
-            {
-                Logger.Log("IsNested Private or family", ConsoleColor.Yellow);
+        types = TypeFilters.FilterAbstract(types, mapping.SearchParams);
 
-                types = types.Where(t => t.IsNestedPrivate
-                                         || t.IsNestedFamily
-                                         || t.IsNestedFamilyAndAssembly
-                                         || t.IsNestedAssembly);
-            }
-            else
-            {
-                Logger.Log("IsPublic is false", ConsoleColor.Yellow);
-                types = types.Where(t => t.IsNotPublic);
-            }
-        }
-        else
-        {
-            Logger.Log("ERROR: IsPublic is null, skipping...", ConsoleColor.Red);
-            return;
-        }
+        types = TypeFilters.FilterInterface(types, mapping.SearchParams);
 
-        // Filter based on abstract or not
-        if (mapping.SearchParams.IsAbstract is true)
-        {
-            Logger.Log("IsAbstract is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsAbstract);
-        }
-        else if (mapping.SearchParams.IsAbstract is false)
-        {
-            Logger.Log("IsAbstract is false", ConsoleColor.Yellow);
-            types = types.Where(t => !t.IsAbstract);
-        }
+        types = TypeFilters.FilterStruct(types, mapping.SearchParams);
 
-        // Filter based on interface or not
-        if (mapping.SearchParams.IsInterface is true)
-        {
-            Logger.Log("IsInterface is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsInterface);
-        }
-        else if (mapping.SearchParams.IsInterface is false)
-        {
-            Logger.Log("IsInterface is false", ConsoleColor.Yellow);
-            types = types.Where(t => !t.IsInterface);
-        }
+        types = TypeFilters.FilterEnum(types, mapping.SearchParams);
 
-        if (mapping.SearchParams.IsStruct is true)
-        {
-            Logger.Log("IsStruct is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsValueType && !t.IsEnum && !t.IsClass || !t.IsInterface);
-        }
-        else if (mapping.SearchParams.IsStruct is false)
-        {
-            Logger.Log("IsStruct is false", ConsoleColor.Yellow);
-            types = types.Where(t => !t.IsValueType && t.IsClass || t.IsEnum || t.IsInterface);
-        }
+        types = TypeFilters.FilterAttributes(types, mapping.SearchParams);
 
-        // Filter based on enum or not
-        if (mapping.SearchParams.IsEnum is true)
-        {
-            Logger.Log("IsEnum is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsEnum);
-        }
-        else if (mapping.SearchParams.IsEnum is false)
-        {
-            Logger.Log("IsEnum is false", ConsoleColor.Yellow);
-            types = types.Where(t => !t.IsEnum);
-        }
-
-        // Filter based on HasAttribute or not
-        if (mapping.SearchParams.HasAttribute is true)
-        {
-            Logger.Log("HasAttribute is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.HasCustomAttributes);
-        }
-        else if (mapping.SearchParams.HasAttribute is false)
-        {
-            Logger.Log("HasAttribute is false", ConsoleColor.Yellow);
-            types = types.Where(t => !t.HasCustomAttributes);
-        }
-
-        // Filter based on IsDerived or not
-        if (mapping.SearchParams.IsDerived is true)
-        {
-            Logger.Log("IsDerived is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.GetBaseType() is not null);
-        }
-        else if (mapping.SearchParams.IsDerived is false)
-        {
-            Logger.Log("IsDerived is false", ConsoleColor.Yellow);
-            types = types.Where(t => t.GetBaseType() is null);
-        }
+        types = TypeFilters.FilterDerived(types, mapping.SearchParams);
 
         foreach (var type in types)
         {
@@ -325,7 +234,7 @@ public class ReCodeItRemapper
         var failures = 0;
         var changes = 0;
 
-        foreach (var remap in DataProvider.Remaps)
+        foreach (var remap in _remaps)
         {
             if (remap.Succeeded is false)
             {
