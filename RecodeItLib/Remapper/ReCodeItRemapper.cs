@@ -63,12 +63,18 @@ public class ReCodeItRemapper
 
         Stopwatch.Start();
 
+        var tasks = new List<Task>(remapModels.Count);
         foreach (var remap in remapModels)
         {
-            Logger.Log($"\nFinding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
-
-            ScoreMapping(remap);
+            tasks.Add(
+                Task.Factory.StartNew(() =>
+                {
+                    Logger.Log($"\nFinding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
+                    ScoreMapping(remap);
+                })
+            );
         }
+        Task.WaitAll(tasks.ToArray());
 
         ChooseBestMatches();
 
