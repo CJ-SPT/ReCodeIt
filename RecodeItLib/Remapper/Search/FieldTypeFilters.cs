@@ -20,12 +20,11 @@ internal static class FieldTypeFilters
 
         foreach (var type in types)
         {
-            foreach (var field in type.Fields)
+            if (parms.IncludeFields
+                .All(includeName => type.Fields
+                    .Any(field => field.Name.String == includeName)))
             {
-                if (parms.IncludeFields.Contains(field.Name.String))
-                {
-                    filteredTypes.Add(type);
-                }
+                filteredTypes.Add(type);
             }
         }
 

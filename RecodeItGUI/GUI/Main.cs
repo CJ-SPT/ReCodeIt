@@ -460,7 +460,7 @@ public partial class ReCodeItForm : Form
         }
 
         Remapper.InitializeRemap(
-            DataProvider.Remaps,
+            DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath),
             AppSettings.Remapper.AssemblyPath,
             AppSettings.Remapper.OutputPath);
 

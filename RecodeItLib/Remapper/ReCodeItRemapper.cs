@@ -50,6 +50,7 @@ public class ReCodeItRemapper
         string outPath,
         bool crossMapMode = false)
     {
+        _remaps = [];
         _remaps = remapModels;
         Module = DataProvider.LoadModule(assemblyPath);
 

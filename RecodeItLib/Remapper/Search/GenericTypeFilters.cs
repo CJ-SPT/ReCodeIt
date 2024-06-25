@@ -78,7 +78,7 @@ internal static class GenericTypeFilters
         if (parms.IsAbstract is true)
         {
             Logger.Log("IsAbstract is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsAbstract);
+            types = types.Where(t => t.IsAbstract && !t.IsInterface);
         }
         else if (parms.IsAbstract is false)
         {
@@ -146,12 +146,12 @@ internal static class GenericTypeFilters
         if (parms.IsStruct is true)
         {
             Logger.Log("IsStruct is true", ConsoleColor.Yellow);
-            types = types.Where(t => t.IsValueType && !t.IsEnum && !t.IsClass && !t.IsInterface);
+            types = types.Where(t => t.IsValueType && !t.IsEnum);
         }
         else if (parms.IsStruct is false)
         {
             Logger.Log("IsStruct is false", ConsoleColor.Yellow);
-            types = types.Where(t => !t.IsValueType && t.IsClass || t.IsEnum || t.IsInterface);
+            types = types.Where(t => !t.IsValueType);
         }
 
         return types;

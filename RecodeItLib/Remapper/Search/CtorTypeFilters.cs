@@ -15,8 +15,16 @@ internal static class CtorTypeFilters
     {
         if (parms.ConstructorParameterCount is null) return types;
 
-        return types
-            .Where(type => type.FindConstructors()
-                .Any(ctor => ctor.Parameters.Count == parms.ConstructorParameterCount));
+        return types.Where(type =>
+        {
+            var constructors = type.FindConstructors();
+            return constructors != null && constructors.Any(ctor =>
+            {
+                // Ensure Parameters isn't null before checking Count
+                var parameters = ctor.Parameters;
+                // This +1 offset is needed for some reason, needs investigation
+                return parameters != null && parameters.Count == parms.ConstructorParameterCount + 1;
+            });
+        });
     }
 }

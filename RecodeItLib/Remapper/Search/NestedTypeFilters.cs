@@ -19,12 +19,11 @@ internal static class NestedTypeFilters
 
         foreach (var type in types)
         {
-            foreach (var nt in type.NestedTypes)
+            if (parms.IncludeNestedTypes
+                .All(includeName => type.NestedTypes
+                    .Any(nestedType => nestedType.Name.String == includeName)))
             {
-                if (parms.IncludeNestedTypes.Contains(nt.Name.String))
-                {
-                    filteredTypes.Add(type);
-                }
+                filteredTypes.Add(type);
             }
         }
 
@@ -67,7 +66,7 @@ internal static class NestedTypeFilters
     {
         if (parms.NestedTypeCount is null) return types;
 
-        if (parms.FieldCount >= 0)
+        if (parms.NestedTypeCount >= 0)
         {
             types = types.Where(t => t.NestedTypes.Count == parms.NestedTypeCount);
         }

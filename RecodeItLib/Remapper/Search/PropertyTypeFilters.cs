@@ -20,12 +20,11 @@ internal static class PropertyTypeFilters
 
         foreach (var type in types)
         {
-            foreach (var prop in type.Properties)
+            if (parms.IncludeProperties
+                .All(includeName => type.Properties
+                    .Any(prop => prop.Name.String == includeName)))
             {
-                if (parms.IncludeProperties.Contains(prop.Name.String))
-                {
-                    filteredTypes.Add(type);
-                }
+                filteredTypes.Add(type);
             }
         }
 

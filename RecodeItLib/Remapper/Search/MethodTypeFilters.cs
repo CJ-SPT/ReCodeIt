@@ -20,18 +20,11 @@ internal static class MethodTypeFilters
 
         foreach (var type in types)
         {
-            foreach (var method in type.Methods)
+            if (parms.IncludeMethods
+                .All(includeName => type.Methods
+                    .Any(method => method.Name.String == includeName)))
             {
-                if (parms.IncludeMethods.Contains(method.Name.String))
-                {
-                    filteredTypes.Add(type);
-                    continue;
-                }
-
-                if (parms.IncludeMethods.Contains(method.Name.String.Split(".").Last()))
-                {
-                    filteredTypes.Add(type);
-                }
+                filteredTypes.Add(type);
             }
         }
 
@@ -93,7 +86,7 @@ internal static class MethodTypeFilters
         int count = 0;
         foreach (var method in type.Methods)
         {
-            if (!method.IsConstructor)
+            if (!method.IsConstructor && !method.IsSpecialName)
             {
                 count++;
             }
