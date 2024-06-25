@@ -163,6 +163,36 @@ public class ReCodeItRemapper
             types = types.Where(t => !t.IsEnum);
         }
 
+        // Filter based on HasAttribute or not
+        if (mapping.SearchParams.HasAttribute is true)
+        {
+            types = types.Where(t => t.HasCustomAttributes);
+        }
+        else if (mapping.SearchParams.HasAttribute is false)
+        {
+            types = types.Where(t => !t.HasCustomAttributes);
+        }
+
+        // Filter based on IsNested or not
+        if (mapping.SearchParams.IsNested is true)
+        {
+            types = types.Where(t => t.IsNested);
+        }
+        else if (mapping.SearchParams.IsNested is false)
+        {
+            types = types.Where(t => !t.IsNested);
+        }
+
+        // Filter based on IsNested or not
+        if (mapping.SearchParams.IsDerived is true)
+        {
+            types = types.Where(t => t.BaseType is not null);
+        }
+        else if (mapping.SearchParams.IsDerived is false)
+        {
+            types = types.Where(t => t.BaseType is null);
+        }
+
         foreach (var type in types)
         {
             FindMatch(type, mapping);

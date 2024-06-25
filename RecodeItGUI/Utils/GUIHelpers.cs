@@ -1,4 +1,5 @@
 ﻿using ReCodeIt.Models;
+using ReCodeIt.Utils;
 
 namespace ReCodeIt.GUI;
 
@@ -63,9 +64,34 @@ internal static class GUIHelpers
         if (update != null)
         {
             domainUpDown.Text = update.ToString();
+
+            if (update.ToString() == "True")
+            {
+                Logger.Log("Updating!");
+                domainUpDown.SelectedItem = "True";
+            }
+            else
+            {
+                domainUpDown.SelectedItem = "False";
+            }
         }
 
         domainUpDown.Items.AddRange(list);
+    }
+
+    public static void AddItemsToComboBox(this ComboBox cb, List<string> items)
+    {
+        cb.Items.Clear();
+
+        foreach (var item in items)
+        {
+            cb.Items.Add(item);
+        }
+    }
+
+    public static T? GetSelectedItem<T>(this ComboBox cb)
+    {
+        return (T)cb.SelectedItem;
     }
 
     /// <summary>
