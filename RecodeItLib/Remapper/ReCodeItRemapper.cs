@@ -299,7 +299,15 @@ public class ReCodeItRemapper
 
         OutPath = Path.Combine(OutPath, moduleName);
 
-        Module.Write(OutPath);
+        try
+        {
+            Module.Write(OutPath);
+        }
+        catch (Exception e)
+        {
+            Logger.Log(e);
+            throw;
+        }
 
         Logger.Log("Creating Hollow...", ConsoleColor.Yellow);
         //Hollow();

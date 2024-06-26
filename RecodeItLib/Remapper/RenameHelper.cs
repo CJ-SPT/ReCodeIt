@@ -85,9 +85,11 @@ internal static class RenameHelper
 
                     Logger.Log($"Renaming field on type {type.Name} named `{field.Name}` with type `{field.FieldType.TypeName}` to `{newFieldName}`", ConsoleColor.Green);
 
+                    var oldName = field.Name.ToString();
+
                     field.Name = newFieldName;
 
-                    Logger.Log($"Renamed field {field.Name} to {newFieldName}", ConsoleColor.Green);
+                    RenameAllFieldRefsInMethods(typesToCheck, field, oldName);
 
                     fieldCount++;
                     overAllCount++;
@@ -96,6 +98,31 @@ internal static class RenameHelper
         }
 
         return typesToCheck;
+    }
+
+    private static void RenameAllFieldRefsInMethods(IEnumerable<TypeDef> typesToCheck, FieldDef newDef, string oldName)
+    {
+        foreach (var type in typesToCheck)
+        {
+            foreach (var method in type.Methods)
+            {
+                if (!method.HasBody) continue;
+
+                IterateMethodInstructions(method, newDef, oldName);
+            }
+        }
+    }
+
+    private static void IterateMethodInstructions(MethodDef method, FieldDef newDef, string oldName)
+    {
+        foreach (var instr in method.Body.Instructions)
+        {
+            if (instr.Operand is FieldDef fieldDef && fieldDef.Name == oldName)
+            {
+                Logger.Log($"Renaming field reference in method {method.Name} from `{fieldDef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
+                fieldDef.Name = newDef.Name;
+            }
+        }
     }
 
     /// <summary>
