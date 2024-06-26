@@ -73,25 +73,20 @@ internal static class RenameHelper
             int fieldCount = 0;
             foreach (var field in fields)
             {
-                if (field.Name == oldTypeName)
+                if (field.FieldType.TypeName == oldTypeName)
                 {
                     var newFieldName = GetNewFieldName(newTypeName, field.IsPrivate, fieldCount);
 
                     // Dont need to do extra work
                     if (field.Name == newFieldName) { continue; }
 
-                    Logger.Log($"Renaming original field type name: `{field.Name}` with name `{field.Name}` to `{newFieldName}`", ConsoleColor.Green);
+                    Logger.Log($"Renaming field on type {type.Name} named `{field.Name}` with type `{field.FieldType.TypeName}` to `{newFieldName}`", ConsoleColor.Green);
 
                     field.Name = newFieldName;
 
                     fieldCount++;
                     overAllCount++;
                 }
-            }
-
-            if (type.HasNestedTypes)
-            {
-                RenameAllFields(oldTypeName, newTypeName, type.NestedTypes, overAllCount);
             }
         }
 
@@ -121,14 +116,14 @@ internal static class RenameHelper
             int propertyCount = 0;
             foreach (var property in properties)
             {
-                if (property.Name == oldTypeName)
+                if (property.PropertySig.RetType.TypeName == oldTypeName)
                 {
                     var newPropertyName = GetNewPropertyName(newTypeName, propertyCount);
 
                     // Dont need to do extra work
                     if (property.Name == newPropertyName) { continue; }
 
-                    Logger.Log($"Renaming original property type name: `{property.Name}` with name `{property.Name}` to `{newPropertyName}`", ConsoleColor.Green);
+                    Logger.Log($"Renaming property on type {type.Name} named `{property.Name}` with type `{property.PropertySig.RetType.TypeName}` to `{newPropertyName}`", ConsoleColor.Green);
                     property.Name = newPropertyName;
                     propertyCount++;
                     overAllCount++;
