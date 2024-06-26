@@ -29,8 +29,6 @@ public class RemapModel
 
     public string NewTypeName { get; set; } = string.Empty;
 
-    public string RemapperGivenName { get; set; } = string.Empty;
-
     public string OriginalTypeName { get; set; } = string.Empty;
 
     public bool UseForceRename { get; set; }

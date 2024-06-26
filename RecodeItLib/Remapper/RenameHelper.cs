@@ -47,9 +47,9 @@ internal static class RenameHelper
     /// <param name="module"></param>
     /// <param name="remap"></param>
     /// <param name="type"></param>
-    public static void RenameAllDirect(ModuleDefMD module, RemapModel remap, TypeDef type)
+    public static void RenameAllDirect(IEnumerable<TypeDef> types, RemapModel remap, TypeDef type)
     {
-        //RenameAll(module.GetTypes(), remap, true);
+        RenameAll(types, remap, true);
     }
 
     /// <summary>

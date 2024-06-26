@@ -60,8 +60,6 @@ public class ReCodeItRemapper
         OutPath = outPath;
 
         IsRunning = true;
-        DisplayBasicModuleInformation();
-
         Stopwatch.Start();
 
         var types = Module.GetTypes();
@@ -96,7 +94,7 @@ public class ReCodeItRemapper
         // Don't publicize and unseal until after the remapping, so we can use those as search parameters
         if (Settings.MappingSettings.Publicize)
         {
-            Logger.Log("Publicizing classes...", ConsoleColor.Green);
+            Logger.Log("Publicizing classes...", ConsoleColor.Yellow);
 
             SPTPublicizer.PublicizeClasses(Module);
         }
@@ -108,19 +106,6 @@ public class ReCodeItRemapper
         {
             ProjectManager.SaveCrossCompilerProjectModel(_compiler.ActiveProject);
         }
-    }
-
-    /// <summary>
-    /// Display information about the module we are remapping
-    /// </summary>
-    private void DisplayBasicModuleInformation()
-    {
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-        Logger.Log($"Starting remap...", ConsoleColor.Yellow);
-        Logger.Log($"Module contains {Module.GetTypes().Count()} Types", ConsoleColor.Yellow);
-        Logger.Log($"Publicize: {Settings.MappingSettings.Publicize}", ConsoleColor.Yellow);
-        Logger.Log($"Unseal: {Settings.MappingSettings.Unseal}", ConsoleColor.Yellow);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
     /// <summary>
@@ -174,31 +159,6 @@ public class ReCodeItRemapper
         mapping.TypeCandidates.UnionWith(types);
     }
 
-    private void HandleByDirectName(TypeDef type, RemapModel remap)
-    {
-        if (type.Name != remap.OriginalTypeName) { return; }
-
-        var oldName = type.Name;
-        remap.OriginalTypeName = type.Name;
-        remap.NoMatchReasons.Clear();
-        remap.Succeeded = true;
-
-        if (CrossMapMode)
-        {
-            // Store the original types for caching
-            _compiler.ActiveProject.ChangedTypes.Add(remap.NewTypeName, type.Name);
-        }
-
-        type.Name = remap.NewTypeName;
-
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Renamed {oldName} to {type.Name} directly", ConsoleColor.Green);
-
-        RenameHelper.RenameAllDirect(Module, remap, type);
-
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-    }
-
     /// <summary>
     /// Choose the best possible match from all remaps
     /// </summary>
@@ -208,33 +168,6 @@ public class ReCodeItRemapper
         {
             ChooseBestMatch(remap);
         }
-
-        var failures = 0;
-        var changes = 0;
-
-        foreach (var remap in _remaps)
-        {
-            if (remap.Succeeded is false)
-            {
-                Logger.Log("-----------------------------------------------", ConsoleColor.Red);
-                Logger.Log($"Renaming {remap.NewTypeName} failed with reason(s)", ConsoleColor.Red);
-
-                foreach (var reason in remap.NoMatchReasons)
-                {
-                    Logger.Log($"Reason: {reason}", ConsoleColor.Red);
-                }
-
-                Logger.Log("-----------------------------------------------", ConsoleColor.Red);
-                failures++;
-                continue;
-            }
-
-            changes++;
-        }
-
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
-        Logger.Log($"Result: Remapped {changes} Types. Failed to remap {failures} Types", ConsoleColor.Yellow);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Yellow);
     }
 
     /// <summary>
@@ -252,33 +185,11 @@ public class ReCodeItRemapper
 
         remap.Succeeded = true;
 
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Renaming {winner.FullName} to {remap.NewTypeName}", ConsoleColor.Green);
-
         remap.OriginalTypeName = winner.Name.String;
-
-        DisplayAlternativeMatches(remap);
 
         if (CrossMapMode)
         {// Store the original types for caching
             //_compiler.ActiveProject.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
-        }
-
-        // Rename type and all associated type members
-
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-    }
-
-    private void DisplayAlternativeMatches(RemapModel remap)
-    {
-        if (remap.TypeCandidates.Count() > 1)
-        {
-            Logger.Log($"Warning! There were {remap.TypeCandidates.Count()} possible matches. Consider adding more search parameters, Only showing the first 5.", ConsoleColor.Yellow);
-
-            foreach (var type in remap.TypeCandidates.Skip(1).Take(5))
-            {
-                Logger.Log($"{type.Name}", ConsoleColor.Yellow);
-            }
         }
     }
 
@@ -303,18 +214,13 @@ public class ReCodeItRemapper
         }
 
         Logger.Log("Creating Hollow...", ConsoleColor.Yellow);
-        //Hollow();
+        Hollow();
 
         var hollowedDir = Path.GetDirectoryName(OutPath);
         var hollowedPath = Path.Combine(hollowedDir, "Hollowed.dll");
-        //Module.Write(hollowedPath);
+        Module.Write(hollowedPath);
 
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log($"Complete: Assembly written to `{OutPath}`", ConsoleColor.Green);
-        Logger.Log($"Complete: Hollowed written to `{hollowedPath}`", ConsoleColor.Green);
-        Logger.Log("Original type names updated on mapping file.", ConsoleColor.Green);
-        Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        DisplayEndBanner(hollowedPath);
 
         Stopwatch.Reset();
 
@@ -334,6 +240,67 @@ public class ReCodeItRemapper
                 if (!method.HasBody) { continue; }
 
                 method.Body = new CilBody();
+            }
+        }
+    }
+
+    private void DisplayEndBanner(string hollowedPath)
+    {
+        var failures = 0;
+        var changes = 0;
+
+        foreach (var remap in _remaps)
+        {
+            if (remap.Succeeded is false)
+            {
+                Logger.Log("-----------------------------------------------", ConsoleColor.Red);
+                Logger.Log($"Renaming {remap.NewTypeName} failed with reason(s)", ConsoleColor.Red);
+
+                foreach (var reason in remap.NoMatchReasons)
+                {
+                    Logger.Log($"Reason: {reason}", ConsoleColor.Red);
+                }
+
+                Logger.Log("-----------------------------------------------", ConsoleColor.Red);
+                failures++;
+                continue;
+            }
+
+            changes++;
+        }
+
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+
+        foreach (var remap in _remaps)
+        {
+            if (remap.Succeeded is false) { continue; }
+
+            var original = remap.OriginalTypeName;
+            var proposed = remap.NewTypeName;
+
+            Logger.Log($"Renamed {original} to {proposed}", ConsoleColor.Green);
+
+            DisplayAlternativeMatches(remap);
+        }
+
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log($"Result renamed {changes} Types. Failed to rename {failures} Types", ConsoleColor.Green);
+        Logger.Log($"Assembly written to `{OutPath}`", ConsoleColor.Green);
+        Logger.Log($"Hollowed written to `{hollowedPath}`", ConsoleColor.Green);
+        Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
+    }
+
+    private void DisplayAlternativeMatches(RemapModel remap)
+    {
+        if (remap.TypeCandidates.Count() > 1)
+        {
+            Logger.Log($"Warning! There were {remap.TypeCandidates.Count()} possible matches for {remap.NewTypeName}. Consider adding more search parameters, Only showing the first 5.", ConsoleColor.Yellow);
+
+            foreach (var type in remap.TypeCandidates.Skip(1).Take(5))
+            {
+                Logger.Log($"{type.Name}", ConsoleColor.Yellow);
             }
         }
     }
