@@ -49,7 +49,7 @@ internal static class RenameHelper
     /// <param name="type"></param>
     public static void RenameAllDirect(ModuleDefMD module, RemapModel remap, TypeDef type)
     {
-        RenameAll(module.GetTypes(), remap, true);
+        //RenameAll(module.GetTypes(), remap, true);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ internal static class RenameHelper
             {
                 if (field.FieldType.TypeName == oldTypeName)
                 {
-                    var newFieldName = GetNewFieldName(newTypeName, field.IsPrivate, fieldCount);
+                    var newFieldName = GetNewFieldName(newTypeName, fieldCount);
 
                     // Dont need to do extra work
                     if (field.Name == newFieldName) { continue; }
@@ -89,6 +89,7 @@ internal static class RenameHelper
 
                     field.Name = newFieldName;
 
+                    UpdateTypeFieldMemberRefs(type, field, oldName);
                     RenameAllFieldRefsInMethods(typesToCheck, field, oldName);
 
                     fieldCount++;
@@ -100,6 +101,25 @@ internal static class RenameHelper
         return typesToCheck;
     }
 
+    private static void UpdateTypeFieldMemberRefs(TypeDef type, FieldDef newDef, string oldName)
+    {
+        foreach (var method in type.Methods)
+        {
+            if (!method.HasBody) continue;
+
+            foreach (var instr in method.Body.Instructions)
+            {
+                if (instr.Operand is MemberRef memRef && memRef.Name == oldName)
+                {
+                    //if (!memRef.Name.IsFieldOrPropNameInList(TokensToMatch)) continue;
+
+                    Logger.Log($"Renaming MemRef in method {method.DeclaringType.Name}::{method.Name} from `{memRef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
+                    memRef.Name = newDef.Name;
+                }
+            }
+        }
+    }
+
     private static void RenameAllFieldRefsInMethods(IEnumerable<TypeDef> typesToCheck, FieldDef newDef, string oldName)
     {
         foreach (var type in typesToCheck)
@@ -108,19 +128,38 @@ internal static class RenameHelper
             {
                 if (!method.HasBody) continue;
 
+                if (type.HasGenericParameters)
+                    IterateMethodInstructions(method.ResolveMethodDef(), newDef, oldName);
+
                 IterateMethodInstructions(method, newDef, oldName);
             }
         }
     }
 
+    /// <summary>
+    /// Rename all field and member refs in a method
+    /// </summary>
+    /// <param name="method"></param>
+    /// <param name="newDef"></param>
+    /// <param name="oldName"></param>
     private static void IterateMethodInstructions(MethodDef method, FieldDef newDef, string oldName)
     {
         foreach (var instr in method.Body.Instructions)
         {
             if (instr.Operand is FieldDef fieldDef && fieldDef.Name == oldName)
             {
-                Logger.Log($"Renaming field reference in method {method.Name} from `{fieldDef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
+                if (!fieldDef.Name.IsFieldOrPropNameInList(TokensToMatch)) continue;
+
+                Logger.Log($"Renaming fieldDef in method {method.Name} from `{fieldDef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
                 fieldDef.Name = newDef.Name;
+            }
+
+            if (instr.Operand is MemberRef memRef && memRef.Name == oldName)
+            {
+                if (!memRef.Name.IsFieldOrPropNameInList(TokensToMatch)) continue;
+
+                Logger.Log($"Renaming MemRef in method {method.DeclaringType.Name}::{method.Name} from `{memRef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
+                memRef.Name = newDef.Name;
             }
         }
     }
@@ -166,12 +205,11 @@ internal static class RenameHelper
         return overAllCount;
     }
 
-    public static string GetNewFieldName(string NewName, bool isPrivate, int fieldCount = 0)
+    public static string GetNewFieldName(string NewName, int fieldCount = 0)
     {
-        var discard = isPrivate ? "_" : "";
         string newFieldCount = fieldCount > 0 ? $"_{fieldCount}" : string.Empty;
 
-        return $"{discard}{char.ToLower(NewName[0])}{NewName[1..]}{newFieldCount}";
+        return $"{char.ToLower(NewName[0])}{NewName[1..]}{newFieldCount}";
     }
 
     public static string GetNewPropertyName(string newName, int propertyCount = 0)
