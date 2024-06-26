@@ -180,6 +180,7 @@ public class ReCodeItRemapper
 
         var winner = remap.TypeCandidates.FirstOrDefault();
         remap.TypePrimeCandidate = winner;
+        remap.OriginalTypeName = winner.Name.String;
 
         if (winner is null) { return; }
 
@@ -221,6 +222,11 @@ public class ReCodeItRemapper
         Module.Write(hollowedPath);
 
         DisplayEndBanner(hollowedPath);
+
+        if (DataProvider.Settings.Remapper.MappingPath != string.Empty)
+        {
+            DataProvider.UpdateMapping(DataProvider.Settings.Remapper.MappingPath, _remaps);
+        }
 
         Stopwatch.Reset();
 

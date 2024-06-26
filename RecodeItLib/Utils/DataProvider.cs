@@ -116,7 +116,7 @@ public static class DataProvider
         Logger.Log($"Mapping File Saved To {path}");
     }
 
-    public static void UpdateMapping(string path)
+    public static void UpdateMapping(string path, List<RemapModel> remaps)
     {
         if (!File.Exists(path))
         {
@@ -129,28 +129,11 @@ public static class DataProvider
             Formatting = Formatting.Indented
         };
 
-        var properties = typeof(SearchParams).GetProperties();
-
-        foreach (var remap in Remaps)
-        {
-            foreach (var property in properties)
-            {
-                if (property.PropertyType == typeof(List<string>))
-                {
-                    var val = property.GetValue(remap.SearchParams);
-
-                    if (val is List<string> list && list.Count > 0) { continue; }
-
-                    property.SetValue(remap.SearchParams, null);
-                }
-            }
-        }
-
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
         File.WriteAllText(path, jsonText);
 
-        Logger.Log($"Mapping file saved to {path}");
+        Logger.Log($"Mapping file updated with new type names and saved to {path}", ConsoleColor.Yellow);
     }
 
     public static ModuleDefMD LoadModule(string path)
