@@ -243,9 +243,10 @@ public class ReCodeItRemapper
         {
             foreach (var method in type.Methods.Where(m => m.HasBody))
             {
-                if (!method.HasBody) { continue; }
+                if (!method.HasBody) continue;
 
                 method.Body = new CilBody();
+                method.Body.Instructions.Add(OpCodes.Ret.ToInstruction());
             }
         }
     }
