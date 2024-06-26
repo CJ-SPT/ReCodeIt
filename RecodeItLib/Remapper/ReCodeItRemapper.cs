@@ -96,16 +96,9 @@ public class ReCodeItRemapper
         // Don't publicize and unseal until after the remapping, so we can use those as search parameters
         if (Settings.MappingSettings.Publicize)
         {
-            //Publicizer.Publicize();
-
             Logger.Log("Publicizing classes...", ConsoleColor.Green);
 
-            //SPTPublicizer.PublicizeClasses(DataProvider.ModuleDefinition);
-        }
-
-        if (Settings.MappingSettings.Unseal)
-        {
-            //Publicizer.Unseal();
+            SPTPublicizer.PublicizeClasses(Module);
         }
 
         // We are done, write the assembly
