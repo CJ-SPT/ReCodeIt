@@ -241,6 +241,7 @@ public class ReCodeItRemapper
         if (remap.TypeCandidates.Count == 0) { return; }
 
         var winner = remap.TypeCandidates.FirstOrDefault();
+        remap.TypePrimeCandidate = winner;
 
         if (winner is null) { return; }
 
@@ -260,7 +261,7 @@ public class ReCodeItRemapper
 
         // Rename type and all associated type members
 
-        //RenameHelper.RenameAll(Module, highestScore);
+        RenameHelper.RenameAll(Module, remap);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
