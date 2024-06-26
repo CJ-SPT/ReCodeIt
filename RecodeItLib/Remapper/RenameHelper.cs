@@ -11,11 +11,11 @@ internal static class RenameHelper
     /// <summary>
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
-    /// <param name="score"></param>
-    public static void RenameAll(ModuleDefMD module, RemapModel remap, bool direct = false)
+    /// <param name="module"></param>
+    /// <param name="remap"></param>
+    /// <param name="direct"></param>
+    public static void RenameAll(IEnumerable<TypeDef> types, RemapModel remap, bool direct = false)
     {
-        var types = module.GetTypes();
-
         // Rename all fields and properties first
         if (DataProvider.Settings.Remapper.MappingSettings.RenameFields)
         {
@@ -44,10 +44,12 @@ internal static class RenameHelper
     /// <summary>
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
-    /// <param name="score"></param>
+    /// <param name="module"></param>
+    /// <param name="remap"></param>
+    /// <param name="type"></param>
     public static void RenameAllDirect(ModuleDefMD module, RemapModel remap, TypeDef type)
     {
-        RenameAll(module, remap, true);
+        RenameAll(module.GetTypes(), remap, true);
     }
 
     /// <summary>
@@ -57,7 +59,8 @@ internal static class RenameHelper
     /// <param name="newTypeName"></param>
     /// <param name="typesToCheck"></param>
     /// <returns></returns>
-    public static int RenameAllFields(
+    public static IEnumerable<TypeDef> RenameAllFields(
+
         string oldTypeName,
         string newTypeName,
         IEnumerable<TypeDef> typesToCheck,
@@ -84,13 +87,15 @@ internal static class RenameHelper
 
                     field.Name = newFieldName;
 
+                    Logger.Log($"Renamed field {field.Name} to {newFieldName}", ConsoleColor.Green);
+
                     fieldCount++;
                     overAllCount++;
                 }
             }
         }
 
-        return overAllCount;
+        return typesToCheck;
     }
 
     /// <summary>
@@ -124,15 +129,10 @@ internal static class RenameHelper
                     if (property.Name == newPropertyName) { continue; }
 
                     Logger.Log($"Renaming property on type {type.Name} named `{property.Name}` with type `{property.PropertySig.RetType.TypeName}` to `{newPropertyName}`", ConsoleColor.Green);
-                    property.Name = newPropertyName;
+                    property.Name = new UTF8String(newPropertyName);
                     propertyCount++;
                     overAllCount++;
                 }
-            }
-
-            if (type.HasNestedTypes)
-            {
-                RenameAllProperties(oldTypeName, newTypeName, type.NestedTypes, overAllCount);
             }
         }
 

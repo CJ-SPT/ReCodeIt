@@ -155,8 +155,10 @@ public static class DataProvider
 
     public static ModuleDefMD LoadModule(string path)
     {
-        ModuleContext modCtx = ModuleDef.CreateModuleContext();
-        ModuleDefMD module = ModuleDefMD.Load(path, modCtx);
+        var mcOptions = new ModuleCreationOptions(ModuleDef.CreateModuleContext());
+        ModuleDefMD module = ModuleDefMD.Load(path, mcOptions);
+
+        module.Context = mcOptions.Context;
 
         if (module is null)
         {

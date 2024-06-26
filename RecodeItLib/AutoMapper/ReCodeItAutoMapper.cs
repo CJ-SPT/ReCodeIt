@@ -451,9 +451,6 @@ public class ReCodeItAutoMapper
                     pair.Name,
                     Module.GetTypes());
 
-                TotalFieldRenameCount += fieldCount;
-                TotalPropertyRenameCount += propCount;
-
                 Logger.Log($"Renamed: {fieldCount} fields", ConsoleColor.Green);
                 Logger.Log($"Renamed: {propCount} properties", ConsoleColor.Green);
                 Logger.Log($"------------------------------------------------------------------------", ConsoleColor.Green);

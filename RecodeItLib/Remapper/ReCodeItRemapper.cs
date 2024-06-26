@@ -64,6 +64,8 @@ public class ReCodeItRemapper
 
         Stopwatch.Start();
 
+        var types = Module.GetTypes();
+
         var tasks = new List<Task>(remapModels.Count);
         foreach (var remap in remapModels)
         {
@@ -71,13 +73,25 @@ public class ReCodeItRemapper
                 Task.Factory.StartNew(() =>
                 {
                     Logger.Log($"\nFinding best match for {remap.NewTypeName}...", ConsoleColor.Gray);
-                    ScoreMapping(remap);
+                    ScoreMapping(remap, types);
                 })
             );
         }
         Task.WaitAll(tasks.ToArray());
 
         ChooseBestMatches();
+
+        var renameTasks = new List<Task>(remapModels.Count);
+        foreach (var remap in remapModels)
+        {
+            renameTasks.Add(
+                Task.Factory.StartNew(() =>
+                {
+                    RenameHelper.RenameAll(types, remap);
+                })
+            );
+        }
+        Task.WaitAll(renameTasks.ToArray());
 
         // Don't publicize and unseal until after the remapping, so we can use those as search parameters
         if (Settings.MappingSettings.Publicize)
@@ -121,10 +135,8 @@ public class ReCodeItRemapper
     /// where null is a third disabled state. Then we score the types based on the search parameters
     /// </summary>
     /// <param name="mapping">Mapping to score</param>
-    private void ScoreMapping(RemapModel mapping)
+    private void ScoreMapping(RemapModel mapping, IEnumerable<TypeDef> types)
     {
-        var types = Module.GetTypes();
-
         var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
 
         if (mapping.SearchParams.IsNested is false or null)
@@ -261,8 +273,6 @@ public class ReCodeItRemapper
 
         // Rename type and all associated type members
 
-        RenameHelper.RenameAll(Module, remap);
-
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
     }
 
@@ -292,11 +302,11 @@ public class ReCodeItRemapper
         Module.Write(OutPath);
 
         Logger.Log("Creating Hollow...", ConsoleColor.Yellow);
-        Hollow();
+        //Hollow();
 
         var hollowedDir = Path.GetDirectoryName(OutPath);
         var hollowedPath = Path.Combine(hollowedDir, "Hollowed.dll");
-        Module.Write(hollowedPath);
+        //Module.Write(hollowedPath);
 
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Complete: Assembly written to `{OutPath}`", ConsoleColor.Green);
