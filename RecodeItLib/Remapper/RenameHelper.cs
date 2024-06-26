@@ -90,7 +90,7 @@ internal static class RenameHelper
                     field.Name = newFieldName;
 
                     UpdateTypeFieldMemberRefs(type, field, oldName);
-                    RenameAllFieldRefsInMethods(typesToCheck, field, oldName);
+                    UpdateAllTypeFieldMemberRefs(typesToCheck, field, oldName);
 
                     fieldCount++;
                     overAllCount++;
@@ -99,6 +99,14 @@ internal static class RenameHelper
         }
 
         return typesToCheck;
+    }
+
+    private static void UpdateAllTypeFieldMemberRefs(IEnumerable<TypeDef> typesToCheck, FieldDef newDef, string oldName)
+    {
+        foreach (var type in typesToCheck)
+        {
+            UpdateTypeFieldMemberRefs(type, newDef, oldName);
+        }
     }
 
     private static void UpdateTypeFieldMemberRefs(TypeDef type, FieldDef newDef, string oldName)
@@ -128,10 +136,7 @@ internal static class RenameHelper
             {
                 if (!method.HasBody) continue;
 
-                if (type.HasGenericParameters)
-                    IterateMethodInstructions(method.ResolveMethodDef(), newDef, oldName);
-
-                IterateMethodInstructions(method, newDef, oldName);
+                ChangeFieldNamesInMethods(method, newDef, oldName);
             }
         }
     }
@@ -142,7 +147,7 @@ internal static class RenameHelper
     /// <param name="method"></param>
     /// <param name="newDef"></param>
     /// <param name="oldName"></param>
-    private static void IterateMethodInstructions(MethodDef method, FieldDef newDef, string oldName)
+    private static void ChangeFieldNamesInMethods(MethodDef method, FieldDef newDef, string oldName)
     {
         foreach (var instr in method.Body.Instructions)
         {
@@ -152,14 +157,6 @@ internal static class RenameHelper
 
                 Logger.Log($"Renaming fieldDef in method {method.Name} from `{fieldDef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
                 fieldDef.Name = newDef.Name;
-            }
-
-            if (instr.Operand is MemberRef memRef && memRef.Name == oldName)
-            {
-                if (!memRef.Name.IsFieldOrPropNameInList(TokensToMatch)) continue;
-
-                Logger.Log($"Renaming MemRef in method {method.DeclaringType.Name}::{method.Name} from `{memRef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
-                memRef.Name = newDef.Name;
             }
         }
     }
@@ -196,6 +193,7 @@ internal static class RenameHelper
 
                     Logger.Log($"Renaming property on type {type.Name} named `{property.Name}` with type `{property.PropertySig.RetType.TypeName}` to `{newPropertyName}`", ConsoleColor.Green);
                     property.Name = new UTF8String(newPropertyName);
+
                     propertyCount++;
                     overAllCount++;
                 }
