@@ -1,4 +1,5 @@
 ﻿using ReCodeIt.Models;
+using ReCodeIt.Utils;
 
 namespace ReCodeIt.GUI;
 
@@ -38,10 +39,14 @@ internal static class GUIHelpers
     /// </summary>
     /// <param name="domainUpDown"></param>
     /// <param name="name"></param>
-    public static void BuildStringList(this DomainUpDown domainUpDown, string name, bool? update = null)
+    public static void BuildStringList(this DomainUpDown domainUpDown, string name, bool required, bool? update = null)
     {
         domainUpDown.Items.Clear();
-        domainUpDown.Text = name + " (Disabled)";
+
+        domainUpDown.Text = required
+            ? name + @" (Required)"
+            : name + @" (Disabled)";
+
         domainUpDown.ReadOnly = true;
 
         var list = new List<string>
@@ -51,12 +56,42 @@ internal static class GUIHelpers
             "False",
         };
 
+        if (required)
+        {
+            list.RemoveAt(0);
+        }
+
         if (update != null)
         {
             domainUpDown.Text = update.ToString();
+
+            if (update.ToString() == "True")
+            {
+                Logger.Log("Updating!");
+                domainUpDown.SelectedItem = "True";
+            }
+            else
+            {
+                domainUpDown.SelectedItem = "False";
+            }
         }
 
         domainUpDown.Items.AddRange(list);
+    }
+
+    public static void AddItemsToComboBox(this ComboBox cb, List<string> items)
+    {
+        cb.Items.Clear();
+
+        foreach (var item in items)
+        {
+            cb.Items.Add(item);
+        }
+    }
+
+    public static T? GetSelectedItem<T>(this ComboBox cb)
+    {
+        return (T)cb.SelectedItem;
     }
 
     /// <summary>
@@ -66,9 +101,10 @@ internal static class GUIHelpers
     /// <returns></returns>
     public static TreeNode GenerateTreeNode(RemapModel model, ReCodeItForm gui)
     {
-        var isPublic = model.SearchParams.IsPublic == null ? null : model.SearchParams.IsPublic;
+        var isPublic = model.SearchParams.IsPublic;
         var isAbstract = model.SearchParams.IsAbstract == null ? null : model.SearchParams.IsAbstract;
         var isInterface = model.SearchParams.IsInterface == null ? null : model.SearchParams.IsInterface;
+        var isStruct = model.SearchParams.IsStruct == null ? null : model.SearchParams.IsStruct;
         var isEnum = model.SearchParams.IsEnum == null ? null : model.SearchParams.IsEnum;
         var isNested = model.SearchParams.IsNested == null ? null : model.SearchParams.IsNested;
         var isSealed = model.SearchParams.IsSealed == null ? null : model.SearchParams.IsSealed;
@@ -87,10 +123,7 @@ internal static class GUIHelpers
             remapTreeItem.Nodes.Add(new TreeNode($"Force Rename: {model.UseForceRename}"));
         }
 
-        if (isPublic is not null)
-        {
-            remapTreeItem.Nodes.Add(new TreeNode($"IsPublic: {isPublic}"));
-        }
+        remapTreeItem.Nodes.Add(new TreeNode($"IsPublic: {isPublic}"));
 
         if (isAbstract is not null)
         {
@@ -102,14 +135,19 @@ internal static class GUIHelpers
             remapTreeItem.Nodes.Add(new TreeNode($"IsInterface: {isInterface}"));
         }
 
+        if (isStruct is not null)
+        {
+            remapTreeItem.Nodes.Add(new TreeNode($"IsStruct: {isStruct}"));
+        }
+
         if (isEnum is not null)
         {
-            remapTreeItem.Nodes.Add(new TreeNode($"isEnum: {isEnum}"));
+            remapTreeItem.Nodes.Add(new TreeNode($"IsEnum: {isEnum}"));
         }
 
         if (isNested is not null)
         {
-            remapTreeItem.Nodes.Add(new TreeNode($"IsNested: {isEnum}"));
+            remapTreeItem.Nodes.Add(new TreeNode($"IsNested: {isNested}"));
         }
 
         if (isSealed is not null)

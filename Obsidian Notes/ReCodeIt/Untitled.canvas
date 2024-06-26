@@ -1,7 +1,12 @@
 {
 	"nodes":[
-		{"id":"ffede66903965668","x":-1260,"y":-740,"width":660,"height":300,"color":"4","type":"text","text":"ReCodeIt Cross Compiler\n\n- "},
-		{"id":"4116b6bff3d9eb35","x":-2020,"y":-740,"width":250,"height":460,"type":"text","text":"ReCodeItCrossCompiler\n\n"}
+		{"id":"02cecbc06ca4e27e","x":-2460,"y":-840,"width":680,"height":440,"type":"text","text":"Re-Mapper overhaul\n\n- More required parameters for better searches\n  - Is Asbstract\n  - Is Interface\n  - Is Public"},
+		{"id":"ef843881ce9f25ca","x":-1410,"y":-680,"width":170,"height":60,"type":"text","text":"Is Abstract"},
+		{"id":"d0995cf4fa4e7306","x":-1194,"y":-840,"width":120,"height":60,"type":"text","text":"IsPublic"},
+		{"id":"ef16782e8346c662","type":"text","text":"Is Interface","x":-1208,"y":-676,"width":149,"height":56}
 	],
-	"edges":[]
+	"edges":[
+		{"id":"3e2076115efebf6f","fromNode":"d0995cf4fa4e7306","fromSide":"bottom","toNode":"ef843881ce9f25ca","toSide":"top"},
+		{"id":"a7c1e1576f14002e","fromNode":"d0995cf4fa4e7306","fromSide":"bottom","toNode":"ef16782e8346c662","toSide":"top"}
+	]
 }

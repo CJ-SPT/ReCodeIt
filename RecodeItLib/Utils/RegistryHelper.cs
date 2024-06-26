@@ -26,7 +26,6 @@ public static class RegistryHelper
     public static T? GetRegistryValue<T>(string key)
     {
         var regKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\ReCodeIt");
-
-        return (T)regKey.GetValue(key);
+        return (T)regKey?.GetValue(key);
     }
 }

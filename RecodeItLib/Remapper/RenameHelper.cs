@@ -1,5 +1,4 @@
-﻿using Mono.Cecil;
-using Mono.Cecil.Rocks;
+﻿using dnlib.DotNet;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
 
@@ -12,42 +11,45 @@ internal static class RenameHelper
     /// <summary>
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
-    /// <param name="score"></param>
-    public static void RenameAll(ScoringModel score, bool direct = false)
+    /// <param name="module"></param>
+    /// <param name="remap"></param>
+    /// <param name="direct"></param>
+    public static void RenameAll(IEnumerable<TypeDef> types, RemapModel remap, bool direct = false)
     {
-        var types = DataProvider.ModuleDefinition.GetAllTypes();
-
         // Rename all fields and properties first
         if (DataProvider.Settings.Remapper.MappingSettings.RenameFields)
         {
-            RenameAllFields(score.Definition.Name, score.ReMap.NewTypeName, types);
+            RenameAllFields(
+                remap.TypePrimeCandidate.Name.String,
+                remap.NewTypeName,
+                types);
         }
 
         if (DataProvider.Settings.Remapper.MappingSettings.RenameProperties)
         {
-            RenameAllProperties(score.Definition.Name, score.ReMap.NewTypeName, types);
+            RenameAllProperties(
+                remap.TypePrimeCandidate.Name.String,
+                remap.NewTypeName,
+                types);
         }
 
         if (!direct)
         {
-            RenameType(types, score);
+            RenameType(types, remap);
         }
 
-        Logger.Log($"{score.Definition.Name} Renamed.", ConsoleColor.Green);
+        Logger.Log($"{remap.TypePrimeCandidate.Name.String} Renamed.", ConsoleColor.Green);
     }
 
     /// <summary>
     /// Only used by the manual remapper, should probably be removed
     /// </summary>
-    /// <param name="score"></param>
-    public static void RenameAllDirect(RemapModel remap, TypeDefinition type)
+    /// <param name="module"></param>
+    /// <param name="remap"></param>
+    /// <param name="type"></param>
+    public static void RenameAllDirect(IEnumerable<TypeDef> types, RemapModel remap, TypeDef type)
     {
-        var directRename = new ScoringModel
-        {
-            Definition = type,
-            ReMap = remap
-        };
-        RenameAll(directRename, true);
+        RenameAll(types, remap, true);
     }
 
     /// <summary>
@@ -57,10 +59,11 @@ internal static class RenameHelper
     /// <param name="newTypeName"></param>
     /// <param name="typesToCheck"></param>
     /// <returns></returns>
-    public static int RenameAllFields(
+    public static IEnumerable<TypeDef> RenameAllFields(
+
         string oldTypeName,
         string newTypeName,
-        IEnumerable<TypeDefinition> typesToCheck,
+        IEnumerable<TypeDef> typesToCheck,
         int overAllCount = 0)
     {
         foreach (var type in typesToCheck)
@@ -73,29 +76,89 @@ internal static class RenameHelper
             int fieldCount = 0;
             foreach (var field in fields)
             {
-                if (field.FieldType.Name == oldTypeName)
+                if (field.FieldType.TypeName == oldTypeName)
                 {
-                    var newFieldName = GetNewFieldName(newTypeName, field.IsPrivate, fieldCount);
+                    var newFieldName = GetNewFieldName(newTypeName, fieldCount);
 
                     // Dont need to do extra work
                     if (field.Name == newFieldName) { continue; }
 
-                    Logger.Log($"Renaming original field type name: `{field.FieldType.Name}` with name `{field.Name}` to `{newFieldName}`", ConsoleColor.Green);
+                    Logger.Log($"Renaming field on type {type.Name} named `{field.Name}` with type `{field.FieldType.TypeName}` to `{newFieldName}`", ConsoleColor.Green);
+
+                    var oldName = field.Name.ToString();
 
                     field.Name = newFieldName;
+
+                    UpdateTypeFieldMemberRefs(type, field, oldName);
+                    UpdateAllTypeFieldMemberRefs(typesToCheck, field, oldName);
 
                     fieldCount++;
                     overAllCount++;
                 }
             }
-
-            if (type.HasNestedTypes)
-            {
-                RenameAllFields(oldTypeName, newTypeName, type.NestedTypes, overAllCount);
-            }
         }
 
-        return overAllCount;
+        return typesToCheck;
+    }
+
+    private static void UpdateAllTypeFieldMemberRefs(IEnumerable<TypeDef> typesToCheck, FieldDef newDef, string oldName)
+    {
+        foreach (var type in typesToCheck)
+        {
+            UpdateTypeFieldMemberRefs(type, newDef, oldName);
+        }
+    }
+
+    private static void UpdateTypeFieldMemberRefs(TypeDef type, FieldDef newDef, string oldName)
+    {
+        foreach (var method in type.Methods)
+        {
+            if (!method.HasBody) continue;
+
+            foreach (var instr in method.Body.Instructions)
+            {
+                if (instr.Operand is MemberRef memRef && memRef.Name == oldName)
+                {
+                    //if (!memRef.Name.IsFieldOrPropNameInList(TokensToMatch)) continue;
+
+                    Logger.Log($"Renaming MemRef in method {method.DeclaringType.Name}::{method.Name} from `{memRef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
+                    memRef.Name = newDef.Name;
+                }
+            }
+        }
+    }
+
+    private static void RenameAllFieldRefsInMethods(IEnumerable<TypeDef> typesToCheck, FieldDef newDef, string oldName)
+    {
+        foreach (var type in typesToCheck)
+        {
+            foreach (var method in type.Methods)
+            {
+                if (!method.HasBody) continue;
+
+                ChangeFieldNamesInMethods(method, newDef, oldName);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Rename all field and member refs in a method
+    /// </summary>
+    /// <param name="method"></param>
+    /// <param name="newDef"></param>
+    /// <param name="oldName"></param>
+    private static void ChangeFieldNamesInMethods(MethodDef method, FieldDef newDef, string oldName)
+    {
+        foreach (var instr in method.Body.Instructions)
+        {
+            if (instr.Operand is FieldDef fieldDef && fieldDef.Name == oldName)
+            {
+                if (!fieldDef.Name.IsFieldOrPropNameInList(TokensToMatch)) continue;
+
+                Logger.Log($"Renaming fieldDef in method {method.Name} from `{fieldDef.Name}` to `{newDef.Name}`", ConsoleColor.Yellow);
+                fieldDef.Name = newDef.Name;
+            }
+        }
     }
 
     /// <summary>
@@ -108,7 +171,7 @@ internal static class RenameHelper
     public static int RenameAllProperties(
         string oldTypeName,
         string newTypeName,
-        IEnumerable<TypeDefinition> typesToCheck,
+        IEnumerable<TypeDef> typesToCheck,
         int overAllCount = 0)
     {
         foreach (var type in typesToCheck)
@@ -121,35 +184,30 @@ internal static class RenameHelper
             int propertyCount = 0;
             foreach (var property in properties)
             {
-                if (property.PropertyType.Name == oldTypeName)
+                if (property.PropertySig.RetType.TypeName == oldTypeName)
                 {
                     var newPropertyName = GetNewPropertyName(newTypeName, propertyCount);
 
                     // Dont need to do extra work
                     if (property.Name == newPropertyName) { continue; }
 
-                    Logger.Log($"Renaming original property type name: `{property.PropertyType.Name}` with name `{property.Name}` to `{newPropertyName}`", ConsoleColor.Green);
-                    property.Name = newPropertyName;
+                    Logger.Log($"Renaming property on type {type.Name} named `{property.Name}` with type `{property.PropertySig.RetType.TypeName}` to `{newPropertyName}`", ConsoleColor.Green);
+                    property.Name = new UTF8String(newPropertyName);
+
                     propertyCount++;
                     overAllCount++;
                 }
-            }
-
-            if (type.HasNestedTypes)
-            {
-                RenameAllProperties(oldTypeName, newTypeName, type.NestedTypes, overAllCount);
             }
         }
 
         return overAllCount;
     }
 
-    public static string GetNewFieldName(string NewName, bool isPrivate, int fieldCount = 0)
+    public static string GetNewFieldName(string NewName, int fieldCount = 0)
     {
-        var discard = isPrivate ? "_" : "";
         string newFieldCount = fieldCount > 0 ? $"_{fieldCount}" : string.Empty;
 
-        return $"{discard}{char.ToLower(NewName[0])}{NewName[1..]}{newFieldCount}";
+        return $"{char.ToLower(NewName[0])}{NewName[1..]}{newFieldCount}";
     }
 
     public static string GetNewPropertyName(string newName, int propertyCount = 0)
@@ -157,26 +215,26 @@ internal static class RenameHelper
         return propertyCount > 0 ? $"{newName}_{propertyCount}" : newName;
     }
 
-    private static void RenameType(IEnumerable<TypeDefinition> typesToCheck, ScoringModel score)
+    private static void RenameType(IEnumerable<TypeDef> typesToCheck, RemapModel remap)
     {
         foreach (var type in typesToCheck)
         {
             if (type.HasNestedTypes)
             {
-                RenameType(type.NestedTypes, score);
+                RenameType(type.NestedTypes, remap);
             }
 
-            if (score.Definition.Name is null) { continue; }
+            if (remap.TypePrimeCandidate.Name is null) { continue; }
 
-            if (score.ReMap.SearchParams.IsNested is true &&
-                type.IsNested && type.Name == score.Definition.Name)
+            if (remap.SearchParams.IsNested is true &&
+                type.IsNested && type.Name == remap.TypePrimeCandidate.Name)
             {
-                type.Name = score.ProposedNewName;
+                type.Name = remap.NewTypeName;
             }
 
-            if (type.FullName == score.Definition.Name)
+            if (type.FullName == remap.TypePrimeCandidate.Name)
             {
-                type.Name = score.ProposedNewName;
+                type.Name = remap.NewTypeName;
             }
         }
     }

@@ -2,7 +2,6 @@
 
 using ReCodeIt.AutoMapper;
 using ReCodeIt.CrossCompiler;
-using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
 using ReCodeIt.Utils;
@@ -269,26 +268,51 @@ public partial class ReCodeItForm : Form
             return;
         }
 
+        ResetSearchButton_Click(this, e);
+
         var newRemap = new RemapModel
         {
             Succeeded = false,
-            FailureReason = EFailureReason.None,
+            NoMatchReasons = [],
             NewTypeName = NewTypeName.Text,
             OriginalTypeName = OriginalTypeName.Text == string.Empty ? null : OriginalTypeName.Text,
             UseForceRename = RemapperUseForceRename.Checked,
             SearchParams = new SearchParams
             {
-                IsPublic = IsPublicUpDown.GetEnabled(),
-                IsAbstract = IsAbstractUpDown.GetEnabled(),
-                IsInterface = IsInterfaceUpDown.GetEnabled(),
-                IsEnum = IsEnumUpDown.GetEnabled(),
-                IsNested = IsNestedUpDown.GetEnabled(),
-                IsSealed = IsSealedUpDown.GetEnabled(),
-                HasAttribute = HasAttributeUpDown.GetEnabled(),
-                IsDerived = IsDerivedUpDown.GetEnabled(),
-                HasGenericParameters = HasGenericParametersUpDown.GetEnabled(),
+                IsPublic = bool.Parse(IsPublicComboBox.GetSelectedItem<string>().AsSpan()),
 
-                ParentName = NestedTypeParentName.Text == string.Empty
+                IsAbstract = IsAbstractComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(IsAbstractComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                IsSealed = IsSealedComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(IsSealedComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                IsInterface = IsInterfaceComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(IsInterfaceComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                IsStruct = IsStructComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(IsStructComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                IsEnum = IsEnumComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(IsEnumComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                HasAttribute = HasAttributeComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(HasAttributeComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                HasGenericParameters = HasGenericParamsComboBox.SelectedItem as string != "Disabled"
+                    ? bool.Parse(HasGenericParamsComboBox.GetSelectedItem<string>().AsSpan())
+                    : null,
+
+                IsNested = IsNestedUpDown.GetEnabled(),
+                IsDerived = IsDerivedUpDown.GetEnabled(),
+
+                NTParentName = NestedTypeParentName.Text == string.Empty
                 ? null
                 : NestedTypeParentName.Text,
 
@@ -436,9 +460,9 @@ public partial class ReCodeItForm : Form
         }
 
         Remapper.InitializeRemap(
-            DataProvider.Remaps,
+            DataProvider.LoadMappingFile(AppSettings.Remapper.MappingPath),
             AppSettings.Remapper.AssemblyPath,
-            Path.GetDirectoryName(AppSettings.Remapper.OutputPath));
+            AppSettings.Remapper.OutputPath);
 
         ReloadRemapTreeView(DataProvider.Remaps);
     }
@@ -512,6 +536,8 @@ public partial class ReCodeItForm : Form
 
     private void MethodIncludeAddButton_Click(object sender, EventArgs e)
     {
+        if (IncludeMethodTextBox.Text == string.Empty) return;
+
         if (!MethodIncludeBox.Items.Contains(IncludeMethodTextBox.Text))
         {
             MethodIncludeBox.Items.Add(IncludeMethodTextBox.Text);
@@ -529,6 +555,8 @@ public partial class ReCodeItForm : Form
 
     private void MethodExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (ExcludeMethodTextBox.Text == string.Empty) return;
+
         if (!MethodExcludeBox.Items.Contains(ExcludeMethodTextBox.Text))
         {
             MethodExcludeBox.Items.Add(ExcludeMethodTextBox.Text);
@@ -546,6 +574,8 @@ public partial class ReCodeItForm : Form
 
     private void FIeldIncludeAddButton_Click(object sender, EventArgs e)
     {
+        if (FieldsIncludeTextInput.Text == string.Empty) return;
+
         if (!FieldIncludeBox.Items.Contains(FieldsIncludeTextInput.Text))
         {
             FieldIncludeBox.Items.Add(FieldsIncludeTextInput.Text);
@@ -563,6 +593,8 @@ public partial class ReCodeItForm : Form
 
     private void FieldExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (FieldsExcludeTextInput.Text == string.Empty) return;
+
         if (!FieldExcludeBox.Items.Contains(FieldsExcludeTextInput.Text))
         {
             FieldExcludeBox.Items.Add(FieldsExcludeTextInput.Text);
@@ -580,6 +612,8 @@ public partial class ReCodeItForm : Form
 
     private void PropertiesIncludeAddButton_Click(object sender, EventArgs e)
     {
+        if (PropertiesIncludeTextField.Text == string.Empty) return;
+
         if (!PropertiesIncludeBox.Items.Contains(PropertiesIncludeTextField.Text))
         {
             PropertiesIncludeBox.Items.Add(PropertiesIncludeTextField.Text);
@@ -597,6 +631,8 @@ public partial class ReCodeItForm : Form
 
     private void PropertiesExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (PropertiesExcludeTextField.Text == string.Empty) return;
+
         if (!PropertiesExcludeBox.Items.Contains(PropertiesExcludeTextField.Text))
         {
             PropertiesExcludeBox.Items.Add(PropertiesExcludeTextField.Text);
@@ -614,6 +650,8 @@ public partial class ReCodeItForm : Form
 
     private void NestedTypesAddButton_Click(object sender, EventArgs e)
     {
+        if (NestedTypesIncludeTextField.Text == string.Empty) return;
+
         if (!NestedTypesIncludeBox.Items.Contains(NestedTypesIncludeTextField.Text))
         {
             NestedTypesIncludeBox.Items.Add(NestedTypesIncludeTextField.Text);
@@ -631,6 +669,8 @@ public partial class ReCodeItForm : Form
 
     private void NestedTypesExlcudeAddButton_Click(object sender, EventArgs e)
     {
+        if (NestedTypesExcludeTextField.Text == string.Empty) return;
+
         if (!NestedTypesExcludeBox.Items.Contains(NestedTypesExcludeTextField.Text))
         {
             NestedTypesExcludeBox.Items.Add(NestedTypesExcludeTextField.Text);
@@ -648,6 +688,8 @@ public partial class ReCodeItForm : Form
 
     private void AutoMapperExcludeAddButton_Click(object sender, EventArgs e)
     {
+        if (AutoMapperTypesToIgnoreTextField.Text == string.Empty) return;
+
         if (!AutoMapperTypesExcludeBox.Items.Contains(AutoMapperTypesToIgnoreTextField.Text))
         {
             DataProvider.Settings.AutoMapper.TypesToIgnore.Add(AutoMapperTypesToIgnoreTextField.Text);
@@ -1070,12 +1112,6 @@ public partial class ReCodeItForm : Form
         AppSettings.CrossCompiler.AutoLoadLastActiveProject = CCAutoLoadLastProj.Checked;
     }
 
-    // Use the projects remap list on the remap tab
-    private void ActiveProjectMappingsCheckbox_CheckedChanged(object sender, EventArgs e)
-    {
-        // TODO
-    }
-
     private void CCImportMappings_Click(object sender, EventArgs e)
     {
         if (CrossCompiler.ActiveProject == null)
@@ -1236,29 +1272,80 @@ public partial class ReCodeItForm : Form
 
         BaseClassIncludeTextFIeld.Text = remap.SearchParams.MatchBaseClass;
         BaseClassExcludeTextField.Text = remap.SearchParams.IgnoreBaseClass;
-        NestedTypeParentName.Text = remap.SearchParams.ParentName;
+        NestedTypeParentName.Text = remap.SearchParams.NTParentName;
 
-        ConstructorCountEnabled.Checked = remap.SearchParams.ConstructorParameterCount != null ? remap.SearchParams.ConstructorParameterCount > 0 : false;
-        MethodCountEnabled.Checked = remap.SearchParams.MethodCount != null ? remap.SearchParams.MethodCount >= 0 : false;
-        FieldCountEnabled.Checked = remap.SearchParams.FieldCount != null ? remap.SearchParams.FieldCount >= 0 : false;
-        PropertyCountEnabled.Checked = remap.SearchParams.PropertyCount != null ? remap.SearchParams.PropertyCount >= 0 : false;
-        NestedTypeCountEnabled.Checked = remap.SearchParams.NestedTypeCount != null ? remap.SearchParams.NestedTypeCount >= 0 : false;
+        ConstructorCountEnabled.Checked = remap.SearchParams.ConstructorParameterCount is not null
+            ? remap.SearchParams.ConstructorParameterCount > 0
+            : false;
 
-        ConstuctorCountUpDown.Value = (decimal)((remap.SearchParams.ConstructorParameterCount != null ? remap.SearchParams.ConstructorParameterCount : 0));
-        MethodCountUpDown.Value = (decimal)(remap.SearchParams.MethodCount != null ? remap.SearchParams.MethodCount : 0);
-        FieldCountUpDown.Value = (decimal)(remap.SearchParams.FieldCount != null ? remap.SearchParams.FieldCount : 0);
-        PropertyCountUpDown.Value = (decimal)(remap.SearchParams.PropertyCount != null ? remap.SearchParams.PropertyCount : 0);
-        NestedTypeCountUpDown.Value = (decimal)(remap.SearchParams.NestedTypeCount != null ? remap.SearchParams.NestedTypeCount : 0);
+        MethodCountEnabled.Checked = remap.SearchParams.MethodCount is not null
+            ? remap.SearchParams.MethodCount >= 0
+            : false;
 
-        IsPublicUpDown.BuildStringList("IsPublic", remap.SearchParams.IsPublic);
-        IsAbstractUpDown.BuildStringList("IsAbstract", remap.SearchParams.IsAbstract);
-        IsInterfaceUpDown.BuildStringList("IsInterface", remap.SearchParams.IsInterface);
-        IsEnumUpDown.BuildStringList("IsEnum", remap.SearchParams.IsEnum);
-        IsNestedUpDown.BuildStringList("IsNested", remap.SearchParams.IsNested);
-        IsSealedUpDown.BuildStringList("IsSealed", remap.SearchParams.IsSealed);
-        HasAttributeUpDown.BuildStringList("HasAttribute", remap.SearchParams.HasAttribute);
-        IsDerivedUpDown.BuildStringList("IsDerived", remap.SearchParams.IsDerived);
-        HasGenericParametersUpDown.BuildStringList("HasGenericParams", remap.SearchParams.HasGenericParameters);
+        FieldCountEnabled.Checked = remap.SearchParams.FieldCount is not null
+            ? remap.SearchParams.FieldCount >= 0
+            : false;
+
+        PropertyCountEnabled.Checked = remap.SearchParams.PropertyCount is not null
+            ? remap.SearchParams.PropertyCount >= 0
+            : false;
+
+        NestedTypeCountEnabled.Checked = remap.SearchParams.NestedTypeCount is not null
+            ? remap.SearchParams.NestedTypeCount >= 0
+            : false;
+
+        ConstuctorCountUpDown.Value = (decimal)((remap.SearchParams.ConstructorParameterCount != null
+            ? remap.SearchParams.ConstructorParameterCount
+            : 0));
+
+        MethodCountUpDown.Value = (decimal)(remap.SearchParams.MethodCount != null
+            ? remap.SearchParams.MethodCount
+            : 0);
+
+        FieldCountUpDown.Value = (decimal)(remap.SearchParams.FieldCount != null
+            ? remap.SearchParams.FieldCount
+            : 0);
+
+        PropertyCountUpDown.Value = (decimal)(remap.SearchParams.PropertyCount != null
+            ? remap.SearchParams.PropertyCount
+            : 0);
+
+        NestedTypeCountUpDown.Value = (decimal)(remap.SearchParams.NestedTypeCount != null
+            ? remap.SearchParams.NestedTypeCount
+            : 0);
+
+        IsPublicComboBox.SelectedItem = remap.SearchParams.IsPublic.ToString();
+
+        IsAbstractComboBox.SelectedItem = remap.SearchParams.IsAbstract is not null
+            ? remap.SearchParams.IsAbstract.ToString()
+            : "Disabled";
+
+        IsSealedComboBox.SelectedItem = remap.SearchParams.IsSealed is not null
+            ? remap.SearchParams.IsSealed.ToString()
+            : "Disabled";
+
+        IsInterfaceComboBox.SelectedItem = remap.SearchParams.IsInterface is not null
+            ? remap.SearchParams.IsInterface.ToString()
+            : "Disabled";
+
+        IsStructComboBox.SelectedItem = remap.SearchParams.IsStruct is not null
+            ? remap.SearchParams.IsStruct.ToString()
+            : "Disabled";
+
+        IsEnumComboBox.SelectedItem = remap.SearchParams.IsEnum is not null
+            ? remap.SearchParams.IsEnum.ToString()
+            : "Disabled";
+
+        HasAttributeComboBox.SelectedItem = remap.SearchParams.HasAttribute is not null
+            ? remap.SearchParams.HasAttribute.ToString()
+            : "Disabled";
+
+        HasGenericParamsComboBox.SelectedItem = remap.SearchParams.HasGenericParameters is not null
+            ? remap.SearchParams.HasGenericParameters.ToString()
+            : "Disabled";
+
+        IsNestedUpDown.BuildStringList("IsNested", false, remap.SearchParams.IsNested);
+        IsDerivedUpDown.BuildStringList("IsDerived", false, remap.SearchParams.IsDerived);
 
         foreach (var method in remap.SearchParams.IncludeMethods)
         {
@@ -1304,15 +1391,32 @@ public partial class ReCodeItForm : Form
     private void PopulateDomainUpDowns()
     {
         // Clear them all first just incase
-        IsPublicUpDown.BuildStringList("IsPublic");
-        IsAbstractUpDown.BuildStringList("IsAbstract");
-        IsInterfaceUpDown.BuildStringList("IsInterface");
-        IsEnumUpDown.BuildStringList("IsEnum");
-        IsNestedUpDown.BuildStringList("IsNested");
-        IsSealedUpDown.BuildStringList("IsSealed");
-        HasAttributeUpDown.BuildStringList("HasAttribute");
-        IsDerivedUpDown.BuildStringList("IsDerived");
-        HasGenericParametersUpDown.BuildStringList("HasGenericParams");
+        IsPublicComboBox.AddItemsToComboBox(["True", "False"]);
+        IsPublicComboBox.SelectedItem = "True";
+
+        IsAbstractComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        IsAbstractComboBox.SelectedItem = "Disabled";
+
+        IsSealedComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        IsSealedComboBox.SelectedItem = "Disabled";
+
+        IsInterfaceComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        IsInterfaceComboBox.SelectedItem = "Disabled";
+
+        IsStructComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        IsStructComboBox.SelectedItem = "Disabled";
+
+        IsEnumComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        IsEnumComboBox.SelectedItem = "Disabled";
+
+        HasAttributeComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        HasAttributeComboBox.SelectedItem = "Disabled";
+
+        HasGenericParamsComboBox.AddItemsToComboBox(["Disabled", "True", "False"]);
+        HasGenericParamsComboBox.SelectedItem = "Disabled";
+
+        IsNestedUpDown.BuildStringList("IsNested", false);
+        IsDerivedUpDown.BuildStringList("IsDerived", false);
     }
 
     /// <summary>

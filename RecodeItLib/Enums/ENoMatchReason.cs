@@ -1,19 +1,14 @@
 ﻿namespace ReCodeIt.Enums;
 
-public enum EFailureReason
+public enum ENoMatchReason
 {
-    None,
-    IsAbstract,
     IsEnum,
     IsNested,
     IsSealed,
     IsDerived,
-    IsInterface,
-    IsPublic,
     HasGenericParameters,
     HasAttribute,
-    IsAttribute,
-    Constructor,
+    ConstructorParameterCount,
     MethodsInclude,
     MethodsExclude,
     MethodsCount,

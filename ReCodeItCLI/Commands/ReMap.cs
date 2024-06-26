@@ -38,6 +38,10 @@ public class ReMap : ICommand
 
         _remapper.InitializeRemap(remaps, AssemblyPath, Path.GetDirectoryName(AssemblyPath));
 
+        // Wait for log termination
+        Logger.Terminate();
+        while(Logger.IsRunning()) {}
+        
         return default;
     }
 }

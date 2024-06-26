@@ -1,4 +1,4 @@
-﻿using Mono.Cecil;
+﻿using dnlib.DotNet;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeItLib.Utils;
@@ -26,13 +26,7 @@ public static class DataProvider
 
     public static List<RemapModel> Remaps { get; set; } = [];
 
-    public static Dictionary<string, HashSet<ScoringModel>> ScoringModels { get; set; } = [];
-
     public static Settings Settings { get; private set; }
-
-    public static AssemblyDefinition AssemblyDefinition { get; private set; }
-
-    public static ModuleDefinition ModuleDefinition { get; private set; }
 
     public static void LoadAppSettings()
     {
@@ -97,26 +91,11 @@ public static class DataProvider
 
         var jsonText = File.ReadAllText(path);
 
-        ScoringModels = [];
-
         var remaps = JsonConvert.DeserializeObject<List<RemapModel>>(jsonText);
 
         if (remaps == null) { return []; }
 
-        var properties = typeof(SearchParams).GetProperties();
-
-        foreach (var remap in Remaps)
-        {
-            foreach (var property in properties)
-            {
-                if (property.PropertyType == typeof(List<string>) && property.GetValue(remap.SearchParams) is null)
-                {
-                    property.SetValue(remap.SearchParams, new List<string>());
-                }
-            }
-        }
-
-        Logger.Log($"Mapping file loaded from '{path}' containing {Remaps.Count} remaps");
+        Logger.Log($"Mapping file loaded from '{path}' containing {remaps.Count} remaps");
 
         return remaps;
     }
@@ -137,7 +116,7 @@ public static class DataProvider
         Logger.Log($"Mapping File Saved To {path}");
     }
 
-    public static void UpdateMapping(string path)
+    public static void UpdateMapping(string path, List<RemapModel> remaps)
     {
         if (!File.Exists(path))
         {
@@ -150,62 +129,26 @@ public static class DataProvider
             Formatting = Formatting.Indented
         };
 
-        var properties = typeof(SearchParams).GetProperties();
-
-        foreach (var remap in Remaps)
-        {
-            foreach (var property in properties)
-            {
-                if (property.PropertyType == typeof(List<string>))
-                {
-                    var val = property.GetValue(remap.SearchParams);
-
-                    if (val is List<string> list && list.Count > 0) { continue; }
-
-                    property.SetValue(remap.SearchParams, null);
-                }
-            }
-        }
-
         var jsonText = JsonConvert.SerializeObject(Remaps, settings);
 
         File.WriteAllText(path, jsonText);
 
-        Logger.Log($"Mapping file saved to {path}");
+        Logger.Log($"Mapping file updated with new type names and saved to {path}", ConsoleColor.Yellow);
     }
 
-    public static void LoadAssemblyDefinition(string path)
+    public static ModuleDefMD LoadModule(string path)
     {
-        AssemblyDefinition = null;
-        ModuleDefinition = null;
+        var mcOptions = new ModuleCreationOptions(ModuleDef.CreateModuleContext());
+        ModuleDefMD module = ModuleDefMD.Load(path, mcOptions);
 
-        DefaultAssemblyResolver resolver = new();
+        module.Context = mcOptions.Context;
 
-        Console.WriteLine(path);
-
-        resolver.AddSearchDirectory(Path.GetDirectoryName(path)); // Replace with the correct path : (6/14) I have no idea what I met by that
-        ReaderParameters parameters = new() { AssemblyResolver = resolver };
-
-        var assemblyDefinition = AssemblyDefinition.ReadAssembly(
-            path,
-            parameters);
-
-        if (assemblyDefinition is null)
+        if (module is null)
         {
-            throw new NullReferenceException("AssemblyDefinition was null...");
+            throw new NullReferenceException("Module is null...");
         }
 
-        var fileName = Path.GetFileName(path);
-
-        AssemblyDefinition = assemblyDefinition;
-        ModuleDefinition = assemblyDefinition.MainModule;
-    }
-
-    public static string WriteAssemblyDefinition(string path)
-    {
-        AssemblyDefinition.Write(path);
-
-        return path;
+        return module;
     }
 
     private static Settings CreateFakeSettings()

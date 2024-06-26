@@ -1,74 +1,73 @@
 {
-    "AppSettings": {
-        "Debug": false,                                                 // Enables extra debug logging, slows down the program by alot
-        "SilentMode": true                                              // The tool will stop and prompt you to continue on every remapping if disable   
-    },
-    "Remapper": {
-        "AssemblyPath": "",                                             // Path to the assembly we want to remap
-        "OutputPath": "",                                               // Path including the filename and extension we want to write the changes to
-        "MappingPath": "",                                              // Path to the mapping file 
-        "UseProjectMappings": true,                                     // Use the active cross compiler projects mappings     
-        "MappingSettings": {
-            "RenameFields": true,                                       // Names of fields of the matched type will be renamed to the type name with approproiate convention
-            "RenameProperties": true,                                   // Names of properties of the matched type will be renamed to the type name with approproiate convention
-            "Publicize": true,                                          // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
-            "Unseal": true                                              // Unseal all types : NOTE: Not run until after the remap has completed
-        }
-    },
-    "AutoMapper": {
-        "AssemblyPath": "",                                             // Path to the assembly we want to remap
-        "OutputPath": "",                                               // Path including the filename and extension we want to write the changes to
-        "RequiredMatches": 5,                                           // Minimum number of times a member must have this name in the assembly before considering it for remapping
-        "MinLengthToMatch": 7,                                          // Minimum length of the field/property name in code before it will be considered for a rename
-        "SearchMethods": true,                                          // Will attempt to map types from method meta data and parameters
-        "MappingSettings": {
-            "RenameFields": true,                                       // Names of fields of the matched type will be renamed to the type name with approproiate convention
-            "RenameProperties": true,                                   // Names of properties of the matched type will be renamed to the type name with approproiate convention
-            "Publicize": true,                                          // Publicize all types, methods, and properties : NOTE: Not run until after the remap has completed
-            "Unseal": true                                              // Unseal all types : NOTE: Not run until after the remap has completed
-        },
-        "TypesToIgnore": [                                              // Any member name you want to ignore while iterating through the assembly
-            "Boolean",
-            "List",
-            "Dictionary",
-            "Byte",
-            "Int16",
-            "Int32",
-            "Func",
-            "Action",
-            "Object",
-            "String",
-            "Vector2",
-            "Vector3",
-            "Vector4",
-            "Stream",
-            "HashSet",
-            "Double",
-            "IEnumerator"
-        ],
-        "TokensToMatch": [                                              // The auto mapper will look for these tokens in class names and prioritize those
-            "Class",
-            "GClass",
-            "GStruct",
-            "Interface",
-            "GInterface"
-        ],
-        "PropertyFieldBlackList": [                                     // Property or fields names to ignore in the automap, these are case sanitized so case does not matter
-            "Columns",
-            "mColumns",
-            "Template",
-            "Condition",
-            "Conditions",
-            "Counter",
-            "Instance",
-            "Command",
-            "_template"
-        ],
-        "MethodParamaterBlackList": [                                   // method parameter names to ignore in the automap, these are case sanitized so case does not matter
-        ]
-    },
-    "CrossCompiler": {
-        "AutoLoadLastActiveProject": true,                              // Autoload last active project
-        "LastLoadedProject": ""                                         // Last loaded project path
+  "AppSettings": {
+    "Debug": false,
+    "SilentMode": true
+  },
+  "Remapper": {
+    "AssemblyPath": "G:\\development\\ReCodeIt\\RecodeItGUI\\bin\\Debug\\net8.0-windows\\Data\\Managed\\Assembly-CSharp-cleaned.dll",
+    "OutputPath": "G:\\development\\ReCodeIt\\RecodeItGUI\\bin\\Debug\\net8.0-windows\\Data",
+    "MappingPath": "G:\\development\\ReCodeIt\\RecodeItGUI\\bin\\Debug\\net8.0-windows\\Data\\Mappings.jsonc",
+    "UseProjectMappings": false,
+    "MappingSettings": {
+      "RenameFields": true,
+      "RenameProperties": true,
+      "Publicize": true,
+      "Unseal": true
     }
+  },
+  "AutoMapper": {
+    "AssemblyPath": "",
+    "OutputPath": "",
+    "RequiredMatches": 5,
+    "MinLengthToMatch": 7,
+    "SearchMethods": true,
+    "MappingSettings": {
+      "RenameFields": true,
+      "RenameProperties": true,
+      "Publicize": true,
+      "Unseal": true
+    },
+    "TypesToIgnore": [
+      "Boolean",
+      "List",
+      "Dictionary",
+      "Byte",
+      "Int16",
+      "Int32",
+      "Func",
+      "Action",
+      "Object",
+      "String",
+      "Vector2",
+      "Vector3",
+      "Vector4",
+      "Stream",
+      "HashSet",
+      "Double",
+      "IEnumerator"
+    ],
+    "TokensToMatch": [
+      "Class",
+      "GClass",
+      "GStruct",
+      "Interface",
+      "GInterface"
+    ],
+    "PropertyFieldBlackList": [
+      "Columns",
+      "mColumns",
+      "Template",
+      "Condition",
+      "Conditions",
+      "Counter",
+      "Instance",
+      "Command",
+      "_template"
+    ],
+    "MethodParamaterBlackList": []
+  },
+  "CrossCompiler": {
+    "LastLoadedProject": "",
+    "AutoLoadLastActiveProject": true
+  }
 }

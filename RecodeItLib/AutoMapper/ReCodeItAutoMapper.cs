@@ -1,19 +1,18 @@
-﻿using Mono.Cecil;
-using Mono.Collections.Generic;
+﻿using dnlib.DotNet;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper;
-using ReCodeIt.Utils;
 using ReCodeIt.Utils;
 
 namespace ReCodeIt.AutoMapper;
 
 public class ReCodeItAutoMapper
 {
+    private ModuleDefMD Module { get; set; }
     private List<MappingPair> MappingPairs { get; set; } = [];
 
     private List<string> CompilerGeneratedClasses = [];
 
-    private List<TypeDefinition> AllTypes { get; set; } = [];
+    private List<TypeDef> AllTypes { get; set; } = [];
 
     private List<string> AlreadyChangedNames { get; set; } = [];
 
@@ -39,16 +38,16 @@ public class ReCodeItAutoMapper
         AllTypes = [];
         AlreadyChangedNames = [];
 
-        DataProvider.LoadAssemblyDefinition(Settings.AssemblyPath);
+        Module = DataProvider.LoadModule(Settings.AssemblyPath);
 
         Error = false;
         FailureCount = 0;
         TotalFieldRenameCount = 0;
         TotalPropertyRenameCount = 0;
 
-        FindCompilerGeneratedObjects(DataProvider.ModuleDefinition.Types);
+        var types = Module.GetTypes();
 
-        var types = DataProvider.ModuleDefinition.Types;
+        FindCompilerGeneratedObjects(types);
 
         GetAllTypes(types);
 
@@ -79,7 +78,7 @@ public class ReCodeItAutoMapper
         WriteChanges();
     }
 
-    private void GetAllTypes(Collection<TypeDefinition> types)
+    private void GetAllTypes(IEnumerable<TypeDef> types)
     {
         AllTypes.AddRange(types);
 
@@ -96,7 +95,7 @@ public class ReCodeItAutoMapper
     /// Finds any compiler generated code so we can ignore it, its mostly LINQ garbage
     /// </summary>
     /// <param name="types"></param>
-    private void FindCompilerGeneratedObjects(Collection<TypeDefinition> types)
+    private void FindCompilerGeneratedObjects(IEnumerable<TypeDef> types)
     {
         foreach (var typeDefinition in types)
         {
@@ -120,7 +119,7 @@ public class ReCodeItAutoMapper
 
     #region METHODS
 
-    private List<MappingPair> GatherFromMethods(TypeDefinition type)
+    private List<MappingPair> GatherFromMethods(TypeDef type)
     {
         var methodsWithTypes = new List<MappingPair>();
 
@@ -132,7 +131,7 @@ public class ReCodeItAutoMapper
 
         var methods = type.Methods
             // We only want methods with parameters
-            .Where(m => m.HasParameters)
+            .Where(m => m.HasParams())
 
             // Only want parameter names of a certain length
             .Where(m => m.Parameters.Any(p => p.Name.Length > Settings.MinLengthToMatch));
@@ -140,20 +139,15 @@ public class ReCodeItAutoMapper
         // Now go over over all filterd methods manually, because fuck this with linq
         foreach (var method in methods)
         {
-            var parmNames = method.Parameters.Select(p => p.Name);
-            var parmTypes = method.Parameters.Select(p => p.ParameterType.Name);
-
             // Now over all parameters in the method
             foreach (var parm in method.Parameters)
             {
                 // We dont want blacklisted items
-                if (Settings.MethodParamaterBlackList.Contains(parm.ParameterType.Name.TrimAfterSpecialChar())
-                    || Settings.TypesToIgnore.Contains(parm.ParameterType.Name.TrimAfterSpecialChar()))
+                if (Settings.MethodParamaterBlackList.Contains(parm.Name)
+                    || Settings.TypesToIgnore.Contains(parm.Name))
                 {
                     continue;
                 }
-
-                if (parm.ParameterType.Resolve() == null) { continue; }
 
                 //Logger.Log($"Method Data Found");
                 //Logger.Log($"Parameter count: {method.Parameters.Count}");
@@ -161,10 +155,10 @@ public class ReCodeItAutoMapper
                 //Logger.Log($"Paremeter Types: {string.Join(", ", parmTypes)}\n");
 
                 var mapPair = new MappingPair(
-                    parm.ParameterType.Resolve(),
+                    parm.Type.TryGetTypeDef(),
                     parm.Name,
-                    parm.ParameterType.Resolve().IsInterface,
-                    parm.ParameterType.Name.Contains("Struct"),
+                    parm.Type.TryGetTypeDef().IsInterface,
+                    parm.Type.TryGetTypeDef().Name.Contains("Struct"),
                     true);
 
                 mapPair.AutoMappingResult = AutoMappingResult.Match_From_Method;
@@ -185,7 +179,7 @@ public class ReCodeItAutoMapper
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    private List<MappingPair> FilterFieldNames(TypeDefinition type)
+    private List<MappingPair> FilterFieldNames(TypeDef type)
     {
         var fieldsWithTypes = new List<MappingPair>();
 
@@ -197,7 +191,7 @@ public class ReCodeItAutoMapper
 
         var fields = type.Fields
             // we dont want names shorter than 4
-            .Where(f => f.FieldType.Name.Length > 3)
+            .Where(f => f.Name.Length > 3)
 
             // Skip value types
             .Where(f => !f.FieldType.IsValueType)
@@ -206,14 +200,14 @@ public class ReCodeItAutoMapper
             .Where(p => !p.FieldType.IsArray)
 
             // We dont want fields in the system type ignore list
-            .Where(f => !Settings.TypesToIgnore.Contains(f.FieldType.Name.TrimAfterSpecialChar()));
+            .Where(f => !Settings.TypesToIgnore.Contains(f.Name.TrimAfterSpecialChar()));
 
         // Include fields from the current type
         foreach (var field in fields)
         {
             //Logger.Log($"Collecting Field: OriginalTypeRef: {field.FieldType.Name.TrimAfterSpecialChar()} Field Name: {field.Name}");
 
-            var typeDef = field.FieldType.Resolve();
+            var typeDef = field.FieldType.TryGetTypeDef();
 
             // Dont rename things we cant resolve
             if (typeDef is null) { continue; }
@@ -221,8 +215,8 @@ public class ReCodeItAutoMapper
             var pair = new MappingPair(
                 typeDef,
                 field.Name,
-                field.FieldType.Name.Contains("Interface"),
-                field.FieldType.Name.Contains("Struct"),
+                typeDef.Name.Contains("Interface"),
+                typeDef.Name.Contains("Struct"),
                 field.IsPublic);
 
             pair.AutoMappingResult = AutoMappingResult.Match_From_Field;
@@ -238,7 +232,7 @@ public class ReCodeItAutoMapper
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    private IEnumerable<MappingPair> FilterPropertyNames(TypeDefinition type)
+    private IEnumerable<MappingPair> FilterPropertyNames(TypeDef type)
     {
         var propertiesWithTypes = new List<MappingPair>();
 
@@ -250,23 +244,23 @@ public class ReCodeItAutoMapper
 
         var properties = type.Properties
             // we dont want names shorter than 4
-            .Where(p => p.PropertyType.Name.Length > 3)
+            .Where(p => p.Name.Length > 3)
 
             // Skip value types
-            .Where(p => !p.PropertyType.IsValueType)
+            .Where(p => !p.PropertySig.RetType.GetIsValueType())
 
             // TODO: Renaming arrays is strange, come back to this later
-            .Where(p => !p.PropertyType.IsArray)
+            .Where(p => !p.PropertySig.RetType.IsArray)
 
             // We dont want fields in the global ignore list
-            .Where(p => !Settings.TypesToIgnore.Contains(p.PropertyType.Name.TrimAfterSpecialChar()));
+            .Where(p => !Settings.TypesToIgnore.Contains(p.Name.TrimAfterSpecialChar()));
 
         // Include fields from the current type
         foreach (var property in properties)
         {
             //Logger.Log($"Collecting Property: OriginalTypeRef: {property.PropertyType.Name.TrimAfterSpecialChar()} Field Name: {property.Name}");
 
-            var typeDef = property.PropertyType.Resolve();
+            var typeDef = property.PropertySig.RetType.TryGetTypeDef();
 
             // Dont rename things we cant resolve
             if (typeDef is null) { continue; }
@@ -274,8 +268,8 @@ public class ReCodeItAutoMapper
             var mapPair = new MappingPair(
                 typeDef,
                 property.Name,
-                property.PropertyType.Name.Contains("Interface"),
-                property.PropertyType.Name.Contains("Struct"),
+                typeDef.Name.Contains("Interface"),
+                typeDef.Name.Contains("Struct"),
                 true);
 
             mapPair.AutoMappingResult = AutoMappingResult.Match_From_Property;
@@ -430,7 +424,7 @@ public class ReCodeItAutoMapper
     private void StartRenameProcess()
     {
         // Gather up any matches we have
-        foreach (var type in DataProvider.ModuleDefinition.Types.ToArray())
+        foreach (var type in Module.GetTypes().ToArray())
         {
             foreach (var pair in MappingPairs.ToArray())
             {
@@ -450,15 +444,12 @@ public class ReCodeItAutoMapper
                 var fieldCount = RenameHelper.RenameAllFields(
                     pair.OriginalTypeDefinition.Name,
                     pair.Name,
-                    DataProvider.ModuleDefinition.Types);
+                    Module.GetTypes());
 
                 var propCount = RenameHelper.RenameAllProperties(
                     pair.OriginalTypeDefinition.Name,
                     pair.Name,
-                    DataProvider.ModuleDefinition.Types);
-
-                TotalFieldRenameCount += fieldCount;
-                TotalPropertyRenameCount += propCount;
+                    Module.GetTypes());
 
                 Logger.Log($"Renamed: {fieldCount} fields", ConsoleColor.Green);
                 Logger.Log($"Renamed: {propCount} properties", ConsoleColor.Green);
@@ -508,7 +499,7 @@ public class ReCodeItAutoMapper
     /// </summary>
     /// <param name="pair"></param>
     /// <param name="type"></param>
-    private void GatherMatchedTypeRefs(MappingPair pair, TypeDefinition type)
+    private void GatherMatchedTypeRefs(MappingPair pair, TypeDef type)
     {
         // Handle nested types recursively
         foreach (var nestedType in type.NestedTypes.ToArray())
@@ -524,14 +515,14 @@ public class ReCodeItAutoMapper
 
     private void WriteChanges()
     {
-        var path = DataProvider.WriteAssemblyDefinition(Settings.OutputPath);
+        Module.Write(Settings.OutputPath);
 
         var fieldCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
         var propertyCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
         var methodCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Method).Count();
 
         Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Green);
-        Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
+        Logger.Log($"Complete: Assembly written to `{Settings.OutputPath}`", ConsoleColor.Green);
         Logger.Log($"Found {MappingPairs.Count()} automatic remaps", ConsoleColor.Green);
         Logger.Log($"Found {fieldCountMatchResult} automatic remaps from fields", ConsoleColor.Green);
         Logger.Log($"Found {propertyCountMatchResult} automatic remaps from properties", ConsoleColor.Green);

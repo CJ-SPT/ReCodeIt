@@ -1,5 +1,6 @@
-﻿using ReCodeIt.Enums;
+﻿using dnlib.DotNet;
 using Newtonsoft.Json;
+using ReCodeIt.Enums;
 
 namespace ReCodeIt.Models;
 
@@ -12,7 +13,19 @@ public class RemapModel
     public bool Succeeded { get; set; } = false;
 
     [JsonIgnore]
-    public EFailureReason FailureReason { get; set; }
+    public List<ENoMatchReason> NoMatchReasons { get; set; } = [];
+
+    /// <summary>
+    /// This is a list of type candidates that made it through the filter
+    /// </summary>
+    [JsonIgnore]
+    public HashSet<TypeDef> TypeCandidates { get; set; } = [];
+
+    /// <summary>
+    /// This is the final chosen type we will use to remap
+    /// </summary>
+    [JsonIgnore]
+    public TypeDef TypePrimeCandidate { get; set; }
 
     public string NewTypeName { get; set; } = string.Empty;
 
@@ -30,9 +43,14 @@ public class SearchParams
 {
     #region BOOL_PARAMS
 
-    public bool? IsPublic { get; set; } = null;
+    /// <summary>
+    /// Default to true, most types are public
+    /// </summary>
+    public bool IsPublic { get; set; } = true;
+
     public bool? IsAbstract { get; set; } = null;
     public bool? IsInterface { get; set; } = null;
+    public bool? IsStruct { get; set; } = null;
     public bool? IsEnum { get; set; } = null;
     public bool? IsNested { get; set; } = null;
     public bool? IsSealed { get; set; } = null;
@@ -44,8 +62,19 @@ public class SearchParams
 
     #region STR_PARAMS
 
-    public string? ParentName { get; set; } = null;
+    /// <summary>
+    /// Name of the nested types parent
+    /// </summary>
+    public string? NTParentName { get; set; } = null;
+
+    /// <summary>
+    /// Name of the derived classes declaring type
+    /// </summary>
     public string? MatchBaseClass { get; set; } = null;
+
+    /// <summary>
+    /// Name of the derived classes declaring type we want to ignore
+    /// </summary>
     public string? IgnoreBaseClass { get; set; } = null;
 
     #endregion STR_PARAMS

@@ -30,12 +30,29 @@ partial class ReCodeItForm
     {
         components = new System.ComponentModel.Container();
         RemapperTabPage = new TabPage();
+        label1 = new Label();
         ResetSearchButton = new Button();
         ActiveProjectMappingsCheckbox = new CheckBox();
         LoadedMappingFilePath = new TextBox();
         RMSearchBox = new TextBox();
         RemapTreeView = new TreeView();
         groupBox1 = new GroupBox();
+        label11 = new Label();
+        IsStructComboBox = new ComboBox();
+        label10 = new Label();
+        HasGenericParamsComboBox = new ComboBox();
+        label8 = new Label();
+        HasAttributeComboBox = new ComboBox();
+        label9 = new Label();
+        IsEnumComboBox = new ComboBox();
+        label2322 = new Label();
+        IsInterfaceComboBox = new ComboBox();
+        label7 = new Label();
+        IsSealedComboBox = new ComboBox();
+        label6 = new Label();
+        IsAbstractComboBox = new ComboBox();
+        label5 = new Label();
+        IsPublicComboBox = new ComboBox();
         ConstuctorCountUpDown = new NumericUpDown();
         ConstructorCountEnabled = new CheckBox();
         Inclusions = new TabControl();
@@ -77,27 +94,20 @@ partial class ReCodeItForm
         NestedTypesIncludeBox = new ListBox();
         NewTypeName = new TextBox();
         PropertyCountEnabled = new CheckBox();
-        IsInterfaceUpDown = new DomainUpDown();
         RemapperUseForceRename = new CheckBox();
         NestedTypeCountEnabled = new CheckBox();
         PropertyCountUpDown = new NumericUpDown();
         FieldCountUpDown = new NumericUpDown();
-        IsPublicUpDown = new DomainUpDown();
         FieldCountEnabled = new CheckBox();
         NestedTypeParentName = new TextBox();
         MethodCountUpDown = new NumericUpDown();
-        IsAbstractUpDown = new DomainUpDown();
         BaseClassIncludeTextFIeld = new TextBox();
         OriginalTypeName = new TextBox();
-        HasGenericParametersUpDown = new DomainUpDown();
-        IsEnumUpDown = new DomainUpDown();
         NestedTypeCountUpDown = new NumericUpDown();
         IsDerivedUpDown = new DomainUpDown();
         IsNestedUpDown = new DomainUpDown();
-        HasAttributeUpDown = new DomainUpDown();
         BaseClassExcludeTextField = new TextBox();
         MethodCountEnabled = new CheckBox();
-        IsSealedUpDown = new DomainUpDown();
         RemapperOutputDirectoryPath = new TextBox();
         TargetAssemblyPath = new TextBox();
         OutputDirectoryButton = new Button();
@@ -168,7 +178,6 @@ partial class ReCodeItForm
         SilentModeCheckbox = new CheckBox();
         DebugLoggingCheckbox = new CheckBox();
         toolTip1 = new ToolTip(components);
-        label1 = new Label();
         RemapperTabPage.SuspendLayout();
         groupBox1.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)ConstuctorCountUpDown).BeginInit();
@@ -221,6 +230,15 @@ partial class ReCodeItForm
         RemapperTabPage.Size = new Size(1336, 953);
         RemapperTabPage.TabIndex = 1;
         RemapperTabPage.Text = "Remapper";
+        // 
+        // label1
+        // 
+        label1.AutoSize = true;
+        label1.Location = new Point(777, 47);
+        label1.Name = "label1";
+        label1.Size = new Size(235, 25);
+        label1.TabIndex = 41;
+        label1.Text = "Double click to edit a remap";
         // 
         // ResetSearchButton
         // 
@@ -276,38 +294,199 @@ partial class ReCodeItForm
         // 
         // groupBox1
         // 
+        groupBox1.Controls.Add(label11);
+        groupBox1.Controls.Add(IsStructComboBox);
+        groupBox1.Controls.Add(label10);
+        groupBox1.Controls.Add(HasGenericParamsComboBox);
+        groupBox1.Controls.Add(label8);
+        groupBox1.Controls.Add(HasAttributeComboBox);
+        groupBox1.Controls.Add(label9);
+        groupBox1.Controls.Add(IsEnumComboBox);
+        groupBox1.Controls.Add(label2322);
+        groupBox1.Controls.Add(IsInterfaceComboBox);
+        groupBox1.Controls.Add(label7);
+        groupBox1.Controls.Add(IsSealedComboBox);
+        groupBox1.Controls.Add(label6);
+        groupBox1.Controls.Add(IsAbstractComboBox);
+        groupBox1.Controls.Add(label5);
+        groupBox1.Controls.Add(IsPublicComboBox);
         groupBox1.Controls.Add(ConstuctorCountUpDown);
         groupBox1.Controls.Add(ConstructorCountEnabled);
         groupBox1.Controls.Add(Inclusions);
         groupBox1.Controls.Add(NewTypeName);
         groupBox1.Controls.Add(PropertyCountEnabled);
-        groupBox1.Controls.Add(IsInterfaceUpDown);
         groupBox1.Controls.Add(RemapperUseForceRename);
         groupBox1.Controls.Add(NestedTypeCountEnabled);
         groupBox1.Controls.Add(PropertyCountUpDown);
         groupBox1.Controls.Add(FieldCountUpDown);
-        groupBox1.Controls.Add(IsPublicUpDown);
         groupBox1.Controls.Add(FieldCountEnabled);
         groupBox1.Controls.Add(NestedTypeParentName);
         groupBox1.Controls.Add(MethodCountUpDown);
-        groupBox1.Controls.Add(IsAbstractUpDown);
         groupBox1.Controls.Add(BaseClassIncludeTextFIeld);
         groupBox1.Controls.Add(OriginalTypeName);
-        groupBox1.Controls.Add(HasGenericParametersUpDown);
-        groupBox1.Controls.Add(IsEnumUpDown);
         groupBox1.Controls.Add(NestedTypeCountUpDown);
         groupBox1.Controls.Add(IsDerivedUpDown);
         groupBox1.Controls.Add(IsNestedUpDown);
-        groupBox1.Controls.Add(HasAttributeUpDown);
         groupBox1.Controls.Add(BaseClassExcludeTextField);
         groupBox1.Controls.Add(MethodCountEnabled);
-        groupBox1.Controls.Add(IsSealedUpDown);
         groupBox1.Location = new Point(6, 6);
         groupBox1.Name = "groupBox1";
         groupBox1.Size = new Size(769, 904);
         groupBox1.TabIndex = 0;
         groupBox1.TabStop = false;
         groupBox1.Text = "Remap Editor";
+        // 
+        // label11
+        // 
+        label11.AutoSize = true;
+        label11.Location = new Point(224, 264);
+        label11.Name = "label11";
+        label11.Size = new Size(75, 25);
+        label11.TabIndex = 53;
+        label11.Text = "Is Struct";
+        // 
+        // IsStructComboBox
+        // 
+        IsStructComboBox.BackColor = SystemColors.ScrollBar;
+        IsStructComboBox.FormattingEnabled = true;
+        IsStructComboBox.Location = new Point(10, 258);
+        IsStructComboBox.Name = "IsStructComboBox";
+        IsStructComboBox.Size = new Size(208, 33);
+        IsStructComboBox.TabIndex = 52;
+        toolTip1.SetToolTip(IsStructComboBox, "Is the type an enum?");
+        // 
+        // label10
+        // 
+        label10.AutoSize = true;
+        label10.Location = new Point(224, 380);
+        label10.Name = "label10";
+        label10.Size = new Size(197, 25);
+        label10.TabIndex = 51;
+        label10.Text = "Has Generic Parameters";
+        // 
+        // HasGenericParamsComboBox
+        // 
+        HasGenericParamsComboBox.BackColor = SystemColors.ScrollBar;
+        HasGenericParamsComboBox.FormattingEnabled = true;
+        HasGenericParamsComboBox.Location = new Point(10, 374);
+        HasGenericParamsComboBox.Name = "HasGenericParamsComboBox";
+        HasGenericParamsComboBox.Size = new Size(208, 33);
+        HasGenericParamsComboBox.TabIndex = 50;
+        toolTip1.SetToolTip(HasGenericParamsComboBox, "Does the type have generic parameters?");
+        // 
+        // label8
+        // 
+        label8.AutoSize = true;
+        label8.Location = new Point(224, 343);
+        label8.Name = "label8";
+        label8.Size = new Size(117, 25);
+        label8.TabIndex = 49;
+        label8.Text = "Has Attribute";
+        // 
+        // HasAttributeComboBox
+        // 
+        HasAttributeComboBox.BackColor = SystemColors.ScrollBar;
+        HasAttributeComboBox.FormattingEnabled = true;
+        HasAttributeComboBox.Location = new Point(10, 335);
+        HasAttributeComboBox.Name = "HasAttributeComboBox";
+        HasAttributeComboBox.Size = new Size(208, 33);
+        HasAttributeComboBox.TabIndex = 48;
+        toolTip1.SetToolTip(HasAttributeComboBox, "does the type have an attribute?");
+        // 
+        // label9
+        // 
+        label9.AutoSize = true;
+        label9.Location = new Point(224, 303);
+        label9.Name = "label9";
+        label9.Size = new Size(75, 25);
+        label9.TabIndex = 47;
+        label9.Text = "Is Enum";
+        // 
+        // IsEnumComboBox
+        // 
+        IsEnumComboBox.BackColor = SystemColors.ScrollBar;
+        IsEnumComboBox.FormattingEnabled = true;
+        IsEnumComboBox.Location = new Point(10, 297);
+        IsEnumComboBox.Name = "IsEnumComboBox";
+        IsEnumComboBox.Size = new Size(208, 33);
+        IsEnumComboBox.TabIndex = 46;
+        toolTip1.SetToolTip(IsEnumComboBox, "Is the type an enum?");
+        // 
+        // label2322
+        // 
+        label2322.AutoSize = true;
+        label2322.Location = new Point(224, 225);
+        label2322.Name = "label2322";
+        label2322.Size = new Size(98, 25);
+        label2322.TabIndex = 45;
+        label2322.Text = "Is Interface";
+        // 
+        // IsInterfaceComboBox
+        // 
+        IsInterfaceComboBox.BackColor = SystemColors.ScrollBar;
+        IsInterfaceComboBox.FormattingEnabled = true;
+        IsInterfaceComboBox.Location = new Point(10, 219);
+        IsInterfaceComboBox.Name = "IsInterfaceComboBox";
+        IsInterfaceComboBox.Size = new Size(208, 33);
+        IsInterfaceComboBox.TabIndex = 44;
+        toolTip1.SetToolTip(IsInterfaceComboBox, "Is the type an interface?");
+        // 
+        // label7
+        // 
+        label7.AutoSize = true;
+        label7.Location = new Point(224, 186);
+        label7.Name = "label7";
+        label7.Size = new Size(82, 25);
+        label7.TabIndex = 43;
+        label7.Text = "Is Sealed";
+        // 
+        // IsSealedComboBox
+        // 
+        IsSealedComboBox.BackColor = SystemColors.ScrollBar;
+        IsSealedComboBox.FormattingEnabled = true;
+        IsSealedComboBox.Location = new Point(10, 180);
+        IsSealedComboBox.Name = "IsSealedComboBox";
+        IsSealedComboBox.Size = new Size(208, 33);
+        IsSealedComboBox.TabIndex = 42;
+        toolTip1.SetToolTip(IsSealedComboBox, "Is the type sealed?");
+        // 
+        // label6
+        // 
+        label6.AutoSize = true;
+        label6.Location = new Point(224, 148);
+        label6.Name = "label6";
+        label6.Size = new Size(96, 25);
+        label6.TabIndex = 41;
+        label6.Text = "Is Abstract";
+        // 
+        // IsAbstractComboBox
+        // 
+        IsAbstractComboBox.BackColor = SystemColors.ScrollBar;
+        IsAbstractComboBox.FormattingEnabled = true;
+        IsAbstractComboBox.Location = new Point(10, 142);
+        IsAbstractComboBox.Name = "IsAbstractComboBox";
+        IsAbstractComboBox.Size = new Size(208, 33);
+        IsAbstractComboBox.TabIndex = 40;
+        toolTip1.SetToolTip(IsAbstractComboBox, "Is the type abstract? ");
+        // 
+        // label5
+        // 
+        label5.AutoSize = true;
+        label5.Location = new Point(224, 110);
+        label5.Name = "label5";
+        label5.Size = new Size(77, 25);
+        label5.TabIndex = 39;
+        label5.Text = "Is Public";
+        // 
+        // IsPublicComboBox
+        // 
+        IsPublicComboBox.BackColor = SystemColors.ScrollBar;
+        IsPublicComboBox.FormattingEnabled = true;
+        IsPublicComboBox.Location = new Point(10, 104);
+        IsPublicComboBox.Name = "IsPublicComboBox";
+        IsPublicComboBox.Size = new Size(208, 33);
+        IsPublicComboBox.TabIndex = 38;
+        toolTip1.SetToolTip(IsPublicComboBox, "Is the type public? This is required.");
         // 
         // ConstuctorCountUpDown
         // 
@@ -757,17 +936,6 @@ partial class ReCodeItForm
         PropertyCountEnabled.Text = "Property Count";
         PropertyCountEnabled.UseVisualStyleBackColor = true;
         // 
-        // IsInterfaceUpDown
-        // 
-        IsInterfaceUpDown.BackColor = SystemColors.ScrollBar;
-        IsInterfaceUpDown.Location = new Point(10, 215);
-        IsInterfaceUpDown.Name = "IsInterfaceUpDown";
-        IsInterfaceUpDown.Size = new Size(208, 31);
-        IsInterfaceUpDown.Sorted = true;
-        IsInterfaceUpDown.TabIndex = 15;
-        IsInterfaceUpDown.Text = "IsInterface";
-        toolTip1.SetToolTip(IsInterfaceUpDown, "Is the type an interface?");
-        // 
         // RemapperUseForceRename
         // 
         RemapperUseForceRename.AutoSize = true;
@@ -807,17 +975,6 @@ partial class ReCodeItForm
         FieldCountUpDown.TabIndex = 3;
         toolTip1.SetToolTip(FieldCountUpDown, "How many fields are there?");
         // 
-        // IsPublicUpDown
-        // 
-        IsPublicUpDown.BackColor = SystemColors.ScrollBar;
-        IsPublicUpDown.Location = new Point(10, 104);
-        IsPublicUpDown.Name = "IsPublicUpDown";
-        IsPublicUpDown.Size = new Size(208, 31);
-        IsPublicUpDown.Sorted = true;
-        IsPublicUpDown.TabIndex = 0;
-        IsPublicUpDown.Text = "IsPublic";
-        toolTip1.SetToolTip(IsPublicUpDown, "Is the type public? Note: Only public counts as public all other access modifiers fall under false.");
-        // 
         // FieldCountEnabled
         // 
         FieldCountEnabled.AutoSize = true;
@@ -831,7 +988,7 @@ partial class ReCodeItForm
         // NestedTypeParentName
         // 
         NestedTypeParentName.BackColor = SystemColors.ScrollBar;
-        NestedTypeParentName.Location = new Point(224, 363);
+        NestedTypeParentName.Location = new Point(221, 421);
         NestedTypeParentName.Name = "NestedTypeParentName";
         NestedTypeParentName.PlaceholderText = "Nested Type Parent Name";
         NestedTypeParentName.Size = new Size(208, 31);
@@ -847,21 +1004,10 @@ partial class ReCodeItForm
         MethodCountUpDown.TabIndex = 6;
         toolTip1.SetToolTip(MethodCountUpDown, "How many methods are there?");
         // 
-        // IsAbstractUpDown
-        // 
-        IsAbstractUpDown.BackColor = SystemColors.ScrollBar;
-        IsAbstractUpDown.Location = new Point(10, 141);
-        IsAbstractUpDown.Name = "IsAbstractUpDown";
-        IsAbstractUpDown.Size = new Size(208, 31);
-        IsAbstractUpDown.Sorted = true;
-        IsAbstractUpDown.TabIndex = 1;
-        IsAbstractUpDown.Text = "IsAbstract";
-        toolTip1.SetToolTip(IsAbstractUpDown, "Is the class an abstract class?");
-        // 
         // BaseClassIncludeTextFIeld
         // 
         BaseClassIncludeTextFIeld.BackColor = SystemColors.ScrollBar;
-        BaseClassIncludeTextFIeld.Location = new Point(224, 399);
+        BaseClassIncludeTextFIeld.Location = new Point(221, 457);
         BaseClassIncludeTextFIeld.Name = "BaseClassIncludeTextFIeld";
         BaseClassIncludeTextFIeld.PlaceholderText = "Include Base Class";
         BaseClassIncludeTextFIeld.Size = new Size(208, 31);
@@ -878,28 +1024,6 @@ partial class ReCodeItForm
         OriginalTypeName.TabIndex = 1;
         toolTip1.SetToolTip(OriginalTypeName, "The original name of the type, you can leave this blank if not using force rename.");
         // 
-        // HasGenericParametersUpDown
-        // 
-        HasGenericParametersUpDown.BackColor = SystemColors.ScrollBar;
-        HasGenericParametersUpDown.Location = new Point(10, 326);
-        HasGenericParametersUpDown.Name = "HasGenericParametersUpDown";
-        HasGenericParametersUpDown.Size = new Size(208, 31);
-        HasGenericParametersUpDown.Sorted = true;
-        HasGenericParametersUpDown.TabIndex = 7;
-        HasGenericParametersUpDown.Text = "HasGenericParameters";
-        toolTip1.SetToolTip(HasGenericParametersUpDown, "Does the type have generic parameters? class Foo<T>");
-        // 
-        // IsEnumUpDown
-        // 
-        IsEnumUpDown.BackColor = SystemColors.ScrollBar;
-        IsEnumUpDown.Location = new Point(10, 252);
-        IsEnumUpDown.Name = "IsEnumUpDown";
-        IsEnumUpDown.Size = new Size(208, 31);
-        IsEnumUpDown.Sorted = true;
-        IsEnumUpDown.TabIndex = 2;
-        IsEnumUpDown.Text = "IsEnum";
-        toolTip1.SetToolTip(IsEnumUpDown, "Is the type an enum?");
-        // 
         // NestedTypeCountUpDown
         // 
         NestedTypeCountUpDown.BackColor = SystemColors.ScrollBar;
@@ -912,7 +1036,7 @@ partial class ReCodeItForm
         // IsDerivedUpDown
         // 
         IsDerivedUpDown.BackColor = SystemColors.ScrollBar;
-        IsDerivedUpDown.Location = new Point(10, 400);
+        IsDerivedUpDown.Location = new Point(7, 458);
         IsDerivedUpDown.Name = "IsDerivedUpDown";
         IsDerivedUpDown.Size = new Size(208, 31);
         IsDerivedUpDown.Sorted = true;
@@ -923,7 +1047,7 @@ partial class ReCodeItForm
         // IsNestedUpDown
         // 
         IsNestedUpDown.BackColor = SystemColors.ScrollBar;
-        IsNestedUpDown.Location = new Point(10, 363);
+        IsNestedUpDown.Location = new Point(7, 421);
         IsNestedUpDown.Name = "IsNestedUpDown";
         IsNestedUpDown.Size = new Size(208, 31);
         IsNestedUpDown.Sorted = true;
@@ -931,21 +1055,10 @@ partial class ReCodeItForm
         IsNestedUpDown.Text = "IsNested";
         toolTip1.SetToolTip(IsNestedUpDown, "Is the type nested within another type?");
         // 
-        // HasAttributeUpDown
-        // 
-        HasAttributeUpDown.BackColor = SystemColors.ScrollBar;
-        HasAttributeUpDown.Location = new Point(10, 289);
-        HasAttributeUpDown.Name = "HasAttributeUpDown";
-        HasAttributeUpDown.Size = new Size(208, 31);
-        HasAttributeUpDown.Sorted = true;
-        HasAttributeUpDown.TabIndex = 5;
-        HasAttributeUpDown.Text = "HasAttribute";
-        toolTip1.SetToolTip(HasAttributeUpDown, "Does the type have an attribute?");
-        // 
         // BaseClassExcludeTextField
         // 
         BaseClassExcludeTextField.BackColor = SystemColors.ScrollBar;
-        BaseClassExcludeTextField.Location = new Point(438, 400);
+        BaseClassExcludeTextField.Location = new Point(435, 458);
         BaseClassExcludeTextField.Name = "BaseClassExcludeTextField";
         BaseClassExcludeTextField.PlaceholderText = "Exclude Base Class";
         BaseClassExcludeTextField.Size = new Size(208, 31);
@@ -961,17 +1074,6 @@ partial class ReCodeItForm
         MethodCountEnabled.TabIndex = 14;
         MethodCountEnabled.Text = "Method Count";
         MethodCountEnabled.UseVisualStyleBackColor = true;
-        // 
-        // IsSealedUpDown
-        // 
-        IsSealedUpDown.BackColor = SystemColors.ScrollBar;
-        IsSealedUpDown.Location = new Point(10, 179);
-        IsSealedUpDown.Name = "IsSealedUpDown";
-        IsSealedUpDown.Size = new Size(208, 31);
-        IsSealedUpDown.Sorted = true;
-        IsSealedUpDown.TabIndex = 4;
-        IsSealedUpDown.Text = "IsSealed";
-        toolTip1.SetToolTip(IsSealedUpDown, "Is the type sealed? Note that unsealing and publicization does not happen until after the remap so they can be used as parameters");
         // 
         // RemapperOutputDirectoryPath
         // 
@@ -1760,15 +1862,6 @@ partial class ReCodeItForm
         DebugLoggingCheckbox.UseVisualStyleBackColor = true;
         DebugLoggingCheckbox.CheckedChanged += DebugLoggingCheckbox_CheckedChanged;
         // 
-        // label1
-        // 
-        label1.AutoSize = true;
-        label1.Location = new Point(777, 47);
-        label1.Name = "label1";
-        label1.Size = new Size(235, 25);
-        label1.TabIndex = 41;
-        label1.Text = "Double click to edit a remap";
-        // 
         // ReCodeItForm
         // 
         AutoScaleDimensions = new SizeF(10F, 25F);
@@ -1778,7 +1871,7 @@ partial class ReCodeItForm
         Controls.Add(TabControlMain);
         FormBorderStyle = FormBorderStyle.FixedSingle;
         Name = "ReCodeItForm";
-        Text = "ReCodeIt V0.1.0";
+        Text = "ReCodeIt V0.2.0";
         RemapperTabPage.ResumeLayout(false);
         RemapperTabPage.PerformLayout();
         groupBox1.ResumeLayout(false);
@@ -1867,18 +1960,11 @@ partial class ReCodeItForm
     private Button SaveRemapButton;
     private ListView RemapListView;
     private TabControl TabControlMain;
-    private DomainUpDown IsPublicUpDown;
-    private DomainUpDown HasGenericParametersUpDown;
     private DomainUpDown IsDerivedUpDown;
-    private DomainUpDown HasAttributeUpDown;
-    private DomainUpDown IsSealedUpDown;
     private DomainUpDown IsNestedUpDown;
-    private DomainUpDown IsEnumUpDown;
-    private DomainUpDown IsAbstractUpDown;
     private CheckBox FieldCountEnabled;
     private CheckBox PropertyCountEnabled;
     private CheckBox NestedTypeCountEnabled;
-    private DomainUpDown IsInterfaceUpDown;
     private TreeView RemapTreeView;
     private Button RunRemapButton;
     private Button LoadMappingFileButton;
@@ -1964,4 +2050,20 @@ partial class ReCodeItForm
     private TextBox RMSearchBox;
     private Button ResetSearchButton;
     private Label label1;
+    private ComboBox IsPublicComboBox;
+    private Label label7;
+    private ComboBox IsSealedComboBox;
+    private Label label6;
+    private ComboBox IsAbstractComboBox;
+    private Label label5;
+    private Label label8;
+    private ComboBox HasAttributeComboBox;
+    private Label label9;
+    private ComboBox IsEnumComboBox;
+    private Label label2322;
+    private ComboBox IsInterfaceComboBox;
+    private Label label10;
+    private ComboBox HasGenericParamsComboBox;
+    private Label label11;
+    private ComboBox IsStructComboBox;
 }
