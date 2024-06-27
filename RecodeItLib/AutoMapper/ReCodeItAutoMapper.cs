@@ -503,14 +503,21 @@ public class ReCodeItAutoMapper
 
     private void WriteChanges()
     {
-        Module.Write(Settings.OutputPath);
+        var path = Path.Combine(Settings.OutputPath, Module.Assembly.Name + "-auto_mapped.dll");
 
-        var fieldCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
-        var propertyCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property).Count();
-        var methodCountMatchResult = MappingPairs.Where(x => x.AutoMappingResult == AutoMappingResult.Match_From_Method).Count();
+        Module.Write(path);
+
+        var fieldCountMatchResult = MappingPairs
+            .Count(x => x.AutoMappingResult == AutoMappingResult.Match_From_Field);
+
+        var propertyCountMatchResult = MappingPairs
+            .Count(x => x.AutoMappingResult == AutoMappingResult.Match_From_Property);
+
+        var methodCountMatchResult = MappingPairs
+            .Count(x => x.AutoMappingResult == AutoMappingResult.Match_From_Method);
 
         Logger.Log($"-------------------------------RESULT-----------------------------------", ConsoleColor.Green);
-        Logger.Log($"Complete: Assembly written to `{Settings.OutputPath}`", ConsoleColor.Green);
+        Logger.Log($"Complete: Assembly written to `{path}`", ConsoleColor.Green);
         Logger.Log($"Found {MappingPairs.Count()} automatic remaps", ConsoleColor.Green);
         Logger.Log($"Found {fieldCountMatchResult} automatic remaps from fields", ConsoleColor.Green);
         Logger.Log($"Found {propertyCountMatchResult} automatic remaps from properties", ConsoleColor.Green);
