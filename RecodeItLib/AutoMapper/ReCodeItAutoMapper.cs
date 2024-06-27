@@ -46,12 +46,11 @@ public class ReCodeItAutoMapper
         TotalPropertyRenameCount = 0;
 
         var types = Module.GetTypes();
+        AllTypes.AddRange(types);
 
         FindCompilerGeneratedObjects(types);
 
-        GetAllTypes(types);
-
-        Logger.Log($"Found {CompilerGeneratedClasses.Count - AllTypes.Count} potential remappable types");
+        Logger.Log($"Found {AllTypes.Count - CompilerGeneratedClasses.Count} potential remappable types");
         Logger.Log($"Found {CompilerGeneratedClasses.Count} compiler generated objects");
 
         foreach (var type in types)
@@ -76,19 +75,6 @@ public class ReCodeItAutoMapper
         StartRenameProcess();
 
         WriteChanges();
-    }
-
-    private void GetAllTypes(IEnumerable<TypeDef> types)
-    {
-        AllTypes.AddRange(types);
-
-        foreach (var type in types)
-        {
-            if (type.HasNestedTypes)
-            {
-                GetAllTypes(type.NestedTypes);
-            }
-        }
     }
 
     /// <summary>
@@ -153,6 +139,8 @@ public class ReCodeItAutoMapper
                 //Logger.Log($"Parameter count: {method.Parameters.Count}");
                 //Logger.Log($"Paremeter Names: {string.Join(", ", parmNames)}");
                 //Logger.Log($"Paremeter Types: {string.Join(", ", parmTypes)}\n");
+
+                if (parm.Type.TryGetTypeDef() is null) continue;
 
                 var mapPair = new MappingPair(
                     parm.Type.TryGetTypeDef(),

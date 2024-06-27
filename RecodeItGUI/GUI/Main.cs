@@ -842,7 +842,7 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             AppSettings.AutoMapper.AssemblyPath = result;
-            TargetAssemblyPath.Text = result;
+            AutoMapperTargetPath.Text = result;
         }
     }
 
@@ -853,7 +853,7 @@ public partial class ReCodeItForm : Form
         if (result != string.Empty)
         {
             AppSettings.AutoMapper.OutputPath = result;
-            RemapperOutputDirectoryPath.Text = result;
+            AutoMapperOuputPath.Text = result;
         }
     }
 
