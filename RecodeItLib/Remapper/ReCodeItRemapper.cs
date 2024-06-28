@@ -222,12 +222,8 @@ public class ReCodeItRemapper
 
         if (_alreadyGivenNames.Contains(winner.FullName))
         {
-            Logger.Log("----------------------------------------------------------------------", ConsoleColor.Red);
-            Logger.Log("Ambiguous match with a previous match during matching. Skipping remap.", ConsoleColor.Red);
-            Logger.Log($"Ambiguous match: {winner.FullName}");
-            Logger.Log("----------------------------------------------------------------------", ConsoleColor.Red);
-            
-            remap.NoMatchReasons.Add(ENoMatchReason.AmbiguousMatch);
+            remap.NoMatchReasons.Add(ENoMatchReason.AmbiguousWithPreviousMatch);
+            remap.AmbiguousTypeMatch = winner.FullName;
             remap.Succeeded = false;
             
             return;
@@ -307,10 +303,33 @@ public class ReCodeItRemapper
     {
         var failures = 0;
         var changes = 0;
-
+        
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
+        
         foreach (var remap in _remaps)
         {
-            if (remap.Succeeded is false)
+            if (remap.Succeeded is false) { continue; }
+
+            var original = remap.OriginalTypeName;
+            var proposed = remap.NewTypeName;
+
+            Logger.Log($"Renamed {original} to {proposed}", ConsoleColor.Green);
+
+            DisplayAlternativeMatches(remap);
+        }
+        
+        foreach (var remap in _remaps)
+        {
+            if (remap.Succeeded is false && remap.NoMatchReasons.Contains(ENoMatchReason.AmbiguousWithPreviousMatch))
+            {
+                Logger.Log("----------------------------------------------------------------------", ConsoleColor.Red);
+                Logger.Log("Ambiguous match with a previous match during matching. Skipping remap.", ConsoleColor.Red);
+                Logger.Log($"New Type Name: {remap.NewTypeName}", ConsoleColor.Red);
+                Logger.Log($"{remap.AmbiguousTypeMatch} already assigned to a previous match.", ConsoleColor.Red);
+                Logger.Log("----------------------------------------------------------------------", ConsoleColor.Red);
+            }
+            else if (remap.Succeeded is false)
             {
                 Logger.Log("-----------------------------------------------", ConsoleColor.Red);
                 Logger.Log($"Renaming {remap.NewTypeName} failed with reason(s)", ConsoleColor.Red);
@@ -324,29 +343,14 @@ public class ReCodeItRemapper
                 failures++;
                 continue;
             }
-
+            
             changes++;
         }
-
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-
-        foreach (var remap in _remaps)
-        {
-            if (remap.Succeeded is false) { continue; }
-
-            var original = remap.OriginalTypeName;
-            var proposed = remap.NewTypeName;
-
-            Logger.Log($"Renamed {original} to {proposed}", ConsoleColor.Green);
-
-            DisplayAlternativeMatches(remap);
-        }
-
+        
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Result renamed {changes} Types. Failed to rename {failures} Types", ConsoleColor.Green);
-
+        
         if (!validate)
         {
             Logger.Log($"Assembly written to `{OutPath}`", ConsoleColor.Green);

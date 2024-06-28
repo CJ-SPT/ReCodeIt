@@ -15,6 +15,8 @@ public class RemapModel
     [JsonIgnore]
     public List<ENoMatchReason> NoMatchReasons { get; set; } = [];
 
+    [JsonIgnore] public string AmbiguousTypeMatch { get; set; } = string.Empty;
+
     /// <summary>
     /// This is a list of type candidates that made it through the filter
     /// </summary>
