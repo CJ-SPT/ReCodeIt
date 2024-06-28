@@ -6,6 +6,7 @@ using ReCodeIt.ReMapper.Search;
 using ReCodeIt.Utils;
 using ReCodeItLib.Remapper.Search;
 using System.Diagnostics;
+using ReCodeIt.Enums;
 
 namespace ReCodeIt.ReMapper;
 
@@ -41,6 +42,8 @@ public class ReCodeItRemapper
 
     private List<RemapModel> _remaps = [];
 
+    private List<string> _alreadyGivenNames = [];
+
     /// <summary>
     /// Start the remapping process
     /// </summary>
@@ -60,11 +63,13 @@ public class ReCodeItRemapper
 
         OutPath = outPath;
 
+        if (!Validate(_remaps)) return;
+        
         IsRunning = true;
         Stopwatch.Start();
 
         var types = Module.GetTypes();
-
+        
         var tasks = new List<Task>(remapModels.Count);
         foreach (var remap in remapModels)
         {
@@ -116,6 +121,29 @@ public class ReCodeItRemapper
         }
     }
 
+    private bool Validate(List<RemapModel> remaps)
+    {
+        var duplicateGroups = remaps
+            .GroupBy(m => m.NewTypeName)
+            .Where(g => g.Count() > 1)
+            .ToList();
+
+        if (duplicateGroups.Count() > 1)
+        {
+            Logger.Log($"There were {duplicateGroups.Count()} duplicated sets of remaps.", ConsoleColor.Yellow);
+
+            foreach (var duplicate in duplicateGroups)
+            {
+                var duplicateNewTypeName = duplicate.Key;
+                Logger.Log($"Ambiguous NewTypeName: {duplicateNewTypeName} found. Cancelling Remap.", ConsoleColor.Red);
+                return false;
+            }
+        }
+
+
+        return true;
+    }
+    
     /// <summary>
     /// First we filter our type collection based on simple search parameters (true/false/null)
     /// where null is a third disabled state. Then we score the types based on the search parameters
@@ -189,9 +217,24 @@ public class ReCodeItRemapper
         var winner = remap.TypeCandidates.FirstOrDefault();
         remap.TypePrimeCandidate = winner;
         remap.OriginalTypeName = winner.Name.String;
-
+        
         if (winner is null) { return; }
 
+        if (_alreadyGivenNames.Contains(winner.FullName))
+        {
+            Logger.Log("----------------------------------------------------------------------", ConsoleColor.Red);
+            Logger.Log("Ambiguous match with a previous match during matching. Skipping remap.", ConsoleColor.Red);
+            Logger.Log($"Ambiguous match: {winner.FullName}");
+            Logger.Log("----------------------------------------------------------------------", ConsoleColor.Red);
+            
+            remap.NoMatchReasons.Add(ENoMatchReason.AmbiguousMatch);
+            remap.Succeeded = false;
+            
+            return;
+        }
+        
+        _alreadyGivenNames.Add(winner.FullName);
+        
         remap.Succeeded = true;
 
         remap.OriginalTypeName = winner.Name.String;

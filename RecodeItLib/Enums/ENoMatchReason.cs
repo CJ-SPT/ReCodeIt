@@ -2,6 +2,7 @@
 
 public enum ENoMatchReason
 {
+    AmbiguousMatch,
     IsEnum,
     IsNested,
     IsSealed,

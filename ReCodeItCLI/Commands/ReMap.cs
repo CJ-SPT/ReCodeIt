@@ -35,7 +35,7 @@ public class ReMap : ICommand
         remapperSettings.Publicize = Publicize;
 
         var remaps = DataProvider.LoadMappingFile(MappingJsonPath);
-
+        
         _remapper.InitializeRemap(remaps, AssemblyPath, Path.GetDirectoryName(AssemblyPath));
 
         // Wait for log termination
