@@ -53,18 +53,21 @@ internal static class SPTPublicizer
         // !type.Namespace.Contains("UI") || !string.IsNullOrWhiteSpace(type.Namespace)) // if
         // (type.Namespace.Length > 0 && type.Namespace[0] > 'E') PublicizeField(field); }
 
-        var nestedTypesToPublicize = type.NestedTypes.ToArray();
+        var nestedTypesToPublicize = type.NestedTypes
+            .Where(t => !t.Interfaces.Any(i => i.Interface.Name == "IEffect"))
+            .ToList();
 
         // Workaround to not publicize some nested types that cannot be patched easily and cause
         // issues Specifically, we want to find any type that implements the "IHealthController"
         // interface and make sure none of it's nested types that implement "IEffect" are changed
+        /*
         if (GetFlattenedInterfacesRecursive(type).Any(i => i.Interface.Name == "IHealthController"))
         {
             // Specifically, any type that implements the IHealthController interface needs to not
             // publicize any nested types that implement the IEffect interface
             nestedTypesToPublicize = type.NestedTypes.Where(t => t.IsAbstract || t.Interfaces.All(i => i.Interface.Name != "IEffect")).ToArray();
         }
-
+        */
         foreach (var nestedType in nestedTypesToPublicize)
         {
             PublicizeType(nestedType);
@@ -121,7 +124,7 @@ internal static class SPTPublicizer
 
         if (type.BaseType != null && !type.BaseType.Name.Contains("Object"))
         {
-            var baseTypeDefinition = MainModule?.Find(type.BaseType);
+            var baseTypeDefinition = MainModule?.Find(type.BaseType).ResolveTypeDef();
             var baseTypeInterfaces = GetFlattenedInterfacesRecursive(baseTypeDefinition);
 
             if (baseTypeInterfaces.Any())
