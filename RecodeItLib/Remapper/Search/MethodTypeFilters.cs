@@ -86,7 +86,7 @@ internal static class MethodTypeFilters
         int count = 0;
         foreach (var method in type.Methods)
         {
-            if (!method.IsConstructor && !method.IsSpecialName)
+            if (!method.IsConstructor && !method.IsSpecialName && !method.IsGetter && !method.IsSetter)
             {
                 count++;
             }
