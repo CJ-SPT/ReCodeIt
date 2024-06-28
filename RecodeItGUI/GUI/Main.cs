@@ -255,20 +255,13 @@ public partial class ReCodeItForm : Form
         _isSearched = false;
     }
 
-    /// <summary>
-    /// Construct a new remap when the button is pressed
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void AddRemapButton_Click(object sender, EventArgs e)
+    private RemapModel? CreateRemapFromGUI()
     {
         if (NewTypeName.Text == string.Empty)
         {
             MessageBox.Show("Please enter a new type name", "Invalid data");
-            return;
+            return null;
         }
-
-        ResetSearchButton_Click(this, e);
 
         var newRemap = new RemapModel
         {
@@ -340,6 +333,22 @@ public partial class ReCodeItForm : Form
                 ExcludeNestedTypes = GUIHelpers.GetAllEntriesFromListBox(NestedTypesExcludeBox),
             }
         };
+
+        return newRemap;
+    }
+
+    /// <summary>
+    /// Construct a new remap when the button is pressed
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void AddRemapButton_Click(object sender, EventArgs e)
+    {
+        ResetSearchButton_Click(this, e);
+
+        var newRemap = CreateRemapFromGUI();
+
+        if (newRemap is null) return;
 
         bool projectMode = AppSettings.Remapper.UseProjectMappings;
 
@@ -465,6 +474,23 @@ public partial class ReCodeItForm : Form
             AppSettings.Remapper.OutputPath);
 
         ReloadRemapTreeView(DataProvider.Remaps);
+    }
+
+    private void ValidateRemapButton_Click(object sender, EventArgs e)
+    {
+        List<RemapModel> validation = [];
+
+        var remapToValidate = CreateRemapFromGUI();
+
+        if (remapToValidate is null) return;
+
+        validation.Add(remapToValidate);
+
+        Remapper.InitializeRemap(
+            validation,
+            AppSettings.Remapper.AssemblyPath,
+            AppSettings.Remapper.OutputPath,
+            validate: true);
     }
 
     /// <summary>

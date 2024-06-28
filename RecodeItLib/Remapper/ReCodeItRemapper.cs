@@ -19,7 +19,7 @@ public class ReCodeItRemapper
     public ReCodeItRemapper()
     { }
 
-    private ModuleDefMD Module { get; set; }
+    private ModuleDefMD? Module { get; set; }
 
     private readonly ReCodeItCrossCompiler _compiler;
 
@@ -48,7 +48,8 @@ public class ReCodeItRemapper
         List<RemapModel> remapModels,
         string assemblyPath,
         string outPath,
-        bool crossMapMode = false)
+        bool crossMapMode = false,
+        bool validate = false)
     {
         _remaps = [];
         _remaps = remapModels;
@@ -78,6 +79,13 @@ public class ReCodeItRemapper
         Task.WaitAll(tasks.ToArray());
 
         ChooseBestMatches();
+
+        // Don't go any further during a validation
+        if (validate)
+        {
+            DisplayEndBanner(validate: true);
+            return;
+        }
 
         var renameTasks = new List<Task>(remapModels.Count);
         foreach (var remap in remapModels)
@@ -171,9 +179,9 @@ public class ReCodeItRemapper
     }
 
     /// <summary>
-    /// Choose best match from a collection of scores, then start the renaming process
+    /// Choose best match from a collection of types on a remap
     /// </summary>
-    /// <param name="scores">Scores to rate</param>
+    /// <param name="remap"></param>
     private void ChooseBestMatch(RemapModel remap)
     {
         if (remap.TypeCandidates.Count == 0) { return; }
@@ -229,7 +237,8 @@ public class ReCodeItRemapper
         }
 
         Stopwatch.Reset();
-
+        Module = null;
+        
         IsRunning = false;
         OnComplete?.Invoke();
     }
@@ -251,7 +260,7 @@ public class ReCodeItRemapper
         }
     }
 
-    private void DisplayEndBanner(string hollowedPath)
+    private void DisplayEndBanner(string hollowedPath = "", bool validate = false)
     {
         var failures = 0;
         var changes = 0;
@@ -294,9 +303,13 @@ public class ReCodeItRemapper
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Result renamed {changes} Types. Failed to rename {failures} Types", ConsoleColor.Green);
-        Logger.Log($"Assembly written to `{OutPath}`", ConsoleColor.Green);
-        Logger.Log($"Hollowed written to `{hollowedPath}`", ConsoleColor.Green);
-        Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
+
+        if (!validate)
+        {
+            Logger.Log($"Assembly written to `{OutPath}`", ConsoleColor.Green);
+            Logger.Log($"Hollowed written to `{hollowedPath}`", ConsoleColor.Green);
+            Logger.Log($"Remap took {Stopwatch.Elapsed.TotalSeconds:F1} seconds", ConsoleColor.Green);
+        }
     }
 
     private void DisplayAlternativeMatches(RemapModel remap)
