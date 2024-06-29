@@ -136,8 +136,9 @@ public class ReCodeItRemapper
             {
                 var duplicateNewTypeName = duplicate.Key;
                 Logger.Log($"Ambiguous NewTypeName: {duplicateNewTypeName} found. Cancelling Remap.", ConsoleColor.Red);
-                return false;
             }
+            
+            return false;
         }
 
 
