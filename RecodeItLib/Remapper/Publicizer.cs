@@ -26,8 +26,11 @@ internal static class SPTPublicizer
 
         if (!type.IsNested && !type.IsPublic || type.IsNested && !type.IsNestedPublic)
         {
-            type.Attributes &= ~TypeAttributes.VisibilityMask; // Remove all visibility mask attributes
-            type.Attributes |= type.IsNested ? TypeAttributes.NestedPublic : TypeAttributes.Public; // Apply a public visibility attribute
+            if (!type.Interfaces.Any(i => i.Interface.Name == "IEffect"))
+            {
+                type.Attributes &= ~TypeAttributes.VisibilityMask; // Remove all visibility mask attributes
+                type.Attributes |= type.IsNested ? TypeAttributes.NestedPublic : TypeAttributes.Public; // Apply a public visibility attribute
+            }
         }
 
         if (type.IsSealed)
@@ -52,11 +55,7 @@ internal static class SPTPublicizer
         // // if (type.Name.StartsWith("GClass") || !type.Namespace.Contains("EFT") ||
         // !type.Namespace.Contains("UI") || !string.IsNullOrWhiteSpace(type.Namespace)) // if
         // (type.Namespace.Length > 0 && type.Namespace[0] > 'E') PublicizeField(field); }
-
-        var nestedTypesToPublicize = type.NestedTypes
-            .Where(t => !t.Interfaces.Any(i => i.Interface.Name == "IEffect"))
-            .ToList();
-
+        
         // Workaround to not publicize some nested types that cannot be patched easily and cause
         // issues Specifically, we want to find any type that implements the "IHealthController"
         // interface and make sure none of it's nested types that implement "IEffect" are changed
@@ -68,7 +67,7 @@ internal static class SPTPublicizer
             nestedTypesToPublicize = type.NestedTypes.Where(t => t.IsAbstract || t.Interfaces.All(i => i.Interface.Name != "IEffect")).ToArray();
         }
         */
-        foreach (var nestedType in nestedTypesToPublicize)
+        foreach (var nestedType in type.NestedTypes)
         {
             PublicizeType(nestedType);
         }
