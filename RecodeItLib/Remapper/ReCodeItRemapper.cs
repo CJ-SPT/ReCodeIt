@@ -1,12 +1,12 @@
 ﻿using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using ReCodeIt.CrossCompiler;
+using ReCodeIt.Enums;
 using ReCodeIt.Models;
 using ReCodeIt.ReMapper.Search;
 using ReCodeIt.Utils;
 using ReCodeItLib.Remapper.Search;
 using System.Diagnostics;
-using ReCodeIt.Enums;
 
 namespace ReCodeIt.ReMapper;
 
@@ -64,12 +64,12 @@ public class ReCodeItRemapper
         OutPath = outPath;
 
         if (!Validate(_remaps)) return;
-        
+
         IsRunning = true;
         Stopwatch.Start();
 
         var types = Module.GetTypes();
-        
+
         var tasks = new List<Task>(remapModels.Count);
         foreach (var remap in remapModels)
         {
@@ -137,14 +137,13 @@ public class ReCodeItRemapper
                 var duplicateNewTypeName = duplicate.Key;
                 Logger.Log($"Ambiguous NewTypeName: {duplicateNewTypeName} found. Cancelling Remap.", ConsoleColor.Red);
             }
-            
+
             return false;
         }
 
-
         return true;
     }
-    
+
     /// <summary>
     /// First we filter our type collection based on simple search parameters (true/false/null)
     /// where null is a third disabled state. Then we score the types based on the search parameters
@@ -153,6 +152,12 @@ public class ReCodeItRemapper
     private void ScoreMapping(RemapModel mapping, IEnumerable<TypeDef> types)
     {
         var tokens = DataProvider.Settings.AutoMapper.TokensToMatch;
+
+        if (mapping.UseForceRename)
+        {
+            HandleDirectRename(mapping, types);
+            return;
+        }
 
         if (mapping.SearchParams.IsNested is false or null)
         {
@@ -196,6 +201,28 @@ public class ReCodeItRemapper
         mapping.TypeCandidates.UnionWith(types);
     }
 
+    private void HandleDirectRename(RemapModel mapping, IEnumerable<TypeDef> types)
+    {
+        foreach (var type in types)
+        {
+            if (type.Name == mapping.OriginalTypeName)
+            {
+                mapping.TypePrimeCandidate = type;
+                mapping.OriginalTypeName = type.Name.String;
+                mapping.Succeeded = true;
+
+                _alreadyGivenNames.Add(mapping.OriginalTypeName);
+
+                if (CrossMapMode)
+                {// Store the original types for caching
+                    _compiler.ActiveProject.ChangedTypes.Add(mapping.NewTypeName, mapping.OriginalTypeName);
+                }
+
+                return;
+            }
+        }
+    }
+
     /// <summary>
     /// Choose the best possible match from all remaps
     /// </summary>
@@ -213,12 +240,12 @@ public class ReCodeItRemapper
     /// <param name="remap"></param>
     private void ChooseBestMatch(RemapModel remap)
     {
-        if (remap.TypeCandidates.Count == 0) { return; }
+        if (remap.TypeCandidates.Count == 0 || remap.Succeeded) { return; }
 
         var winner = remap.TypeCandidates.FirstOrDefault();
         remap.TypePrimeCandidate = winner;
         remap.OriginalTypeName = winner.Name.String;
-        
+
         if (winner is null) { return; }
 
         if (_alreadyGivenNames.Contains(winner.FullName))
@@ -226,19 +253,19 @@ public class ReCodeItRemapper
             remap.NoMatchReasons.Add(ENoMatchReason.AmbiguousWithPreviousMatch);
             remap.AmbiguousTypeMatch = winner.FullName;
             remap.Succeeded = false;
-            
+
             return;
         }
-        
-        _alreadyGivenNames.Add(winner.FullName);
-        
+
+        _alreadyGivenNames.Add(remap.OriginalTypeName);
+
         remap.Succeeded = true;
 
         remap.OriginalTypeName = winner.Name.String;
 
         if (CrossMapMode)
         {// Store the original types for caching
-            //_compiler.ActiveProject.ChangedTypes.Add(highestScore.ProposedNewName, highestScore.Definition.Name);
+            _compiler.ActiveProject.ChangedTypes.Add(winner.Name.String, remap.OriginalTypeName);
         }
     }
 
@@ -248,7 +275,10 @@ public class ReCodeItRemapper
     private void WriteAssembly()
     {
         var moduleName = Module.Name;
-        moduleName = moduleName.Replace(".dll", "-Remapped.dll");
+
+        moduleName = CrossMapMode
+            ? moduleName
+            : moduleName.Replace(".dll", "-Remapped.dll");
 
         OutPath = Path.Combine(OutPath, moduleName);
 
@@ -262,14 +292,17 @@ public class ReCodeItRemapper
             throw;
         }
 
-        Logger.Log("Creating Hollow...", ConsoleColor.Yellow);
-        Hollow();
+        if (!CrossMapMode)
+        {
+            Logger.Log("Creating Hollow...", ConsoleColor.Yellow);
+            Hollow();
 
-        var hollowedDir = Path.GetDirectoryName(OutPath);
-        var hollowedPath = Path.Combine(hollowedDir, "Hollowed.dll");
-        Module.Write(hollowedPath);
+            var hollowedDir = Path.GetDirectoryName(OutPath);
+            var hollowedPath = Path.Combine(hollowedDir, "Hollowed.dll");
+            Module.Write(hollowedPath);
 
-        DisplayEndBanner(hollowedPath);
+            DisplayEndBanner(hollowedPath);
+        }
 
         if (DataProvider.Settings.Remapper.MappingPath != string.Empty)
         {
@@ -278,7 +311,7 @@ public class ReCodeItRemapper
 
         Stopwatch.Reset();
         Module = null;
-        
+
         IsRunning = false;
         OnComplete?.Invoke();
     }
@@ -304,10 +337,10 @@ public class ReCodeItRemapper
     {
         var failures = 0;
         var changes = 0;
-        
+
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
-        
+
         foreach (var remap in _remaps)
         {
             if (remap.Succeeded is false) { continue; }
@@ -319,7 +352,7 @@ public class ReCodeItRemapper
 
             DisplayAlternativeMatches(remap);
         }
-        
+
         foreach (var remap in _remaps)
         {
             if (remap.Succeeded is false && remap.NoMatchReasons.Contains(ENoMatchReason.AmbiguousWithPreviousMatch))
@@ -344,14 +377,14 @@ public class ReCodeItRemapper
                 failures++;
                 continue;
             }
-            
+
             changes++;
         }
-        
+
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log("-----------------------------------------------", ConsoleColor.Green);
         Logger.Log($"Result renamed {changes} Types. Failed to rename {failures} Types", ConsoleColor.Green);
-        
+
         if (!validate)
         {
             Logger.Log($"Assembly written to `{OutPath}`", ConsoleColor.Green);

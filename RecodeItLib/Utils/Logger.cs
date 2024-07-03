@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Utils;
 
@@ -85,8 +84,7 @@ public static class Logger
     }
 
     private const string _defaultFileName = "ReCodeIt.log";
-    private static string _logPath => RegistryHelper.GetRegistryValue<string>("LogPath") ?? $"{AppDomain.CurrentDomain.BaseDirectory}{_defaultFileName}";
-
+    private static string _logPath => Path.Combine(AppContext.BaseDirectory, "Data", "Settings.jsonc");
     public static void ClearLog()
     {
         if (File.Exists(_logPath))
@@ -110,7 +108,7 @@ public static class Logger
             Console.ResetColor();
         }
 
-        WriteToDisk(message.Message);
+        //WriteToDisk(message.Message);
     }
 
     private static void WriteToDisk(object message)

@@ -4,9 +4,9 @@
     "SilentMode": true
   },
   "Remapper": {
-    "AssemblyPath": "G:\\development\\ReCodeIt\\RecodeItGUI\\bin\\Debug\\net8.0-windows\\Data\\Managed\\Assembly-CSharp-cleaned.dll",
-    "OutputPath": "G:\\development\\ReCodeIt\\RecodeItGUI\\bin\\Debug\\net8.0-windows\\Data",
-    "MappingPath": "G:\\development\\ReCodeIt\\RecodeItGUI\\bin\\Debug\\net8.0-windows\\Data\\Mappings.jsonc",
+    "AssemblyPath": "",
+    "OutputPath": "",
+    "MappingPath": "",
     "UseProjectMappings": false,
     "MappingSettings": {
       "RenameFields": true,

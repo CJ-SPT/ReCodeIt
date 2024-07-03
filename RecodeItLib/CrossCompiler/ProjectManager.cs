@@ -3,7 +3,6 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
 using ReCodeIt.Utils;
-using ReCodeItLib.Utils;
 
 namespace ReCodeIt.CrossCompiler;
 
@@ -67,8 +66,7 @@ public static class ProjectManager
         File.WriteAllText(path, jsonText);
 
         DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
-
-        RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
+        
         DataProvider.SaveAppSettings();
 
         Logger.Log($"Cross Compiler project json saved to {path}", ConsoleColor.Green);
@@ -106,8 +104,7 @@ public static class ProjectManager
         {
             DataProvider.Settings.CrossCompiler.LastLoadedProject = path;
         }
-
-        RegistryHelper.SetRegistryValue("LastLoadedProject", path, RegistryValueKind.String);
+        
         DataProvider.SaveAppSettings();
 
         Logger.Log($"Loaded Cross Compiler Project: {model?.VisualStudioSolutionDirectoryPath}");

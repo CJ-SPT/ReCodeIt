@@ -1093,6 +1093,12 @@ public partial class ReCodeItForm : Form
 
     private void CrossPatchRunButton_Click(object sender, EventArgs e)
     {
+        if (CrossCompiler.ActiveProject == null)
+        {
+            MessageBox.Show("No project is loaded");
+            return;
+        }
+
         if (CrossCompiler.ActiveProject.RemapModels.Count == 0)
         {
             MessageBox.Show("You cannot compile without having created remaps first");

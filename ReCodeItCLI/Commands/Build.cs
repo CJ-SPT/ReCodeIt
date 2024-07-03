@@ -3,7 +3,6 @@ using CliFx.Attributes;
 using CliFx.Infrastructure;
 using ReCodeIt.CrossCompiler;
 using ReCodeIt.Utils;
-using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
 
@@ -24,8 +23,6 @@ public class Build : ICommand
         var isRemote = await UseRemoteProject(console);
 
         if (isRemote) { return; }
-
-        await UseLastLoadedProject(console);
         
         // Wait for log termination
         Logger.Terminate();
@@ -77,35 +74,7 @@ public class Build : ICommand
 
         return false;
     }
-
-    private async Task<bool> UseLastLoadedProject(IConsole console)
-    {
-        if (RegistryHelper.GetRegistryValue<string>("LastLoadedProject") != null)
-        {
-            string currentDirectory = Directory.GetCurrentDirectory();
-
-            console.Output.WriteLine($"Project: {RegistryHelper.GetRegistryValue<string>("LastLoadedProject")}");
-            console.Output.WriteLine($"Working Dir: {currentDirectory}");
-
-            CrossCompiler = new();
-
-            DataProvider.LoadAppSettings();
-            DataProvider.IsCli = true;
-
-            ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
-
-            if (!Validate(console)) { return false; }
-
-            await CrossCompiler.StartCrossCompile();
-
-            DataProvider.SaveAppSettings();
-
-            return true;
-        }
-
-        return false;
-    }
-
+    
     private bool Validate(IConsole console)
     {
         if (ProjectManager.ActiveProject == null)

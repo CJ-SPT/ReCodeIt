@@ -3,7 +3,6 @@ using CliFx.Attributes;
 using CliFx.Infrastructure;
 using ReCodeIt.CrossCompiler;
 using ReCodeIt.Utils;
-using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Commands;
 
@@ -14,16 +13,14 @@ public class BuildRef : ICommand
 
     public ValueTask ExecuteAsync(IConsole console)
     {
-        console.Output.WriteLine(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"));
-
-        if (RegistryHelper.GetRegistryValue<string>("LastLoadedProject") != null)
+        if (DataProvider.Settings.CrossCompiler.LastLoadedProject != null)
         {
             CrossCompiler = new();
 
             DataProvider.LoadAppSettings();
             DataProvider.IsCli = true;
 
-            ProjectManager.LoadProject(RegistryHelper.GetRegistryValue<string>("LastLoadedProject"), true);
+            ProjectManager.LoadProject(DataProvider.Settings.CrossCompiler.LastLoadedProject);
 
             if (!Validate(console)) { return default; }
 

@@ -69,12 +69,6 @@ public class ReCodeItCrossCompiler
         {
             newProject = solution.GetProject(projId);
 
-            // Skip the ReCodeIt project if it exists
-            if (newProject!.Name == "ReCodeIt")
-            {
-                continue;
-            }
-
             Logger.Log("Reversing Identifier Changes...", ConsoleColor.Yellow);
 
             foreach (var docId in newProject.DocumentIds)
@@ -96,8 +90,33 @@ public class ReCodeItCrossCompiler
                 newProject = newDoc.Project;
             }
 
+            newProject = ChangeReferencePath(newProject);
+
             await CompileProject(newProject);
         }
+    }
+
+    private Project ChangeReferencePath(Project project)
+    {
+        foreach (var reference in project.MetadataReferences)
+        {
+            Logger.Log(reference.Display);
+
+            if (reference.Display.Contains(ActiveProject.OriginalAssemblyDllName))
+            {
+                Logger.Log("Removing old reference...", ConsoleColor.Yellow);
+
+                // Remove the reference from the project
+                project = project.RemoveMetadataReference(reference);
+                break;
+            }
+        }
+
+        Logger.Log("Creating new reference...", ConsoleColor.Yellow);
+        var newRef = MetadataReference.CreateFromFile(ActiveProject.OriginalAssemblyPath);
+        project = project.AddMetadataReference(newRef);
+
+        return project;
     }
 
     private async Task CompileProject(Project project)

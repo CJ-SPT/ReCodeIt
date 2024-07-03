@@ -1,7 +1,6 @@
 ﻿using dnlib.DotNet;
 using Newtonsoft.Json;
 using ReCodeIt.Models;
-using ReCodeItLib.Utils;
 
 namespace ReCodeIt.Utils;
 
@@ -30,12 +29,6 @@ public static class DataProvider
 
     public static void LoadAppSettings()
     {
-        if (IsCli)
-        {
-            Settings = CreateFakeSettings();
-            return;
-        }
-
         var settingsPath = Path.Combine(DataPath, "Settings.jsonc");
 
         var jsonText = File.ReadAllText(settingsPath);
@@ -46,14 +39,7 @@ public static class DataProvider
         };
 
         Settings = JsonConvert.DeserializeObject<Settings>(jsonText, settings);
-
-        if (Settings is null)
-        {
-            Logger.Log("Settings were null, creating new settings", ConsoleColor.Red);
-            Settings = CreateFakeSettings();
-            SaveAppSettings();
-        }
-
+        
         Logger.Log($"Settings loaded from '{settingsPath}'");
     }
 
@@ -61,7 +47,7 @@ public static class DataProvider
     {
         if (IsCli) { return; }
 
-        var settingsPath = RegistryHelper.GetRegistryValue<string>("SettingsPath");
+        var settingsPath = Path.Combine(DataPath, "Settings.jsonc");
 
         if (!File.Exists(settingsPath))
         {
@@ -149,92 +135,5 @@ public static class DataProvider
         }
 
         return module;
-    }
-
-    private static Settings CreateFakeSettings()
-    {
-        var settings = new Settings
-        {
-            AppSettings = new AppSettings
-            {
-                Debug = false,
-                SilentMode = true
-            },
-            Remapper = new RemapperSettings
-            {
-                MappingPath = string.Empty,
-                OutputPath = string.Empty,
-                UseProjectMappings = false,
-                MappingSettings = new MappingSettings
-                {
-                    RenameFields = false,
-                    RenameProperties = false,
-                    Publicize = false,
-                    Unseal = false,
-                }
-            },
-            AutoMapper = new AutoMapperSettings
-            {
-                AssemblyPath = string.Empty,
-                OutputPath = string.Empty,
-                RequiredMatches = 5,
-                MinLengthToMatch = 7,
-                SearchMethods = true,
-                MappingSettings = new MappingSettings
-                {
-                    RenameFields = false,
-                    RenameProperties = false,
-                    Publicize = false,
-                    Unseal = false,
-                },
-                TypesToIgnore = [
-                    "Boolean",
-                    "List",
-                    "Dictionary",
-                    "Byte",
-                    "Int16",
-                    "Int32",
-                    "Func",
-                    "Action",
-                    "Object",
-                    "String",
-                    "Vector2",
-                    "Vector3",
-                    "Vector4",
-                    "Stream",
-                    "HashSet",
-                    "Double",
-                    "IEnumerator"
-                ],
-                TokensToMatch = [
-                    "Class",
-                    "GClass",
-                    "GStruct",
-                    "Interface",
-                    "GInterface"
-                ],
-                PropertyFieldBlackList = [
-                    "Columns",
-                    "mColumns",
-                    "Template",
-                    "Condition",
-                    "Conditions",
-                    "Counter",
-                    "Instance",
-                    "Command",
-                    "_template"
-                ],
-                MethodParamaterBlackList = [
-
-                ],
-            },
-            CrossCompiler = new CrossCompilerSettings
-            {
-                LastLoadedProject = string.Empty,
-                AutoLoadLastActiveProject = true
-            }
-        };
-
-        return settings;
     }
 }

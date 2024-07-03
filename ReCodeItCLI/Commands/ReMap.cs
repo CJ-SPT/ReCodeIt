@@ -25,9 +25,9 @@ public class ReMap : ICommand
 
     public ValueTask ExecuteAsync(IConsole console)
     {
-        DataProvider.IsCli = true;
         DataProvider.LoadAppSettings();
-
+        DataProvider.Settings.Remapper.MappingPath = MappingJsonPath;
+        
         var remapperSettings = DataProvider.Settings.Remapper.MappingSettings;
 
         remapperSettings.RenameFields = ReName ?? false;
