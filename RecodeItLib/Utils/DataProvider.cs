@@ -115,7 +115,7 @@ public static class DataProvider
             Formatting = Formatting.Indented
         };
 
-        var jsonText = JsonConvert.SerializeObject(Remaps, settings);
+        var jsonText = JsonConvert.SerializeObject(remaps, settings);
 
         File.WriteAllText(path, jsonText);
 
